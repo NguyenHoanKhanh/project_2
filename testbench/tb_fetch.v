@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "fetch.v"
+`include "./source/fetch.v"
 module tb_instruction_fetch;
     // Parameters
     parameter I_WIDTH   = 32;
@@ -49,6 +49,11 @@ module tb_instruction_fetch;
     // Clock generation: 10 ns period
     initial f_clk = 1'b0;
     always #5 f_clk = ~f_clk;
+
+    initial begin
+        $dumpfile("./waveform/tb_fetch.vcd");
+        $dumpvars(0, tb_instruction_fetch);
+    end
 
     // Reset task
     task do_reset;

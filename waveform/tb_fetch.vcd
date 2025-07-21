@@ -1,0 +1,297 @@
+$date
+	Mon Jul 21 23:05:51 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tb_instruction_fetch $end
+$var wire 32 ! pc [31:0] $end
+$var wire 1 " o_syn $end
+$var wire 32 # o_instr [31:0] $end
+$var wire 1 $ o_ce $end
+$var wire 32 % o_addr_instr [31:0] $end
+$var parameter 32 & A_WIDTH $end
+$var parameter 32 ' I_WIDTH $end
+$var parameter 32 ( PC_WIDTH $end
+$var reg 32 ) alu_pc_value [31:0] $end
+$var reg 1 * change_pc $end
+$var reg 1 + f_clk $end
+$var reg 1 , f_rst_n $end
+$var reg 1 - i_ack $end
+$var reg 32 . i_instr [31:0] $end
+$var reg 1 / i_stall $end
+$scope module dut $end
+$var wire 32 0 alu_pc_value [31:0] $end
+$var wire 1 * change_pc $end
+$var wire 1 + f_clk $end
+$var wire 1 , f_rst_n $end
+$var wire 1 - i_ack $end
+$var wire 32 1 i_instr [31:0] $end
+$var wire 1 / i_stall $end
+$var wire 1 " o_syn $end
+$var wire 1 2 stall $end
+$var parameter 32 3 A_WIDTH $end
+$var parameter 32 4 I_WIDTH $end
+$var parameter 32 5 PC_WIDTH $end
+$var reg 1 " ce $end
+$var reg 1 6 ce_d $end
+$var reg 32 7 i_addr_instr [31:0] $end
+$var reg 32 8 o_addr_instr [31:0] $end
+$var reg 1 $ o_ce $end
+$var reg 32 9 o_instr [31:0] $end
+$var reg 32 : pc [31:0] $end
+$var reg 32 ; prev_pc [31:0] $end
+$var reg 1 < stall_fetch $end
+$upscope $end
+$scope task do_jump $end
+$var reg 32 = pc_jump [31:0] $end
+$upscope $end
+$scope task do_reset $end
+$var integer 32 > cycles [31:0] $end
+$upscope $end
+$scope task introduce_stall $end
+$var integer 32 ? counter_stall [31:0] $end
+$upscope $end
+$scope task send_instruction $end
+$var reg 32 @ instr [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100000 5
+b100000 4
+b100000 3
+b100000 (
+b100000 '
+b100000 &
+$end
+#0
+$dumpvars
+bx @
+bx ?
+b10 >
+bx =
+x<
+b0 ;
+b0 :
+b0 9
+b0 8
+b0 7
+06
+12
+b0 1
+b0 0
+0/
+b0 .
+0-
+0,
+0+
+0*
+b0 )
+b0 %
+x$
+b0 #
+0"
+b0 !
+$end
+#5000
+1+
+#10000
+0+
+#15000
+12
+1"
+0$
+1,
+1+
+#20000
+0+
+#25000
+16
+b100 !
+b100 :
+b10100000101000001010000010100000 #
+b10100000101000001010000010100000 9
+x2
+1-
+b10100000101000001010000010100000 .
+b10100000101000001010000010100000 1
+b10100000101000001010000010100000 @
+1+
+#30000
+0+
+#35000
+1$
+12
+0-
+1+
+#40000
+0+
+#45000
+b1000 !
+b1000 :
+b100 ;
+0$
+x2
+1-
+b10110001101100011011000110110001 .
+b10110001101100011011000110110001 1
+b10110001101100011011000110110001 @
+1+
+#50000
+0+
+#55000
+1$
+12
+0-
+1+
+#60000
+0+
+#65000
+b1100 !
+b1100 :
+b1000 ;
+0$
+x2
+1-
+b11000010110000101100001011000010 .
+b11000010110000101100001011000010 1
+b11000010110000101100001011000010 @
+1+
+#70000
+0+
+#75000
+1$
+12
+0-
+1+
+#80000
+0+
+#85000
+0$
+1/
+b11 ?
+1+
+#90000
+0+
+#95000
+b11000010110000101100001011000010 #
+b11000010110000101100001011000010 9
+b1000 7
+1+
+#100000
+0+
+#105000
+b1000 %
+b1000 8
+1+
+#110000
+0+
+#115000
+0/
+1+
+#120000
+0+
+#125000
+b10000 !
+b10000 :
+b1100 ;
+b11010011110100111101001111010011 #
+b11010011110100111101001111010011 9
+x2
+1-
+b11010011110100111101001111010011 .
+b11010011110100111101001111010011 1
+b11010011110100111101001111010011 @
+1+
+#130000
+0+
+#135000
+1$
+12
+0-
+1+
+#140000
+0+
+#145000
+b100000000 !
+b100000000 :
+b10000 ;
+0$
+x2
+1-
+1*
+b100000000 )
+b100000000 0
+b100000000 =
+1+
+#150000
+0+
+#155000
+1$
+12
+0-
+0*
+1+
+#160000
+0+
+#165000
+b100000100 !
+b100000100 :
+b100000000 ;
+0$
+x2
+1-
+b11100100111001001110010011100100 .
+b11100100111001001110010011100100 1
+b11100100111001001110010011100100 @
+1+
+#170000
+0+
+#175000
+1$
+12
+0-
+1+
+#180000
+0+
+#185000
+b100001000 !
+b100001000 :
+b100000100 ;
+0$
+x2
+1-
+b11110101111101011111010111110101 .
+b11110101111101011111010111110101 1
+b11110101111101011111010111110101 @
+1+
+#190000
+0+
+#195000
+1$
+12
+0-
+1+
+#200000
+0+
+#205000
+0$
+1+
+#210000
+0+
+#215000
+b11110101111101011111010111110101 #
+b11110101111101011111010111110101 9
+b100000100 7
+1+
+#220000
+0+
+#225000
+b100000100 %
+b100000100 8
+1+
