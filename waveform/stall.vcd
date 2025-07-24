@@ -1,0 +1,206 @@
+$date
+	Thu Jul 24 14:45:28 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module tb $end
+$var wire 1 ! out_stall $end
+$var reg 1 " decode_stall $end
+$var reg 1 # ex_stall $end
+$var reg 1 $ fetch_stall $end
+$var reg 1 % mem_stall $end
+$var reg 1 & s_clk $end
+$var reg 1 ' s_rst $end
+$var reg 1 ( wb_stall $end
+$scope module sp $end
+$var wire 1 " decode_stall $end
+$var wire 1 # ex_stall $end
+$var wire 1 $ fetch_stall $end
+$var wire 1 % mem_stall $end
+$var wire 1 & s_clk $end
+$var wire 1 ' s_rst $end
+$var wire 1 ( wb_stall $end
+$var reg 1 ! out_stall $end
+$upscope $end
+$scope task reset $end
+$var integer 32 ) counter [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b10 )
+0(
+0'
+0&
+0%
+0$
+0#
+0"
+0!
+$end
+#5
+1&
+#10
+0&
+#15
+1'
+1&
+#20
+0&
+#25
+1!
+1$
+1&
+#30
+0&
+#35
+0!
+0'
+b1 )
+1&
+#40
+0&
+#45
+1!
+1"
+1'
+1&
+#50
+0&
+#55
+0!
+0'
+1&
+#60
+0&
+#65
+1!
+1#
+1'
+1&
+#70
+0&
+#75
+0!
+0'
+1&
+#80
+0&
+#85
+1!
+1%
+1'
+1&
+#90
+0&
+#95
+0!
+0'
+1&
+#100
+0&
+#105
+1!
+1(
+1'
+1&
+#110
+0&
+#115
+0!
+0'
+1&
+#120
+0&
+#125
+1!
+1'
+1&
+#130
+0&
+#135
+1&
+#140
+0&
+#145
+1&
+#150
+0&
+#155
+1&
+#160
+0&
+#165
+1&
+#170
+0&
+#175
+1&
+#180
+0&
+#185
+1&
+#190
+0&
+#195
+1&
+#200
+0&
+#205
+1&
+#210
+0&
+#215
+1&
+#220
+0&
+#225
+1&
+#230
+0&
+#235
+1&
+#240
+0&
+#245
+1&
+#250
+0&
+#255
+1&
+#260
+0&
+#265
+1&
+#270
+0&
+#275
+1&
+#280
+0&
+#285
+1&
+#290
+0&
+#295
+1&
+#300
+0&
+#305
+1&
+#310
+0&
+#315
+1&
+#320
+0&
+#325
+1&
