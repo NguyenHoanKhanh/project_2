@@ -51,7 +51,7 @@ module tb_instruction_fetch;
     always #5 f_clk = ~f_clk;
 
     initial begin
-        $dumpfile("./waveform/tb_fetch.vcd");
+        $dumpfile("./waveform/fetch.vcd");
         $dumpvars(0, tb_instruction_fetch);
     end
 
