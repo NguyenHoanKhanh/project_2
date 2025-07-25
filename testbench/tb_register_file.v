@@ -1,12 +1,13 @@
 `include "./source/register_file.v"
 
 module tb;
-    parameter AWIDTH = 32, DWIDTH = 32;
+    parameter AWIDTH = 5, DWIDTH = 32;
     reg r_clk, r_rst;
-    reg r_we;
-    reg [AWIDTH - 1 : 0] r_addr;
-    reg [DWIDTH - 1 : 0] r_data_in;
-    wire [DWIDTH - 1 : 0] r_data_out;
+    reg [AWIDTH - 1 : 0] r_addr_rs_1, r_addr_rs_2, r_addr_rd;
+    reg [DWIDTH - 1 : 0] r_data_rd; 
+    wire [DWIDTH - 1 : 0] r_data_out_rs1, r_data_out_rs2;
+    reg r_we, r_read_reg;
+
     integer i;
     register #(
         .AWIDTH(AWIDTH),
@@ -15,9 +16,13 @@ module tb;
         .r_clk(r_clk),
         .r_rst(r_rst),
         .r_we(r_we),
-        .r_addr(r_addr),
-        .r_data_in(r_data_in),
-        .r_data_out(r_data_out)
+        .r_read_reg(r_read_reg),
+        .r_addr_rs_1(r_addr_rs_1),
+        .r_addr_rs_2(r_addr_rs_2),
+        .r_addr_rd(r_addr_rd),
+        .r_data_rd(r_data_rd),
+        .r_data_out_rs1(r_data_out_rs1),
+        .r_data_out_rs2(r_data_out_rs2)
     );
 
     initial begin
@@ -45,8 +50,8 @@ module tb;
             for (i = 0; i < counter; i = i + 1) begin
                 r_we = 1'b1;
                 @(posedge r_clk);
-                r_addr = i;
-                r_data_in = i;
+                r_addr_rd = i;
+                r_data_rd = i;
                 @(posedge r_clk);
                 r_we = 1'b0;
             end
@@ -55,20 +60,23 @@ module tb;
 
     task display (input integer counter);
         begin
-            for (i = 0; i < counter; i = i + 1) begin
+            for (i = 0; i <= counter; i = i + 1) begin
+                r_read_reg = 1'b1;
                 @(posedge r_clk);
-                r_addr = i;
+                r_addr_rs_1 = i;
+                r_addr_rs_2 = i;
                 @(posedge r_clk);
-                $display($time, " ", "addr = %d, data = %d", r_addr, r_data_out);
+                $display($time, " ", "addr 1 = %d, data 1 = %d, addr 2 = %d, data 2 = %d", r_addr_rs_1, r_data_out_rs1, r_addr_rs_2, r_data_out_rs2);
                 @(posedge r_clk);
+                r_read_reg = 1'b0;
             end
         end
     endtask
 
     initial begin
         reset(2);
-        load(10);
+        load(20);
         display(10);
-        #200; $finish;
+        #20000; $finish;
     end
 endmodule
