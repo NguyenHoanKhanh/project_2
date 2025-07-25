@@ -3,7 +3,8 @@
 
 module data_mem #(
     parameter DWIDTH = 32,
-    parameter AWIDTH = 32
+    parameter AWIDTH = 5, 
+    parameter DEPTH = 1 << AWIDTH
 ) (
     dm_clk, dm_rst, dm_we, dm_re, dm_addr, dm_data_in, dm_data_out
 );
@@ -18,7 +19,7 @@ module data_mem #(
 
     always @(posedge dm_clk, dm_rst) begin
         if (!dm_rst) begin
-            for (i = 0; i < AWIDTH; i = i + 1) begin
+            for (i = 0; i < DEPTH; i = i + 1) begin
                 data[i] <= {DWIDTH{1'b0}};
             end
             dm_data_out <= {DWIDTH{1'b0}};
