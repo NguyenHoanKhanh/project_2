@@ -64,11 +64,15 @@ module decoder #(
     reg opcode_system_d;
     reg opcode_fence_d;
 
+    reg valid_opcode;
+    reg illegal_check;
     wire stall_bit = d_o_stall || d_i_stall;
 
     always @(posedge d_clk, negedge d_rst) begin
         if (!d_rst) begin
             d_o_ce <= 0;
+            valid_opcode <= 0;
+            illegal_check <= 0;
         end
         else begin
             if (d_o_ce && !stall_bit) begin
@@ -104,6 +108,10 @@ module decoder #(
                 d_o_opcode[`AUIPC] <= opcode_auipc_d;
                 d_o_opcode[`SYSTEM] <= opcode_system_d;
                 d_o_opcode[`FENCE] <= opcode_fence_d;
+
+                if (opcode_rtype_d) begin
+                    d_o_addr_rs2_p <= d_o_addr_rs2 == d_i_instr[24 : 20];
+                end
             end
             if (d_i_flush && !stall_bit) begin
                 d_o_ce <= 0;
@@ -116,6 +124,23 @@ module decoder #(
             end
         end
     end
-endmodule
 
+    always@ (*)begin
+        opcode_rtype_d = opcode == `OPCODE_RTYPE;
+        opcode_itype_d = opcode == `OPCODE_ITYPE;
+        opcode_load_word_d = opcode == `OPCODE_LOAD;
+        opcode_store_word_d = opcode == `OPCODE_STORE;
+        opcode_branch_d = opcode == `OPCODE_BRANCH;
+        opcode_jal_d = opcode == `OPCODE_JAL;
+        opcode_jalr_d = opcode == `OPCODE_JALR; 
+        opcode_lui_d = opcode == `OPCODE_LUI;
+        opcode_auipc_d = opcode == `OPCODE_AUIPC;
+        opcode_system_d = opcode == `OPCODE_SYSTEM; 
+        opcode_fence_d = opcode == `OPCODE_FENCE; 
+
+        valid_opcode = (opcode_rtype_d || opcode_itype_d || opcode_load_word_d || opcode_store_word_d || opcode_branch_d || opcode_jal_d || opcode_jalr_d || opcode_lui_d || opcode_auipc_d || opcode_system_d || opcode_fence_d);
+        illegal_check = (opcode_itype_d && (alu_sll_d || alu_srl_d || alu_sra_d) && d_i_instr[25] == 0);
+    end
+
+endmodule
 `endif 
