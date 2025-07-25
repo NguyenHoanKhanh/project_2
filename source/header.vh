@@ -46,6 +46,7 @@
 `define OPCODE_FENCE 7'b0001111
 
 `define FUNCT3_ADD 3'b000
+`define FUNCT3_SUB 3'b001
 `define FUNCT3_SLT 3'b010 
 `define FUNCT3_SLTU 3'b011
 `define FUNCT3_XOR 3'b100
