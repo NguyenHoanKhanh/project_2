@@ -15,7 +15,8 @@ module decoder #(
     input [IWIDTH - 1 : 0] d_i_instr;
     input [PC_WIDTH - 1 : 0] d_i_pc;
     output reg [PC_WIDTH - 1 : 0] d_o_pc;
-    output [AWIDTH - 1 : 0] d_o_addr_rs1, d_o_addr_rs2;
+    output [AWIDTH - 1 : 0] d_o_addr_rs1;
+    output [AWIDTH - 1 : 0] d_o_addr_rs2;
     output reg [AWIDTH - 1 : 0] d_o_addr_rs1_p, d_o_addr_rs2_p;
     output [AWIDTH - 1 : 0] d_o_addr_rd;
     output reg [AWIDTH - 1 : 0] d_o_addr_rd_p;
@@ -31,11 +32,12 @@ module decoder #(
     input d_i_flush;
     output reg d_o_flush;
 
-    assign d_o_addr_rs1 = d_i_instr[19 : 15];
-    assign d_o_addr_rs2 = d_i_instr[24 : 20];
-    assign d_o_addr_rd = d_i_instr[11 : 7];
-    wire [2 : 0] funct3 = d_i_instr[14 : 12];
-    wire [6 : 0] opcode = d_i_instr[6 : 0];
+    reg [AWIDTH - 1 : 0] temp_addr_rs2, temp_addr_rs1, temp_addr_rd;
+    assign d_o_addr_rs2 = temp_addr_rs2;
+    assign d_o_addr_rs1 = temp_addr_rs1;
+    assign d_o_addr_rd = temp_addr_rd;
+    reg [2 : 0] funct3;
+    reg [6 : 0] opcode;
 
     reg [31 : 0] imm_d;
     reg alu_add_d;
@@ -78,17 +80,24 @@ module decoder #(
             valid_opcode <= 0;
             illegal_check <= 0;
             system_exeption <= 0;
+            temp_addr_rs2 <= {AWIDTH{1'b0}};
+            d_o_addr_rs1_p <= {AWIDTH{1'b0}};
+            d_o_addr_rs2_p <= {AWIDTH{1'b0}};
+            d_o_addr_rd_p <= {AWIDTH{1'b0}};
+            temp_addr_rs2 <= {AWIDTH{1'b0}};
+            temp_addr_rs1 <= {AWIDTH{1'b0}};
+            temp_addr_rd <= {AWIDTH{1'b0}};
         end
         else begin
             if (d_o_ce && !stall_bit) begin
                 d_o_pc <= d_i_pc;
-                d_o_addr_rs1_p <= d_o_addr_rs1_p;
-                d_o_addr_rd_p <= d_o_addr_rd;
+                d_o_addr_rs1_p <= temp_addr_rs1;
+                d_o_addr_rs2_p <= temp_addr_rs2;
+                d_o_addr_rd_p <= temp_addr_rd;
                 d_o_funct3 <= funct3;
                 d_o_opcode <= opcode;
-                d_o_addr_rs2_p <= d_o_addr_rs2;
                 d_o_imm <= imm_d;
-
+                
                 d_o_alu[`ADD] <= alu_add_d;
                 d_o_alu[`SUB] <= alu_sub_d;
                 d_o_alu[`SLT] <= alu_slt_d;
@@ -116,8 +125,8 @@ module decoder #(
                 d_o_opcode[`SYSTEM] <= opcode_system_d;
                 d_o_opcode[`FENCE] <= opcode_fence_d;
             end
-            d_o_opcode <= opcode;
 
+            d_o_opcode <= opcode;
             d_o_exception[`ILLEGAL] <= !valid_opcode || illegal_check;
             d_o_exception[`ECALL] <= (system_exeption && d_i_instr[21 : 20] == 2'b00) ? 1 : 0;
             d_o_exception[`EBREAK] <= (system_exeption && d_i_instr[21 : 20] == 2'b01) ? 1 : 0;
@@ -136,6 +145,12 @@ module decoder #(
     end
 
     always@ (*)begin
+        temp_addr_rs1 = {AWIDTH{1'b0}};
+        temp_addr_rs2 = {AWIDTH{1'b0}};
+        temp_addr_rd  = {AWIDTH{1'b0}};
+        opcode = d_i_instr[6 : 0];
+        funct3        = 3'b0;
+        
         opcode_rtype_d = opcode == `OPCODE_RTYPE;
         opcode_itype_d = opcode == `OPCODE_ITYPE;
         opcode_load_word_d = opcode == `OPCODE_LOAD;
@@ -151,6 +166,38 @@ module decoder #(
         system_exeption = opcode == `OPCODE_SYSTEM && funct3 == 0;
         valid_opcode = (opcode_rtype_d || opcode_itype_d || opcode_load_word_d || opcode_store_word_d || opcode_branch_d || opcode_jal_d || opcode_jalr_d || opcode_lui_d || opcode_auipc_d || opcode_system_d || opcode_fence_d);
         illegal_check = (opcode_itype_d && (alu_sll_d || alu_srl_d || alu_sra_d) && d_i_instr[25] == 0);
+
+        if (opcode_rtype_d) begin
+            temp_addr_rs2 = d_i_instr[24 : 20];
+            temp_addr_rs1 = d_i_instr[19 : 15];
+            temp_addr_rd = d_i_instr[11 : 7];
+            funct3 = d_i_instr[14 : 12];
+        end
+        else if (opcode_itype_d || opcode_load_word_d || opcode_jalr_d || opcode_system_d || opcode_fence_d) begin
+            temp_addr_rs2 = {AWIDTH{1'bx}};
+            temp_addr_rs1 = d_i_instr[19 : 15];
+            temp_addr_rd = d_i_instr[11 : 7];
+            funct3 = d_i_instr[14 : 12];
+        end
+        else if (opcode_store_word_d || opcode_branch_d) begin
+            temp_addr_rs2 = d_i_instr[24 : 20];
+            temp_addr_rs1 = d_i_instr[19 : 15];
+            temp_addr_rd = {AWIDTH{1'bx}};
+            funct3 = d_i_instr[14 : 12];
+        end
+        else if (opcode_lui_d || opcode_auipc_d || opcode_jal_d) begin
+            temp_addr_rs2 = {AWIDTH{1'bx}};
+            temp_addr_rs1 = {AWIDTH{1'bx}};
+            temp_addr_rd = d_i_instr[11 : 7];
+            funct3 = {AWIDTH{1'bx}};
+        end
+        else begin
+            temp_addr_rs2 = {AWIDTH{1'bx}};
+            temp_addr_rs1 = {AWIDTH{1'bx}};
+            temp_addr_rd = {AWIDTH{1'bx}};
+            opcode = {`OPCODE_WIDTH{1'bx}};
+            funct3 = {3{1'bx}};
+        end
     end
 
     always @(*) begin
@@ -215,8 +262,10 @@ module decoder #(
     end
 
     always @(*) begin
-        imm_d = {IWIDTH{1'b0}};
         case (opcode)
+            `OPCODE_RTYPE : begin
+                imm_d = {32{1'bx}};
+            end
             `OPCODE_ITYPE, `OPCODE_JALR, `OPCODE_LOAD : begin
                 imm_d = {{20{d_i_instr[31]}}, d_i_instr[31 : 20]};
             end
