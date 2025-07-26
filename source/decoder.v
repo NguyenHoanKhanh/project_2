@@ -49,6 +49,8 @@ module decoder #(
     reg alu_sra_d;
     reg alu_eq_d;
     reg alu_neq_d;
+    reg alu_lt_d;
+    reg alu_ltu_d;
     reg alu_ge_d;
     reg alu_geu_d;
 
@@ -142,5 +144,91 @@ module decoder #(
         illegal_check = (opcode_itype_d && (alu_sll_d || alu_srl_d || alu_sra_d) && d_i_instr[25] == 0);
     end
 
+    always @(*) begin
+        d_o_stall = d_i_stall;
+        d_o_flush = d_i_flush;
+        imm_d = 0;
+        alu_add_d = 0;
+        alu_sub_d = 0;
+        alu_slt_d = 0;
+        alu_sltu_d = 0;
+        alu_xor_d = 0;
+        alu_or_d = 0;
+        alu_and_d = 0;
+        alu_sll_d = 0;
+        alu_srl_d = 0;
+        alu_sra_d = 0;
+        alu_eq_d = 0;
+        alu_neq_d = 0;
+        alu_lt_d = 0;
+        alu_ltu_d = 0;
+        alu_ge_d = 0;
+        alu_geu_d = 0;
+
+        if (opcode == `OPCODE_RTYPE || opcode == `OPCODE_ITYPE) begin
+            if (opcode == `OPCODE_RTYPE) begin
+                if (funct == `FUNCT3_ADD && d_i_instr[30] == 0) begin
+                    alu_add_d = 1;
+                end
+                else if (funct == `FUNCT3_ADD && d_i_instr[30] == 1) begin
+                    alu_sub_d = 1;
+                end
+            end
+            else begin
+                alu_add_d = funct == `FUNCT3_ADD ? 1 : 0;
+            end
+            alu_slt_d = funct == `FUNCT3_SLT ? 1 : 0;
+            alu_sltu_d = funct == `FUNCT3_SLTU ? 1 : 0;
+            alu_xor_d = funct == `FUNCT3_XOR ? 1 : 0;
+            alu_or_d = funct == `FUNCT3_OR ? 1 : 0;
+            alu_and_d = funct == `FUNCT3_AND ? 1 : 0;
+            alu_sll_d = funct == `FUNCT3_SLL ? 1 : 0;
+            if (funct == `FUNCT3_SRA) begin
+                if (d_i_instr[30] == 0) begin
+                    alu_srl_d = 1;
+                end
+                else begin
+                    alu_sra_d = 1;
+                end
+            end
+        end
+        else if (opcode == `OPCODE_BRANCH) begin
+            alu_eq_d = funct == `FUNCT3_EQ ? 1 : 0;
+            alu_neq_d = funct == `FUNCT3_NEQ ? 1 : 0;
+            alu_lt_d = funct == `FUNCT3_LT ? 1 : 0;
+            alu_ge_d = funct == `FUNCT3_GE ? 1 : 0;
+            alu_ltu_d = funct == `FUNCT3_LTU ? 1 : 0;
+            alu_geu_d = funct == `FUNCT3_GEU ? 1 : 0;
+        end
+        else begin
+            alu_add_d = 1;
+        end
+    end
+
+    always @(*) begin
+        case (opcode)
+            `OPCODE_ITYPE, `OPCODE_JALR, `OPCODE_LOAD : begin
+                imm_d = {{20{d_i_instr[31]}}, d_i_instr[31 : 20]};
+            end
+            `OPCODE_STORE : begin
+                imm_d = {{20{d_i_instr[31]}}, d_i_instr[31 : 25], d_i_instr[11 : 7]};
+            end
+            `OPCODE_BRANCH : begin
+                imm_d = {{19{d_i_instr[31]}}, d_i_instr[31], d_i_instr[7], d_i_instr[30 : 25], d_i_instr[11 : 8], 1'b0};
+            end
+            `OPCODE_JAL : begin
+                imm_d = {{11{d_i_instr[31]}}, d_i_instr[31], d_i_instr[19 : 12], d_i_instr[20], d_i_instr[30 : 21], 1'b0};
+            end
+            `OPCODE_LUI, `OPCODE_AUIPC : begin
+                imm_d = {d_i_instr[31 : 12], {12{1'b0}}};
+            end
+            `OPCODE_SYSTEM, `OPCODE_FENCE : begin
+                imm_d = {{20{1'b0}}, d_i_instr[31 : 20]};
+            end
+            default : begin
+                imm_d = {32{1'b0}}; 
+            end
+        endcase
+    end
 endmodule
 `endif 
