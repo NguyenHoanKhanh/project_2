@@ -32,8 +32,9 @@ module decoder #(
     output reg d_o_flush;
 
     assign d_o_addr_rs1 = d_i_instr[19 : 15];
+    assign d_o_addr_rs2 = d_i_instr[24 : 20];
     assign d_o_addr_rd = d_i_instr[11 : 7];
-    wire [2 : 0] funct = d_i_instr[14 : 12];
+    wire [2 : 0] funct3 = d_i_instr[14 : 12];
     wire [6 : 0] opcode = d_i_instr[6 : 0];
 
     reg [31 : 0] imm_d;
@@ -68,6 +69,7 @@ module decoder #(
 
     reg valid_opcode;
     reg illegal_check;
+    reg system_exeption;
     wire stall_bit = d_o_stall || d_i_stall;
 
     always @(posedge d_clk, negedge d_rst) begin
@@ -75,14 +77,17 @@ module decoder #(
             d_o_ce <= 0;
             valid_opcode <= 0;
             illegal_check <= 0;
+            system_exeption <= 0;
         end
         else begin
             if (d_o_ce && !stall_bit) begin
                 d_o_pc <= d_i_pc;
                 d_o_addr_rs1_p <= d_o_addr_rs1_p;
                 d_o_addr_rd_p <= d_o_addr_rd;
-                d_o_funct3 <= funct;
+                d_o_funct3 <= funct3;
                 d_o_opcode <= opcode;
+                d_o_addr_rs2_p <= d_o_addr_rs2;
+                d_o_imm <= imm_d;
 
                 d_o_alu[`ADD] <= alu_add_d;
                 d_o_alu[`SUB] <= alu_sub_d;
@@ -110,11 +115,14 @@ module decoder #(
                 d_o_opcode[`AUIPC] <= opcode_auipc_d;
                 d_o_opcode[`SYSTEM] <= opcode_system_d;
                 d_o_opcode[`FENCE] <= opcode_fence_d;
-
-                if (opcode_rtype_d) begin
-                    d_o_addr_rs2_p <= d_o_addr_rs2 == d_i_instr[24 : 20];
-                end
             end
+            d_o_opcode <= opcode;
+
+            d_o_exception[`ILLEGAL] <= !valid_opcode || illegal_check;
+            d_o_exception[`ECALL] <= (system_exeption && d_i_instr[21 : 20] == 2'b00) ? 1 : 0;
+            d_o_exception[`EBREAK] <= (system_exeption && d_i_instr[21 : 20] == 2'b01) ? 1 : 0;
+            d_o_exception[`MRET] <= (system_exeption && d_i_instr[21 : 20] == 2'b10) ? 1 : 0;
+
             if (d_i_flush && !stall_bit) begin
                 d_o_ce <= 0;
             end
@@ -140,6 +148,7 @@ module decoder #(
         opcode_system_d = opcode == `OPCODE_SYSTEM; 
         opcode_fence_d = opcode == `OPCODE_FENCE; 
 
+        system_exeption = opcode == `OPCODE_SYSTEM && funct3 == 0;
         valid_opcode = (opcode_rtype_d || opcode_itype_d || opcode_load_word_d || opcode_store_word_d || opcode_branch_d || opcode_jal_d || opcode_jalr_d || opcode_lui_d || opcode_auipc_d || opcode_system_d || opcode_fence_d);
         illegal_check = (opcode_itype_d && (alu_sll_d || alu_srl_d || alu_sra_d) && d_i_instr[25] == 0);
     end
@@ -167,23 +176,23 @@ module decoder #(
 
         if (opcode == `OPCODE_RTYPE || opcode == `OPCODE_ITYPE) begin
             if (opcode == `OPCODE_RTYPE) begin
-                if (funct == `FUNCT3_ADD && d_i_instr[30] == 0) begin
+                if (funct3 == `FUNCT3_ADD && d_i_instr[30] == 0) begin
                     alu_add_d = 1;
                 end
-                else if (funct == `FUNCT3_ADD && d_i_instr[30] == 1) begin
+                else if (funct3 == `FUNCT3_ADD && d_i_instr[30] == 1) begin
                     alu_sub_d = 1;
                 end
             end
             else begin
-                alu_add_d = funct == `FUNCT3_ADD ? 1 : 0;
+                alu_add_d = funct3 == `FUNCT3_ADD ? 1 : 0;
             end
-            alu_slt_d = funct == `FUNCT3_SLT ? 1 : 0;
-            alu_sltu_d = funct == `FUNCT3_SLTU ? 1 : 0;
-            alu_xor_d = funct == `FUNCT3_XOR ? 1 : 0;
-            alu_or_d = funct == `FUNCT3_OR ? 1 : 0;
-            alu_and_d = funct == `FUNCT3_AND ? 1 : 0;
-            alu_sll_d = funct == `FUNCT3_SLL ? 1 : 0;
-            if (funct == `FUNCT3_SRA) begin
+            alu_slt_d = funct3 == `FUNCT3_SLT ? 1 : 0;
+            alu_sltu_d = funct3 == `FUNCT3_SLTU ? 1 : 0;
+            alu_xor_d = funct3 == `FUNCT3_XOR ? 1 : 0;
+            alu_or_d = funct3 == `FUNCT3_OR ? 1 : 0;
+            alu_and_d = funct3 == `FUNCT3_AND ? 1 : 0;
+            alu_sll_d = funct3 == `FUNCT3_SLL ? 1 : 0;
+            if (funct3 == `FUNCT3_SRA) begin
                 if (d_i_instr[30] == 0) begin
                     alu_srl_d = 1;
                 end
@@ -193,12 +202,12 @@ module decoder #(
             end
         end
         else if (opcode == `OPCODE_BRANCH) begin
-            alu_eq_d = funct == `FUNCT3_EQ ? 1 : 0;
-            alu_neq_d = funct == `FUNCT3_NEQ ? 1 : 0;
-            alu_lt_d = funct == `FUNCT3_LT ? 1 : 0;
-            alu_ge_d = funct == `FUNCT3_GE ? 1 : 0;
-            alu_ltu_d = funct == `FUNCT3_LTU ? 1 : 0;
-            alu_geu_d = funct == `FUNCT3_GEU ? 1 : 0;
+            alu_eq_d = funct3 == `FUNCT3_EQ ? 1 : 0;
+            alu_neq_d = funct3 == `FUNCT3_NEQ ? 1 : 0;
+            alu_lt_d = funct3 == `FUNCT3_LT ? 1 : 0;
+            alu_ge_d = funct3 == `FUNCT3_GE ? 1 : 0;
+            alu_ltu_d = funct3 == `FUNCT3_LTU ? 1 : 0;
+            alu_geu_d = funct3 == `FUNCT3_GEU ? 1 : 0;
         end
         else begin
             alu_add_d = 1;
@@ -206,6 +215,7 @@ module decoder #(
     end
 
     always @(*) begin
+        imm_d = {IWIDTH{1'b0}};
         case (opcode)
             `OPCODE_ITYPE, `OPCODE_JALR, `OPCODE_LOAD : begin
                 imm_d = {{20{d_i_instr[31]}}, d_i_instr[31 : 20]};
