@@ -7,7 +7,6 @@ module tb_decoder_stage;
     parameter DEPTH = 1 << AWIDTH;
     parameter PC_WIDTH = 32;
     parameter IWIDTH = 32;
-    parameter CLK_PERIOD = 10;
 
     // Signals
     reg ds_clk, ds_rst;
@@ -72,8 +71,8 @@ module tb_decoder_stage;
     // Clock generation
     initial begin
         ds_clk = 0;
-        forever #(CLK_PERIOD/2) ds_clk = ~ds_clk;
     end
+    always #5 ds_clk = ~ds_clk;
 
     // Reset
     task reset;

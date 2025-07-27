@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "./source/fetch.v"
+`include "./source/fetch_stage.v"
 module tb_instruction_fetch;
     // Parameters
     parameter I_WIDTH   = 32;
