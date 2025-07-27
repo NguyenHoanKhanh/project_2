@@ -7,7 +7,6 @@
 module decoder_stage #(
     parameter DWIDTH = 32,
     parameter AWIDTH = 5,
-    parameter DEPTH = 1 << AWIDTH,
     parameter PC_WIDTH = 32,
     parameter IWIDTH = 32
 )(
@@ -44,7 +43,6 @@ module decoder_stage #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
         .IWIDTH(IWIDTH),
-        .DEPTH(DEPTH),
         .PC_WIDTH(PC_WIDTH)
     ) d (
         .d_clk(ds_clk), 
@@ -73,8 +71,7 @@ module decoder_stage #(
 
     register #(
         .DWIDTH(DWIDTH),
-        .AWIDTH(AWIDTH),
-        .DEPTH(DEPTH)
+        .AWIDTH(AWIDTH)
     ) re (
         .r_clk(ds_clk), 
         .r_rst(ds_rst), 

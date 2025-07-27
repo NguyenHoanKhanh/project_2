@@ -69,9 +69,8 @@ module tb_decoder;
     // Clock generation
     initial begin
         d_clk = 1'b0;
-        forever #(CLK_PERIOD/2) d_clk = ~d_clk;
     end
-
+    always #5 d_clk = ~d_clk;
     // Reset task
     task reset;
         integer i;

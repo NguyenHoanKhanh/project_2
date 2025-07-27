@@ -38,7 +38,6 @@ module tb_decoder_stage;
     decoder_stage #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
-        .DEPTH(DEPTH),
         .PC_WIDTH(PC_WIDTH),
         .IWIDTH(IWIDTH)
     ) uut (
