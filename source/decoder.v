@@ -204,7 +204,6 @@ module decoder #(
     always @(*) begin
         d_o_stall = d_i_stall;
         d_o_flush = d_i_flush;
-        imm_d = 0;
         alu_add_d = 0;
         alu_sub_d = 0;
         alu_slt_d = 0;
@@ -263,6 +262,7 @@ module decoder #(
     end
 
     always @(*) begin
+        imm_d = 0;
         case (opcode)
             `OPCODE_RTYPE : begin
                 imm_d = {32{1'bx}};
