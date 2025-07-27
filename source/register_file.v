@@ -10,10 +10,12 @@ module register #(
 );
     input r_clk, r_rst;
     input r_we, r_read_reg;
-    input [AWIDTH - 1 : 0] r_addr_rs_1, r_addr_rs_2;
+    input [AWIDTH - 1 : 0] r_addr_rs_1;
+    input [AWIDTH - 1 : 0] r_addr_rs_2;
     input [AWIDTH - 1 : 0] r_addr_rd;
     input [DWIDTH - 1 : 0] r_data_rd;
-    output reg [DWIDTH - 1 : 0] r_data_out_rs1, r_data_out_rs2;
+    output reg [DWIDTH - 1 : 0] r_data_out_rs1;
+    output reg [DWIDTH - 1 : 0] r_data_out_rs2;
 
     integer i;
     reg [DWIDTH - 1 : 0] data [DEPTH - 1 : 0];
