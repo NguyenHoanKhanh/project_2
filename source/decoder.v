@@ -274,10 +274,10 @@ module decoder #(
                 imm_d = {{20{d_i_instr[31]}}, d_i_instr[31 : 25], d_i_instr[11 : 7]};
             end
             `OPCODE_BRANCH : begin
-                imm_d = {{19{d_i_instr[31]}}, d_i_instr[31], d_i_instr[7], d_i_instr[30 : 25], d_i_instr[11 : 8], 1'b0};
+                imm_d = {{20{d_i_instr[31]}}, d_i_instr[7], d_i_instr[30 : 25], d_i_instr[11 : 8], 1'b0};
             end
             `OPCODE_JAL : begin
-                imm_d = {{11{d_i_instr[31]}}, d_i_instr[31], d_i_instr[19 : 12], d_i_instr[20], d_i_instr[30 : 21], 1'b0};
+                imm_d = {{12{d_i_instr[31]}}, d_i_instr[19 : 12], d_i_instr[20], d_i_instr[30 : 21], 1'b0};
             end
             `OPCODE_LUI, `OPCODE_AUIPC : begin
                 imm_d = {d_i_instr[31 : 12], {12{1'b0}}};
