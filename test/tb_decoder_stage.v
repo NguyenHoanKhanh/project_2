@@ -11,29 +11,29 @@ module tb_decoder_stage;
 
     // Signals
     reg ds_clk, ds_rst;
-    reg [IWIDTH-1:0]   ds_i_instr;
-    reg [PC_WIDTH-1:0] ds_i_pc;
-    reg                ds_i_ce;
-    reg                ds_i_stall;
-    reg                ds_i_flush;
-    reg [DWIDTH-1:0]   ds_data_in_rd;
-    reg                ds_we;
-    reg                ds_read_reg;
+    reg [IWIDTH - 1 : 0] ds_i_instr;
+    reg [PC_WIDTH - 1 : 0] ds_i_pc;
+    reg ds_i_ce;
+    reg ds_i_stall;
+    reg ds_i_flush;
+    reg [DWIDTH-1:0] ds_data_in_rd;
+    reg ds_we;
+    reg ds_read_reg;
 
-    wire [PC_WIDTH-1:0]       ds_o_pc;
-    wire [AWIDTH-1:0]         ds_o_addr_rs1_p;
-    wire [AWIDTH-1:0]         ds_o_addr_rs2_p;
-    wire [AWIDTH-1:0]         ds_o_addr_rd_p;
-    wire [2:0]                ds_o_funct3;
-    wire [DWIDTH-1:0]         ds_o_imm;
-    wire [`ALU_WIDTH-1:0]     ds_o_alu;
-    wire [`OPCODE_WIDTH-1:0]  ds_o_opcode;
-    wire [`EXCEPTION_WIDTH-1:0] ds_o_exception;
-    wire                       ds_o_ce;
-    wire                       ds_o_stall;
-    wire                       ds_o_flush;
-    wire [DWIDTH-1:0]          ds_data_out_rs1;
-    wire [DWIDTH-1:0]          ds_data_out_rs2;
+    wire [PC_WIDTH - 1 : 0] ds_o_pc;
+    wire [AWIDTH - 1 : 0] ds_o_addr_rs1_p;
+    wire [AWIDTH - 1 : 0] ds_o_addr_rs2_p;
+    wire [AWIDTH - 1 : 0] ds_o_addr_rd_p;
+    wire [2 : 0] ds_o_funct3;
+    wire [DWIDTH - 1 : 0] ds_o_imm;
+    wire [`ALU_WIDTH - 1 : 0] ds_o_alu;
+    wire [`OPCODE_WIDTH - 1 : 0] ds_o_opcode;
+    wire [`EXCEPTION_WIDTH - 1 : 0] ds_o_exception;
+    wire ds_o_ce;
+    wire ds_o_stall;
+    wire ds_o_flush;
+    wire [DWIDTH - 1 : 0] ds_data_out_rs1;
+    wire [DWIDTH - 1 : 0] ds_data_out_rs2;
 
     // Instantiate decoder stage
     decoder_stage #(
@@ -90,14 +90,14 @@ module tb_decoder_stage;
     // Stimulus
     initial begin
         // Init
-        ds_i_instr    = 0;
-        ds_i_pc       = 0;
-        ds_i_ce       = 0;
-        ds_i_stall    = 0;
-        ds_i_flush    = 0;
+        ds_i_instr = 0;
+        ds_i_pc = 0;
+        ds_i_ce = 0;
+        ds_i_stall = 0;
+        ds_i_flush = 0;
         ds_data_in_rd = 0;
-        ds_we         = 0;
-        ds_read_reg   = 0;
+        ds_we = 0;
+        ds_read_reg = 0;
 
         reset(2);
         ds_i_ce = 1;
