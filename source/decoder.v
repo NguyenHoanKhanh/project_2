@@ -17,7 +17,8 @@ module decoder #(
     output reg [PC_WIDTH - 1 : 0] d_o_pc;
     output [AWIDTH - 1 : 0] d_o_addr_rs1;
     output [AWIDTH - 1 : 0] d_o_addr_rs2;
-    output reg [AWIDTH - 1 : 0] d_o_addr_rs1_p, d_o_addr_rs2_p;
+    output reg [AWIDTH - 1 : 0] d_o_addr_rs1_p;
+    output reg [AWIDTH - 1 : 0] d_o_addr_rs2_p;
     output [AWIDTH - 1 : 0] d_o_addr_rd;
     output reg [AWIDTH - 1 : 0] d_o_addr_rd_p;
     output reg [2 : 0] d_o_funct3;
