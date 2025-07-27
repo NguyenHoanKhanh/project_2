@@ -16,7 +16,7 @@ module decoder_stage #(
     input ds_clk, ds_rst;
     input [IWIDTH - 1 : 0] ds_i_instr;
     input [PC_WIDTH - 1 : 0] ds_i_pc;
-    input [PC_WIDTH - 1 : 0] ds_o_pc;
+    output [PC_WIDTH - 1 : 0] ds_o_pc;
     output [AWIDTH - 1 : 0] ds_o_addr_rs1_p;
     output [AWIDTH - 1 : 0] ds_o_addr_rs2_p;
     output [AWIDTH - 1 : 0] ds_o_addr_rd_p;
