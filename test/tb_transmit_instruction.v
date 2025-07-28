@@ -1,0 +1,56 @@
+`include "./instruction/transmit_instruction.v"
+
+module tb;
+    parameter IWIDTH = 32;
+    reg t_clk, t_rst;
+    wire [IWIDTH - 1 : 0] t_o_instr;
+    reg t_i_syn;
+    wire t_o_ack;
+    integer i;
+
+    transmit #(
+        .IWIDTH(IWIDTH)
+    ) t (
+        .t_clk(t_clk),
+        .t_rst(t_rst),
+        .t_o_instr(t_o_instr),
+        .t_i_syn(t_i_syn),
+        .t_o_ack(t_o_ack)
+    );
+
+    initial begin
+        t_clk = 0;
+        t_i_syn = 0;
+        i = 0;
+    end
+    always #5 t_clk = ~t_clk;
+
+    task reset (input integer counter);
+        begin
+            t_rst = 1'b0;
+            repeat(counter) @(posedge t_clk);
+            t_rst = 1'b1;
+        end
+    endtask
+
+    task display (input integer counter);
+        begin
+            for (i = 0; i < counter; i = i + 1) begin
+                @(posedge t_clk);
+                t_i_syn = 1'b1;
+                @(posedge t_clk);
+                $display($time, " ", "instr = %h, ack = %b", t_o_instr, t_o_ack);
+                @(posedge t_clk);
+                t_i_syn = 1'b0;
+                @(posedge t_clk);
+            end
+        end
+    endtask
+
+    initial begin
+        reset(2);
+        @(posedge t_clk);
+        display(30);
+        #200; $finish;
+    end
+endmodule

@@ -1,0 +1,49 @@
+// === R‑type (opcode = 7'b0110011) ===
+003100B3  // add  x1,  x2,  x3
+40628233  // sub  x4,  x5,  x6
+009423B3  // slt  x7,  x8,  x9
+00C5B533  // sltu x10, x11, x12
+00F746B3  // xor  x13, x14, x15
+0128E833  // or   x16, x17, x18
+015A79B3  // and  x19, x20, x21
+018B9B33  // sll  x22, x23, x24
+01B5D9B3  // srl  x25, x26, x27
+41EEDEB3  // sra  x28, x29, x30
+
+// === I‑type arithmetic (opcode = 7'b0010011) ===
+00510093  // addi  x1,  x2,  5
+00A22293  // slti  x3,  x4, 10
+00133313  // sltiu x5,  x6,  1
+00F44393  // xori  x7,  x8, 15
+FFF55693  // ori   x9,  x10,255
+00767613  // andi x11, x12, 7
+002E5D93  // slli x13, x14, 2
+0030F893  // srli x15, x16, 3
+4112A113  // srai x17, x18, 4
+
+// === Load (opcode = 7'b0000011) ===
+01010003  // lb   x1,  16(x2)
+02022103  // lh   x3,  32(x4)
+0402A103  // lbu  x5,  64(x6)
+0802B183  // lhu  x7, 128(x8)
+
+// === Store (opcode = 7'b0100011) ===
+00952823  // sw   x9,   8(x10)
+00B60C23  // sb  x11,  12(x12)
+01AD6A23  // sh  x13,  20(x14)
+
+// === Branch (opcode = 7'b1100011), offset = +4
+00208663  // beq  x1,  x2, +4
+00210663  // bne  x1,  x2, +4
+00230663  // blt  x1,  x2, +4
+00238663  // bge  x1,  x2, +4
+00240663  // bltu x1,  x2, +4
+00248663  // bgeu x1, x2, +4
+
+// === Jump ===
+400080EF  // jal  x1, +1024
+01018167  // jalr x2, 16(x3)
+
+// === Pseudo (AUIPC/LUI) ===
+123452B7  // lui   x5, 12345
+10000317  // auipc x6, 10000
