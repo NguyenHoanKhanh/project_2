@@ -3,22 +3,23 @@
 `include "./source/fetch_stage.v"
 `include "./source/decoder_stage.v"
 `include "./source/stall.v"
+`include "./instruction/transmit_instruction.v"
 module processing_unit#(
     parameter DWIDTH = 32,
     parameter AWIDTH = 5,
-    parameter DEPTH = 1 << AWIDTH,
+    parameter DEPTH = 36,
     parameter PC_WIDTH = 32,
     parameter IWIDTH = 32
 )(
-    pe_clk, pe_rst, pe_i_instr, pe_o_addr_instr, pe_pc, pe_o_ce, pe_o_addr_rs1_p, pe_o_addr_rs2_p, pe_o_addr_rd_p, pe_o_funct3, pe_o_imm, pe_o_alu, pe_o_opcode, pe_o_exception, pe_o_flush, pe_data_in_rd, pe_data_out_rs1, pe_data_out_rs2
+    pe_clk, pe_rst, pe_o_instr, pe_o_addr_instr, pe_pc, pe_o_ce, pe_o_addr_rs1_p, pe_o_addr_rs2_p, pe_o_addr_rd_p, pe_o_funct3, pe_o_imm, pe_o_alu, pe_o_opcode, pe_o_exception, pe_o_flush, pe_data_in_rd, pe_data_out_rs1, pe_data_out_rs2
 );
     input pe_clk, pe_rst;
-    input [IWIDTH - 1 : 0] pe_i_instr;
+    input [IWIDTH - 1 : 0] pe_o_instr;
     output [AWIDTH - 1 : 0] pe_o_addr_instr;
     output [PC_WIDTH - 1 : 0] pe_pc;
     wire [IWIDTH - 1 : 0] pe_o_instr_f;
     wire f_o_syn;
-    reg f_i_ack;
+    wire f_i_ack;
     reg f_change_pc;
     reg [PC_WIDTH - 1 : 0] f_alu_pc_value;
     output pe_o_ce;
@@ -56,6 +57,17 @@ module processing_unit#(
         .out_stall(pe_o_stall)
     );
 
+    transmit #(
+        .IWIDTH(IWIDTH),
+        .DEPTH(DEPTH)
+    ) ti (
+        .t_clk(pe_clk),
+        .t_rst(pe_rst),
+        .t_o_instr(pe_o_instr),
+        .t_i_syn(f_o_syn),
+        .t_o_ack(f_i_ack)
+    );
+
     instruction_fetch #(
         .IWIDTH(IWIDTH),
         .AWIDTH(AWIDTH),
@@ -64,7 +76,7 @@ module processing_unit#(
         .f_clk(pe_clk),
         .f_rst(pe_rst),
         .f_o_addr_instr(pe_o_addr_instr),
-        .f_i_instr(pe_i_instr),
+        .f_i_instr(pe_o_instr),
         .f_o_instr(pe_o_instr_f),
         .f_o_syn(f_o_syn),
         .f_i_ack(f_i_ack),
@@ -79,7 +91,6 @@ module processing_unit#(
     decoder_stage #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
-        .DEPTH(DEPTH),
         .PC_WIDTH(PC_WIDTH),
         .IWIDTH(IWIDTH)
     ) ds (

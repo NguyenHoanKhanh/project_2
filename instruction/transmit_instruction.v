@@ -1,3 +1,6 @@
+`ifndef TRANSMIT_INSTRUCTION_V
+`define TRANSMIT_INSTRUCTION_V
+
 module transmit #(
     parameter IWIDTH = 32,
     parameter DEPTH  = 36
@@ -6,7 +9,7 @@ module transmit #(
     input  t_rst,
     input  t_i_syn,
     output reg [IWIDTH-1:0] t_o_instr,
-    output reg             t_o_ack
+    output reg t_o_ack
 );
 
     integer counter;
@@ -27,7 +30,7 @@ module transmit #(
         else if (t_i_syn) begin
             t_o_instr <= mem_instr[counter];
             t_o_ack   <= 1;
-            if (counter < DEPTH-1)
+            if (counter < DEPTH - 1)
                 counter <= counter + 1;
             else
                 counter <= 0;
@@ -37,3 +40,4 @@ module transmit #(
         end
     end
 endmodule
+`endif 
