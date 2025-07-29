@@ -47,7 +47,9 @@ module tb_instruction_fetch;
     );
 
     // Clock generation: 10 ns period
-    initial f_clk = 1'b0;
+    initial begin
+        f_clk = 1'b0;
+    end
     always #5 f_clk = ~f_clk;
 
     initial begin

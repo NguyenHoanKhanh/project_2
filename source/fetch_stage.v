@@ -32,6 +32,7 @@ module instruction_fetch #(
 
     always @(posedge f_clk or negedge f_rst) begin
         if (!f_rst) begin
+            f_o_stall <= 0;
             ce <= 0;
         end
         else if ((f_change_pc || f_i_ack) && !(f_i_stall || f_o_stall)) begin
@@ -44,6 +45,7 @@ module instruction_fetch #(
 
     always @(posedge f_clk or negedge f_rst) begin
         if (!f_rst) begin
+            f_o_stall <= 0;
             f_o_instr <= {IWIDTH{1'b0}};
             f_pc <= {PC_WIDTH{1'b0}};
             i_addr_instr <= {AWIDTH{1'b0}};
