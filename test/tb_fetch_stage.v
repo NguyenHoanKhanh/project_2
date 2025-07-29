@@ -56,7 +56,7 @@ module tb;
         begin
             for (i = 0; i < counter; i = i + 1) begin
                 @(posedge fi_clk);
-                $display($time, " ", "addr = %b, instruction = %b, syn = %b, ack = %b", i, fi_o_instr_fetch, fi.fi_i_syn, fi.fi_o_ack);
+                $display($time, " ", "addr = %d, instruction = %h, syn = %b, ack = %b", i, fi_o_instr_fetch, fi.fi_i_syn, fi.fi_o_ack);
             end
         end
     endtask
