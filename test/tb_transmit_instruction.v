@@ -1,5 +1,4 @@
-`include "./instruction/transmit_instruction.v"
-
+`include "./source/transmit_instruction.v"
 module tb;
     parameter IWIDTH = 32;
     reg t_clk, t_rst;
@@ -24,6 +23,11 @@ module tb;
         i = 0;
     end
     always #5 t_clk = ~t_clk;
+
+    initial begin
+        $dumpfile("./waveform/transmit.vcd");
+        $dumpvars(0, tb);
+    end
 
     task reset (input integer counter);
         begin

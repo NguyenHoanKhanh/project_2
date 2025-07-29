@@ -1,0 +1,369 @@
+$date
+	Tue Jul 29 14:38:33 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module tb_decoder_stage $end
+$var wire 1 ! ds_o_stall $end
+$var wire 32 " ds_o_pc [31:0] $end
+$var wire 11 # ds_o_opcode [10:0] $end
+$var wire 32 $ ds_o_imm [31:0] $end
+$var wire 3 % ds_o_funct3 [2:0] $end
+$var wire 1 & ds_o_flush $end
+$var wire 4 ' ds_o_exception [3:0] $end
+$var wire 1 ( ds_o_ce $end
+$var wire 14 ) ds_o_alu [13:0] $end
+$var wire 5 * ds_o_addr_rs2_p [4:0] $end
+$var wire 5 + ds_o_addr_rs1_p [4:0] $end
+$var wire 5 , ds_o_addr_rd_p [4:0] $end
+$var wire 32 - ds_data_out_rs2 [31:0] $end
+$var wire 32 . ds_data_out_rs1 [31:0] $end
+$var parameter 32 / AWIDTH $end
+$var parameter 37 0 DEPTH $end
+$var parameter 32 1 DWIDTH $end
+$var parameter 32 2 IWIDTH $end
+$var parameter 32 3 PC_WIDTH $end
+$var reg 1 4 ds_clk $end
+$var reg 32 5 ds_data_in_rd [31:0] $end
+$var reg 1 6 ds_i_ce $end
+$var reg 1 7 ds_i_flush $end
+$var reg 32 8 ds_i_instr [31:0] $end
+$var reg 32 9 ds_i_pc [31:0] $end
+$var reg 1 : ds_i_stall $end
+$var reg 1 ; ds_read_reg $end
+$var reg 1 < ds_rst $end
+$var reg 1 = ds_we $end
+$scope module uut $end
+$var wire 1 4 ds_clk $end
+$var wire 32 > ds_data_in_rd [31:0] $end
+$var wire 1 6 ds_i_ce $end
+$var wire 1 7 ds_i_flush $end
+$var wire 32 ? ds_i_instr [31:0] $end
+$var wire 32 @ ds_i_pc [31:0] $end
+$var wire 1 : ds_i_stall $end
+$var wire 1 ; ds_read_reg $end
+$var wire 1 < ds_rst $end
+$var wire 1 = ds_we $end
+$var wire 1 ! ds_o_stall $end
+$var wire 32 A ds_o_pc [31:0] $end
+$var wire 11 B ds_o_opcode [10:0] $end
+$var wire 32 C ds_o_imm [31:0] $end
+$var wire 3 D ds_o_funct3 [2:0] $end
+$var wire 1 & ds_o_flush $end
+$var wire 4 E ds_o_exception [3:0] $end
+$var wire 1 ( ds_o_ce $end
+$var wire 14 F ds_o_alu [13:0] $end
+$var wire 5 G ds_o_addr_rs2_p [4:0] $end
+$var wire 5 H ds_o_addr_rs2 [4:0] $end
+$var wire 5 I ds_o_addr_rs1_p [4:0] $end
+$var wire 5 J ds_o_addr_rs1 [4:0] $end
+$var wire 5 K ds_o_addr_rd_p [4:0] $end
+$var wire 5 L ds_o_addr_rd [4:0] $end
+$var wire 32 M ds_data_out_rs2 [31:0] $end
+$var wire 32 N ds_data_out_rs1 [31:0] $end
+$var parameter 32 O AWIDTH $end
+$var parameter 32 P DWIDTH $end
+$var parameter 32 Q IWIDTH $end
+$var parameter 32 R PC_WIDTH $end
+$scope module d $end
+$var wire 1 4 d_clk $end
+$var wire 1 6 d_i_ce $end
+$var wire 1 7 d_i_flush $end
+$var wire 32 S d_i_instr [31:0] $end
+$var wire 32 T d_i_pc [31:0] $end
+$var wire 1 : d_i_stall $end
+$var wire 5 U d_o_addr_rd [4:0] $end
+$var wire 5 V d_o_addr_rs1 [4:0] $end
+$var wire 5 W d_o_addr_rs2 [4:0] $end
+$var wire 1 < d_rst $end
+$var wire 1 X stall_bit $end
+$var parameter 32 Y AWIDTH $end
+$var parameter 32 Z DWIDTH $end
+$var parameter 32 [ IWIDTH $end
+$var parameter 32 \ PC_WIDTH $end
+$var reg 1 ] alu_add_d $end
+$var reg 1 ^ alu_and_d $end
+$var reg 1 _ alu_eq_d $end
+$var reg 1 ` alu_ge_d $end
+$var reg 1 a alu_geu_d $end
+$var reg 1 b alu_lt_d $end
+$var reg 1 c alu_ltu_d $end
+$var reg 1 d alu_neq_d $end
+$var reg 1 e alu_or_d $end
+$var reg 1 f alu_sll_d $end
+$var reg 1 g alu_slt_d $end
+$var reg 1 h alu_sltu_d $end
+$var reg 1 i alu_sra_d $end
+$var reg 1 j alu_srl_d $end
+$var reg 1 k alu_sub_d $end
+$var reg 1 l alu_xor_d $end
+$var reg 5 m d_o_addr_rd_p [4:0] $end
+$var reg 5 n d_o_addr_rs1_p [4:0] $end
+$var reg 5 o d_o_addr_rs2_p [4:0] $end
+$var reg 14 p d_o_alu [13:0] $end
+$var reg 1 ( d_o_ce $end
+$var reg 4 q d_o_exception [3:0] $end
+$var reg 1 & d_o_flush $end
+$var reg 3 r d_o_funct3 [2:0] $end
+$var reg 32 s d_o_imm [31:0] $end
+$var reg 11 t d_o_opcode [10:0] $end
+$var reg 32 u d_o_pc [31:0] $end
+$var reg 1 ! d_o_stall $end
+$var reg 3 v funct3 [2:0] $end
+$var reg 1 w illegal_check $end
+$var reg 32 x imm_d [31:0] $end
+$var reg 7 y opcode [6:0] $end
+$var reg 1 z opcode_auipc_d $end
+$var reg 1 { opcode_branch_d $end
+$var reg 1 | opcode_fence_d $end
+$var reg 1 } opcode_itype_d $end
+$var reg 1 ~ opcode_jal_d $end
+$var reg 1 !" opcode_jalr_d $end
+$var reg 1 "" opcode_load_word_d $end
+$var reg 1 #" opcode_lui_d $end
+$var reg 1 $" opcode_rtype_d $end
+$var reg 1 %" opcode_store_word_d $end
+$var reg 1 &" opcode_system_d $end
+$var reg 1 '" system_exeption $end
+$var reg 5 (" temp_addr_rd [4:0] $end
+$var reg 5 )" temp_addr_rs1 [4:0] $end
+$var reg 5 *" temp_addr_rs2 [4:0] $end
+$var reg 1 +" valid_opcode $end
+$upscope $end
+$scope module re $end
+$var wire 5 ," r_addr_rd [4:0] $end
+$var wire 5 -" r_addr_rs_1 [4:0] $end
+$var wire 5 ." r_addr_rs_2 [4:0] $end
+$var wire 1 4 r_clk $end
+$var wire 32 /" r_data_rd [31:0] $end
+$var wire 1 ; r_read_reg $end
+$var wire 1 < r_rst $end
+$var wire 1 0" r_wb $end
+$var wire 1 = r_we $end
+$var parameter 32 1" AWIDTH $end
+$var parameter 32 2" DWIDTH $end
+$var reg 32 3" r_data_out_rs1 [31:0] $end
+$var reg 32 4" r_data_out_rs2 [31:0] $end
+$var integer 32 5" i [31:0] $end
+$upscope $end
+$upscope $end
+$scope task reset $end
+$var integer 32 6" i [31:0] $end
+$var integer 32 7" n [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100000 2"
+b101 1"
+b100000 \
+b100000 [
+b100000 Z
+b101 Y
+b100000 R
+b100000 Q
+b100000 P
+b101 O
+b100000 3
+b100000 2
+b100000 1
+b100000 0
+b101 /
+$end
+#0
+$dumpvars
+b10 7"
+b0 6"
+b100000 5"
+b0 4"
+b0 3"
+00"
+b0 /"
+b0 ."
+b0 -"
+b0 ,"
+0+"
+b0 *"
+b0 )"
+b0 ("
+0'"
+0&"
+0%"
+0$"
+0#"
+0""
+0!"
+0~
+0}
+0|
+0{
+0z
+bx y
+b0 x
+0w
+bx v
+bx u
+bx t
+bx s
+bx r
+bx q
+bx p
+b0 o
+b0 n
+b0 m
+0l
+0k
+0j
+0i
+0h
+0g
+0f
+0e
+0d
+0c
+0b
+0a
+0`
+0_
+0^
+1]
+0X
+b0 W
+b0 V
+b0 U
+b0 T
+b0 S
+b0 N
+b0 M
+b0 L
+b0 K
+b0 J
+b0 I
+b0 H
+b0 G
+bx F
+bx E
+bx D
+bx C
+bx B
+bx A
+b0 @
+b0 ?
+b0 >
+0=
+0<
+0;
+0:
+b0 9
+b0 8
+07
+06
+b0 5
+04
+b0 .
+b0 -
+b0 ,
+b0 +
+b0 *
+bx )
+0(
+bx '
+0&
+bx %
+bx $
+bx #
+bx "
+0!
+$end
+#5
+b100000 5"
+b1 6"
+14
+#10
+04
+#15
+b1 '
+b1 E
+b1 q
+b0xxxxxxx #
+b0xxxxxxx B
+b0xxxxxxx t
+1<
+b10 6"
+14
+#20
+04
+#25
+1(
+bx x
+1]
+b1 L
+b1 U
+b1 ("
+b10 J
+b10 V
+b10 )"
+b11 H
+b11 W
+b11 *"
+1+"
+1$"
+b0 v
+b110011 y
+1;
+b11011110101011011011111011101111 5
+b11011110101011011011111011101111 >
+b11011110101011011011111011101111 /"
+1=
+b100 9
+b100 @
+b100 T
+b1100010000000010110011 8
+b1100010000000010110011 ?
+b1100010000000010110011 S
+16
+14
+#30
+04
+#35
+10"
+b0 '
+b0 E
+b0 q
+b1 )
+b1 F
+b1 p
+b110011 #
+b110011 B
+b110011 t
+b0 %
+b0 D
+b0 r
+b1 ,
+b1 K
+b1 m
+b1 ,"
+b11 *
+b11 G
+b11 o
+b11 ."
+b10 +
+b10 I
+b10 n
+b10 -"
+b100 "
+b100 A
+b100 u
+14
+#40
+04
+#45
+b110011 #
+b110011 B
+b110011 t
+14

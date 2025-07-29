@@ -73,6 +73,10 @@ module tb_decoder_stage;
     end
     always #5 ds_clk = ~ds_clk;
 
+    initial begin
+        $dumpfile("./waveform/decoder_stage.vcd");
+        $dumpvars(0, tb_decoder_stage);
+    end
     // Reset
     task reset;
         input integer n;

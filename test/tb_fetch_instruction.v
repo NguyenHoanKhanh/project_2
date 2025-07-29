@@ -1,65 +1,149 @@
+`timescale 1ns/1ps
 `include "./source/fetch_instruction.v"
-module tb;
-    parameter IWIDTH = 32;
-    parameter DEPTH = 36;
-    parameter AWIDTH = 32;
-    parameter PC_WIDTH = 32;
-    reg fi_clk, fi_rst;
-    wire [IWIDTH - 1 : 0] fi_o_instr_fetch;
-    wire [AWIDTH - 1 : 0] fi_o_addr_instr;
-    reg fi_change_pc;
-    reg [PC_WIDTH - 1 : 0] fi_alu_pc_value;
-    wire [PC_WIDTH - 1 : 0] fi_pc;
-    reg fi_i_stall;
-    wire fi_o_stall, fi_o_ce;
-    integer i;
+module tb_instruction_fetch;
+    // Parameters
+    parameter IWIDTH   = 32;
+    parameter AWIDTH   = 32;
+    parameter PC_WIDTH  = 32;
 
-    fetch_i #(
+    // Clock and reset
+    reg                    f_clk;
+    reg                    f_rst;
+
+    // Instruction interface
+    reg  [IWIDTH-1:0]     f_i_instr;
+    wire [IWIDTH-1:0]     f_o_instr;
+    wire [AWIDTH-1:0]     f_o_addr_instr;
+    wire                   f_o_syn;
+    reg                    f_i_ack;
+
+    // Program counter interface
+    reg                    f_change_pc;
+    reg  [PC_WIDTH-1:0]    f_alu_pc_value;
+    wire [PC_WIDTH-1:0]    f_pc;
+
+    // Stall interface
+    reg                    f_i_stall;
+    wire                   f_o_ce;
+
+    // Instantiate the DUT
+    instruction_fetch #(
         .IWIDTH(IWIDTH),
-        .DEPTH(DEPTH),
         .AWIDTH(AWIDTH),
         .PC_WIDTH(PC_WIDTH)
-    ) fi (
-        .fi_clk(fi_clk), 
-        .fi_rst(fi_rst), 
-        .fi_o_instr_fetch(fi_o_instr_fetch), 
-        .fi_o_addr_instr(fi_o_addr_instr), 
-        .fi_change_pc(fi_change_pc), 
-        .fi_alu_pc_value(fi_alu_pc_value), 
-        .fi_pc(fi_pc), 
-        .fi_i_stall(fi_i_stall), 
-        .fi_o_stall(fi_o_stall), 
-        .fi_o_ce(fi_o_ce)
+    ) dut (
+        .f_clk(f_clk),
+        .f_rst(f_rst),
+        .f_i_instr(f_i_instr),
+        .f_o_instr(f_o_instr),
+        .f_o_addr_instr(f_o_addr_instr),
+        .f_change_pc(f_change_pc),
+        .f_alu_pc_value(f_alu_pc_value),
+        .f_pc(f_pc),
+        .f_o_syn(f_o_syn),
+        .f_i_ack(f_i_ack),
+        .f_i_stall(f_i_stall),
+        .f_o_ce(f_o_ce)
     );
 
+    // Clock generation: 10 ns period
     initial begin
-        fi_clk = 1'b0;
-        fi_i_stall = 1'b0;
-        i = 0;
+        f_clk = 1'b0;
     end
-    always #5 fi_clk = ~fi_clk;
-
-    task reset(input integer counter);
-        begin 
-            fi_rst = 1'b0;
-            repeat(counter) @(posedge fi_clk);
-            fi_rst = 1'b1;
-        end
-    endtask
-
-    task display (input integer counter);
-        begin
-            for (i = 0; i < counter; i = i + 1) begin
-                @(posedge fi_clk);
-                $display($time, " ", "addr = %b, instruction = %b, syn = %b, ack = %b", i, fi_o_instr_fetch, fi.fi_i_syn, fi.fi_o_ack);
-            end
-        end
-    endtask
+    always #5 f_clk = ~f_clk;
 
     initial begin
-        reset(2);
-        @(posedge fi_clk);
-        display(36);
-        #200; $finish;
+        $dumpfile("./waveform/fetch.vcd");
+        $dumpvars(0, tb_instruction_fetch);
+    end
+
+    // Reset task
+    task do_reset;
+        input integer cycles;
+        begin
+            f_rst = 0;
+            repeat (cycles) @(posedge f_clk);
+            f_rst = 1;
+            @(posedge f_clk);
+        end
+    endtask
+
+    // Task to drive one instruction fetch
+    task send_instruction (input [IWIDTH - 1 : 0] instr);
+        begin
+            f_i_instr = instr;
+            f_i_ack = 1'b1;
+            f_i_stall = 1'b0;
+            f_change_pc = 1'b0;
+            @(posedge f_clk);
+            f_i_ack = 1'b0;
+            @(posedge f_clk);
+        end
+    endtask
+
+    // Task to introduce a stall
+    task introduce_stall (input integer counter_stall);
+        begin
+            f_i_stall = 1'b1;
+            repeat (counter_stall) @(posedge f_clk);
+            f_i_stall = 1'b0;
+            @(posedge f_clk);
+        end
+    endtask
+
+    // Task to change PC via jump
+    task do_jump (input [PC_WIDTH - 1 : 0] pc_jump);
+        begin
+            f_alu_pc_value = pc_jump;
+            f_change_pc = 1'b1;
+            f_i_ack = 1'b1;
+            @(posedge f_clk);
+            f_change_pc = 1'b0;
+            f_i_ack = 1'b0;
+            @(posedge f_clk);
+        end
+    endtask
+
+    // Monitoring signals
+    initial begin
+        $display("Time |   rst  | addr_req | instr_in  | ack | stall | syn | ce_out | pc_out | fetched_instr");
+        $monitor("%4t |   %b    | %h  | %h |  %b  |   %b   |  %b  |   %b    | %h | %h", 
+                 $time, f_rst, f_o_addr_instr, f_i_instr, f_i_ack, f_i_stall, f_o_syn, f_o_ce, f_pc, f_o_instr);
+    end
+
+    // Test sequence
+    initial begin
+        // Initialize inputs
+        f_i_instr        = 32'h00000000;
+        f_i_ack          = 0;
+        f_i_stall        = 0;
+        f_change_pc      = 0;
+        f_alu_pc_value   = 32'h00000000;
+
+        // Apply reset
+        do_reset(2);
+
+        // Normal fetch sequence: fetch 3 instructions
+        send_instruction(32'hA0A0A0A0);
+        send_instruction(32'hB1B1B1B1);
+        send_instruction(32'hC2C2C2C2);
+
+        // Introduce a stall for 3 cycles
+        introduce_stall(3);
+
+        // Continue fetching after stall
+        send_instruction(32'hD3D3D3D3);
+
+        // Change PC (jump) to address 0x100
+        do_jump(32'h00000100);
+
+        // Fetch 2 more instructions after jump
+        send_instruction(32'hE4E4E4E4);
+        send_instruction(32'hF5F5F5F5);
+
+        // Finish simulation
+        #20;
+        $display("Test completed.");
+        $finish;
     end
 endmodule

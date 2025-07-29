@@ -1,5 +1,4 @@
 `timescale 1ns/1ps
-`include "./source/header.vh"
 `include "./source/decoder.v"
 
 module tb_decoder;
@@ -71,6 +70,11 @@ module tb_decoder;
         d_clk = 1'b0;
     end
     always #5 d_clk = ~d_clk;
+
+    initial begin
+        $dumpfile("./waveform/decoder.vcd");
+        $dumpvars(0, tb_decoder);
+    end
     // Reset task
     task reset;
         integer i;
