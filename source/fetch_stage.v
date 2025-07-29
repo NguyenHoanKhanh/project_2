@@ -1,81 +1,59 @@
-`ifndef FETCH_V
-`define FETCH_V
+`ifndef FETCH_STAGE_V
+`define FETCH_STAGE_V
+`include "./source/fetch_instruction.v"
+`include "./source/transmit_instruction.v"
 
-module instruction_fetch #(
-    parameter IWIDTH = 32,
+module fetch_i #(
+    parameter IWIDTH = 32, 
+    parameter DEPTH = 36,
     parameter AWIDTH = 32,
     parameter PC_WIDTH = 32
 )(
-    f_clk, f_rst, f_i_instr, f_o_instr, f_o_addr_instr, f_change_pc, f_alu_pc_value, f_pc, f_o_syn, f_i_ack, f_i_stall, f_o_ce, f_o_stall
+    fi_clk, fi_rst, fi_o_instr_fetch, fi_o_addr_instr, fi_change_pc, fi_alu_pc_value, fi_pc, fi_i_stall, fi_o_stall, fi_o_ce
 );
-    input f_clk, f_rst;
-    //Instruction
-    output reg [AWIDTH - 1 : 0] f_o_addr_instr;
-    input [IWIDTH - 1: 0] f_i_instr;
-    output reg [IWIDTH - 1: 0] f_o_instr;
-    output f_o_syn;
-    input f_i_ack;
-    //PC
-    input f_change_pc;
-    input [PC_WIDTH - 1 : 0] f_alu_pc_value;
-    output reg [PC_WIDTH - 1: 0] f_pc;
-    //Stall 
-    input f_i_stall;
-    output reg f_o_stall;
-    output reg f_o_ce;
+    input fi_clk, fi_rst;
+    output [IWIDTH - 1 : 0] fi_o_instr_fetch;
+    output [AWIDTH - 1 : 0] fi_o_addr_instr;
+    input fi_change_pc;
+    input [PC_WIDTH - 1 : 0] fi_alu_pc_value;
+    output [PC_WIDTH - 1 : 0] fi_pc;
+    input fi_i_stall;
+    output fi_o_stall;
+    output fi_o_ce;
+    wire [IWIDTH - 1 : 0] fi_o_instr_mem;
 
-    reg [PC_WIDTH - 1 : 0] prev_pc;
-    reg [AWIDTH - 1 : 0] i_addr_instr;
-    reg ce, ce_d;
-    assign f_o_syn = ce;
-    wire stall = f_o_stall || f_i_stall || (f_o_syn && !f_i_ack) || !f_o_syn;
+    wire fi_i_syn;
+    wire fi_o_ack;
 
-    always @(posedge f_clk or negedge f_rst) begin
-        if (!f_rst) begin
-            f_o_stall <= 0;
-            ce <= 0;
-        end
-        else if ((f_change_pc || f_i_ack) && !(f_i_stall || f_o_stall)) begin
-            ce <= 0;
-        end
-        else begin
-            ce <= 1;
-        end
-    end
+    transmit #(
+        .IWIDTH(IWIDTH),
+        .DEPTH(DEPTH)
+    ) t (
+        .t_clk(fi_clk),
+        .t_rst(fi_rst),
+        .t_i_syn(fi_i_syn),
+        .t_o_instr(fi_o_instr_mem),
+        .t_o_ack(fi_o_ack)
+    );
 
-    always @(posedge f_clk or negedge f_rst) begin
-        if (!f_rst) begin
-            f_o_stall <= 0;
-            f_o_instr <= {IWIDTH{1'b0}};
-            f_pc <= {PC_WIDTH{1'b0}};
-            i_addr_instr <= {AWIDTH{1'b0}};
-            f_o_addr_instr <= {AWIDTH{1'b0}};
-            prev_pc <= {PC_WIDTH{1'b0}};
-            ce_d <= 1'b0;
-        end
-        else begin
-            if ((ce && f_i_ack && !stall) || (stall && !f_o_ce && ce)) begin
-                i_addr_instr <= prev_pc; 
-                f_o_addr_instr <= i_addr_instr;
-                f_o_instr <= f_i_instr;
-            end
-            if (stall) begin
-                f_o_ce <= 0;
-            end
-            else begin
-                f_o_ce <= ce_d;
-            end
-            if (f_i_ack) begin
-                prev_pc <= f_pc;
-                if (f_change_pc) begin
-                    f_pc <= f_alu_pc_value; 
-                end
-                else begin
-                    f_pc <= f_pc + 4;
-                    ce_d <= ce;
-                end
-            end
-        end
-    end
+    instruction_fetch #(
+        .IWIDTH(IWIDTH),
+        .AWIDTH(AWIDTH),
+        .PC_WIDTH(PC_WIDTH)
+    ) f (
+        .f_clk(fi_clk),
+        .f_rst(fi_rst),
+        .f_i_instr(fi_o_instr_mem),
+        .f_o_instr(fi_o_instr_fetch),
+        .f_o_addr_instr(fi_o_addr_instr),
+        .f_change_pc(fi_change_pc),
+        .f_alu_pc_value(fi_alu_pc_value),
+        .f_pc(fi_pc),
+        .f_o_syn(fi_i_syn),
+        .f_i_ack(fi_o_ack),
+        .f_i_stall(fi_i_stall),
+        .f_o_ce(fi_o_ce),
+        .f_o_stall(fi_o_stall)
+    );
 endmodule
-`endif 
+`endif

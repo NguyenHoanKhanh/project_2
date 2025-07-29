@@ -3,7 +3,6 @@
 `include "./source/fetch_stage.v"
 `include "./source/decoder_stage.v"
 `include "./source/stall.v"
-`include "./instruction/transmit_instruction.v"
 module processing_unit#(
     parameter DWIDTH = 32,
     parameter AWIDTH = 5,
