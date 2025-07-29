@@ -88,6 +88,8 @@ module execute #(
             e_o_exception <= 0;
             e_o_ce <= 0;
             e_o_stall_from_alu <= 0;
+            a <= 0;
+            b <= 0;
         end
         else begin
             if (e_i_ce && !stall_bit) begin
