@@ -15,16 +15,16 @@
 `define GEU 13
 
 `define OPCODE_WIDTH 11
-`define RTYPE 0
-`define ITYPE 1              
-`define LOAD_WORD 2
-`define STORE_WORD 3
-`define BRANCH 4
-`define JAL 5
-`define JALR 6
-`define LUI 7
-`define AUIPC 8
-`define SYSTEM 9
+`define RTYPE 0 //Arithmetic operations between two registers
+`define ITYPE 1 //Arithmetic operations between one register and immediate value
+`define LOAD_WORD 2 //Retrieve data from memory to store in register (rs1 +imm)
+`define STORE_WORD 3 //Retrieve data from register to store in memory (rs1 + imm)
+`define BRANCH 4 //Branch instruction(pc = pc + 4)
+`define JAL 5 //Calculate target to jump (pc + imm)
+`define JALR 6 //Calculate target to jump (rs1 + imm)
+`define LUI 7 //LUI expect (rd = imm, imm << 12) not rs1 + imm
+`define AUIPC 8 //PC + imm is stored in rd 
+`define SYSTEM 9 
 `define FENCE 10
 
 `define EXCEPTION_WIDTH 4
