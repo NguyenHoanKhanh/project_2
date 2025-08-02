@@ -20,7 +20,7 @@
 `define LOAD_WORD 2 //Retrieve data from memory to store in register (rs1 +imm)
 `define STORE_WORD 3 //Retrieve data from register to store in memory (rs1 + imm)
 `define BRANCH 4 //Branch instruction(pc = pc + 4)
-`define JAL 5 //Calculate target to jump (pc + imm)
+`define JAL 5 //Calculate to jump and store value in target register (pc + imm) 
 `define JALR 6 //Calculate target to jump (rs1 + imm)
 `define LUI 7 //LUI expect (rd = imm, imm << 12) not rs1 + imm
 `define AUIPC 8 //PC + imm is stored in rd 
