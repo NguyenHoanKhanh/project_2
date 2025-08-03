@@ -114,10 +114,6 @@ module execute #(
         end
         else begin
             ex_next_pc        <= temp_pc;
-            ex_o_change_pc    <= 1'b0;
-            ex_o_we           <= 1'b0;
-            ex_o_valid        <= 1'b0;
-            ex_stall_from_alu <= 1'b0;
             ex_o_pc           <= temp_pc;
             ex_o_addr_rd      <= ex_i_addr_rd;     
             if (!ex_i_flush) begin
