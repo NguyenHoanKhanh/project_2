@@ -1,0 +1,164 @@
+$date
+	Mon Aug 04 01:17:25 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module tb $end
+$var wire 1 ! m_o_stall $end
+$var wire 32 " m_o_read_data [31:0] $end
+$var wire 1 # m_o_ack $end
+$var parameter 32 $ AWIDTH $end
+$var parameter 32 % DWIDTH $end
+$var reg 1 & m_clk $end
+$var reg 5 ' m_i_addr [4:0] $end
+$var reg 1 ( m_i_cyc $end
+$var reg 32 ) m_i_data [31:0] $end
+$var reg 4 * m_i_sel [3:0] $end
+$var reg 1 + m_i_stb $end
+$var reg 1 , m_i_we $end
+$var reg 1 - m_rst $end
+$scope module m $end
+$var wire 1 & m_clk $end
+$var wire 5 . m_i_addr [4:0] $end
+$var wire 1 ( m_i_cyc $end
+$var wire 32 / m_i_data [31:0] $end
+$var wire 4 0 m_i_sel [3:0] $end
+$var wire 1 + m_i_stb $end
+$var wire 1 , m_i_we $end
+$var wire 1 - m_rst $end
+$var parameter 32 1 AWIDTH $end
+$var parameter 37 2 DEPTH $end
+$var parameter 32 3 DWIDTH $end
+$var reg 1 # m_o_ack $end
+$var reg 32 4 m_o_read_data [31:0] $end
+$var reg 1 ! m_o_stall $end
+$var integer 32 5 i [31:0] $end
+$upscope $end
+$scope task reset $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100000 3
+b100000 2
+b101 1
+b100000 %
+b101 $
+$end
+#0
+$dumpvars
+b100000 5
+b0 4
+b0 0
+b0 /
+b0 .
+0-
+0,
+0+
+b0 *
+b0 )
+0(
+b0 '
+0&
+0#
+b0 "
+0!
+$end
+#5
+b100000 5
+1&
+#10
+0&
+1-
+#15
+1&
+#20
+0&
+#25
+1#
+1(
+1+
+1&
+#30
+0&
+#35
+1#
+1,
+1&
+#40
+0&
+#45
+1#
+b1010 )
+b1010 /
+b101 '
+b101 .
+1&
+#50
+0&
+#55
+b1010 "
+b1010 4
+1#
+0,
+1&
+#60
+0&
+#65
+1#
+1&
+#70
+0&
+#75
+1#
+1&
+#80
+0&
+#85
+1#
+1&
+#90
+0&
+#95
+1#
+1&
+#100
+0&
+#105
+1#
+1&
+#110
+0&
+#115
+1#
+1&
+#120
+0&
+#125
+1#
+1&
+#130
+0&
+#135
+1#
+1&
+#140
+0&
+#145
+1#
+1&
+#150
+0&
+#155
+1#
+1&
+#160
+0&
+#165
+1#
+1&

@@ -30,7 +30,7 @@ module tb;
     wire [PC_WIDTH - 1 : 0] ex_o_pc;
     wire [PC_WIDTH - 1 : 0] ex_next_pc;
     wire ex_o_change_pc;
-    wire ex_o_we; 
+    wire ex_o_we_reg; 
     wire ex_o_valid;
     wire ex_stall_from_alu;
 
@@ -66,7 +66,7 @@ module tb;
         .ex_o_pc(ex_o_pc), 
         .ex_next_pc(ex_next_pc), 
         .ex_o_change_pc(ex_o_change_pc),
-        .ex_o_we(ex_o_we), 
+        .ex_o_we_reg(ex_o_we_reg), 
         .ex_o_valid(ex_o_valid), 
         .ex_stall_from_alu(ex_stall_from_alu)
     );
@@ -115,7 +115,7 @@ module tb;
             $display("Result: ex_o_data_rd = 0x%h", ex_o_data_rd);
             $display("NextPC: ex_next_pc = 0x%h", ex_next_pc);
             $display("ChangePC: %b, WE: %b, Valid: %b\n",
-                     ex_o_change_pc, ex_o_we, ex_o_valid);
+                     ex_o_change_pc, ex_o_we_reg, ex_o_valid);
         end
     endtask
 

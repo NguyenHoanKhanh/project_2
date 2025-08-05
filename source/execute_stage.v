@@ -11,7 +11,7 @@ module execute #(
     ex_i_addr_rs2, ex_i_addr_rd, ex_i_data_rs1, ex_i_data_rs2, ex_o_data_rd, 
     ex_i_funct3, ex_o_funct3, ex_i_imm, ex_o_imm, ex_i_ce, ex_o_ce, ex_i_stall, 
     ex_o_stall, ex_i_flush, ex_o_flush, ex_i_pc, ex_o_pc, ex_next_pc, ex_o_change_pc,
-    ex_o_we, ex_o_valid, ex_stall_from_alu
+    ex_o_we_reg, ex_o_valid, ex_stall_from_alu
 );
     input ex_clk, ex_rst;
     // ALU control
@@ -72,7 +72,7 @@ module execute #(
     output reg [FUNCT_WIDTH - 1 : 0] ex_o_funct3;
     input [DWIDTH - 1 : 0] ex_i_imm;
     output reg [11 : 0] ex_o_imm;
-    output reg ex_o_we;
+    output reg ex_o_we_reg;
     
     //Enable, stall, flush pipeline
     input ex_i_ce;
@@ -93,10 +93,10 @@ module execute #(
 
     always @(posedge ex_clk, negedge ex_rst) begin
         if (!ex_rst) begin
-            ex_stall_from_alu <= 1'b0;
+            // ex_stall_from_alu <= 1'b0;
             ex_o_flush <= 1'b0;
             ex_o_stall <= 1'b0;
-            ex_o_we <= 1'b0;
+            ex_o_we_reg <= 1'b0;
             ex_o_imm <= 12'b0;
             ex_o_funct3 <= {FUNCT_WIDTH{1'b0}};
             ex_next_pc <= {PC_WIDTH{1'b0}};
@@ -126,7 +126,7 @@ module execute #(
                     ex_o_data_rs1 <= ex_i_data_rs1;
                     ex_o_data_rs2 <= ex_i_data_rs2;
                     ex_o_imm <= ex_i_imm[11 : 0];
-                    ex_stall_from_alu <= (op_load || op_store) ? 1 : 0;
+                    // ex_stall_from_alu <= (op_load || op_store) ? 1 : 0;
                 end
                 if (op_rtype || op_itype) begin
                     ex_o_data_rd <= alu_value;
@@ -140,7 +140,7 @@ module execute #(
                     ex_next_pc <= temp_pc + ex_i_imm;
                     ex_o_change_pc <= ex_i_ce;
                     ex_o_flush <= ex_i_ce;
-                    ex_o_we <= 1'b1;
+                    ex_o_we_reg <= 1'b1;
                     ex_o_data_rd <= temp_pc + 4;
                     ex_o_valid <= 1'b1;
                 end
@@ -148,21 +148,21 @@ module execute #(
                     ex_next_pc <= ex_i_data_rs1 + ex_i_imm;
                     ex_o_change_pc <= ex_i_ce;
                     ex_o_flush <= ex_i_ce;
-                    ex_o_we <= 1'b1;
+                    ex_o_we_reg <= 1'b1;
                     ex_o_data_rd <= temp_pc + 4;
                     ex_o_valid <= 1'b1;
                 end
                 if (op_lui) begin
                     ex_o_change_pc <= 1'b0;
                     ex_o_flush <= 1'b0;
-                    ex_o_we <= 1'b1;
+                    ex_o_we_reg <= 1'b1;
                     ex_o_data_rd <= ex_i_imm[31 : 12] << 12;
                     ex_o_valid <= 1'b1;
                 end
                 else if (op_auipc) begin
                     ex_o_change_pc <= 1'b0;
                     ex_o_flush <= 1'b0;
-                    ex_o_we <= 1'b1;
+                    ex_o_we_reg <= 1'b1;
                     ex_o_data_rd <= ex_i_pc + ex_i_imm;
                     ex_o_valid <= 1'b1;
                 end
