@@ -10,7 +10,7 @@ module mem_stage #(
 )(
     me_o_opcode, me_i_opcode, me_o_load_addr, me_o_store_data, me_o_store_addr, me_o_we, 
     me_o_stb, me_o_cyc, me_i_rs2_data, me_i_alu_value, me_o_flush, me_i_flush, me_o_stall, me_i_stall, 
-    me_o_ce, me_i_ce, me_rst, me_clk, me_o_load_data, me_i_rd_data, me_i_rd_addr, 
+    me_o_ce, me_i_ce, me_rst, me_clk, me_i_rd_data, me_i_rd_addr, 
     me_o_rd_addr, me_o_rd_data, me_o_rd_we, me_i_funct3
 );
     input me_clk;
@@ -32,7 +32,6 @@ module mem_stage #(
     output reg [AWIDTH - 1 : 0] me_o_store_addr;
     output reg [DWIDTH - 1 : 0] me_o_store_data;
     output reg [AWIDTH - 1 : 0] me_o_load_addr;
-    output reg [DWIDTH - 1 : 0] me_o_load_data;
     wire [DWIDTH - 1 : 0] me_i_load_data; 
     wire me_i_ack;
 
@@ -55,6 +54,7 @@ module mem_stage #(
         .m_i_cyc(me_o_cyc), 
         .m_i_stb(me_o_stb), 
         .m_i_we(me_o_we), 
+        .m_i_be_enable(byte_enable),
         .m_i_load_addr(me_o_load_addr), 
         .m_i_store_addr(me_o_store_addr), 
         .m_i_data(me_o_store_data), 
@@ -75,7 +75,6 @@ module mem_stage #(
         if (!me_rst) begin
             me_o_opcode <= {`OPCODE_WIDTH{1'b0}};
             me_o_load_addr <= {AWIDTH{1'b0}};
-            me_o_load_data <= {DWIDTH{1'b0}};
             me_o_store_addr <= {AWIDTH{1'b0}};
             me_o_store_data <= {DWIDTH{1'b0}};
             me_o_we <= 1'b0;
@@ -100,10 +99,13 @@ module mem_stage #(
                     me_o_rd_we <= rd_we_d;
                     me_o_rd_data <= rd_data_d;
                 end
+                rd_we_d <= 1'b0;
                 me_o_we <= 1'b0;
                 me_o_stb <= 1'b0;
                 me_o_cyc <= 1'b0;
                 me_o_ce <= 1'b0;
+                byte_enable <= 4'b0000;
+                store_data_aligned <= {DWIDTH{1'b0}};
                 pending_request <= 1'b0;
             end
             if (me_i_ce && !pending_request && (me_i_opcode == `LOAD || me_i_opcode == `STORE)) begin
@@ -126,7 +128,6 @@ module mem_stage #(
 
     always @(*) begin
         me_o_we = 1'b0;
-        me_o_rd_we = 1'b0;
         me_o_cyc = 1'b0;
         me_o_stb = 1'b0;
         me_o_stall = 1'b0;
@@ -170,7 +171,6 @@ module mem_stage #(
 
     always @(*) begin
         me_o_load_addr = {AWIDTH{1'b0}};
-        me_o_load_data = {DWIDTH{1'b0}}; 
         me_o_store_addr = {AWIDTH{1'b0}};
         me_o_store_data = {DWIDTH{1'b0}};
         rd_addr_d = {AWIDTH{1'b0}};
@@ -179,7 +179,7 @@ module mem_stage #(
             `LOAD : begin
                 me_o_opcode = me_i_opcode;
                 me_o_load_addr = me_i_alu_value;
-                me_o_load_data = me_i_load_data;
+                rd_data_d = final_load;
             end
             `STORE : begin
                 me_o_opcode = me_i_opcode;
@@ -187,8 +187,8 @@ module mem_stage #(
                 me_o_store_data = store_data_aligned;
             end
             `RTYPE, `ITYPE, `JAL, `JALR, `LUI, `AUIPC : begin
-                rd_addr_d = me_i_alu_value;
-                rd_data_d = final_load;
+                rd_addr_d = me_i_rd_addr;
+                rd_data_d = me_i_alu_value;
             end
             default : begin
                 me_o_load_addr = {AWIDTH{1'b0}};

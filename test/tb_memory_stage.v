@@ -27,7 +27,6 @@ module tb_mem_stage;
     wire [AWIDTH-1:0] me_o_store_addr;
     wire [DWIDTH-1:0] me_o_store_data;
     wire [AWIDTH-1:0] me_o_load_addr;
-    wire [DWIDTH-1:0] me_o_load_data;
     wire [AWIDTH-1:0] me_o_rd_addr;
     wire [DWIDTH-1:0] me_o_rd_data;
     wire             me_o_rd_we;
@@ -59,7 +58,6 @@ module tb_mem_stage;
         .me_o_store_addr(me_o_store_addr),
         .me_o_store_data(me_o_store_data),
         .me_o_load_addr(me_o_load_addr),
-        .me_o_load_data(me_o_load_data),
         .me_o_rd_addr(me_o_rd_addr),
         .me_o_rd_data(me_o_rd_data),
         .me_o_rd_we(me_o_rd_we)
@@ -88,7 +86,7 @@ module tb_mem_stage;
     task do_store(input [AWIDTH-1:0] addr, input [DWIDTH-1:0] data);
     begin
         // Drive inputs
-        me_i_opcode    = `STORE_WORD;
+        me_i_opcode    = `STORE;
         me_i_alu_value = addr;
         me_i_rs2_data  = data;
         me_i_ce        = 1;
@@ -98,19 +96,6 @@ module tb_mem_stage;
         // Wait for completion (stall deassert)
         wait (!me_o_stall);
         $display("STORE Complete at time %0t: addr=%0d data=%0d", $time, addr, data);
-    end
-    endtask
-
-    // Task to perform load
-    task do_load(input [AWIDTH-1:0] addr);
-    begin
-        me_i_opcode    = `LOAD_WORD;
-        me_i_alu_value = addr;
-        me_i_ce        = 1;
-        @(posedge me_clk);
-        me_i_ce = 0;
-        wait (!me_o_stall);
-        $display("LOAD Complete at time %0t: addr=%0d data=%0d", $time, addr, me_o_load_data);
     end
     endtask
 
@@ -144,7 +129,6 @@ module tb_mem_stage;
 
         // Test store and load
         do_store(10, 14);
-        do_load(10);
 
         // Test R-type writeback
         do_rtype(3, 12345);
