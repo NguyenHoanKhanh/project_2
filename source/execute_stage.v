@@ -37,8 +37,8 @@ module execute #(
     output reg [`OPCODE_WIDTH - 1 : 0] ex_o_opcode;
     wire op_rtype = (ex_i_opcode == `RTYPE) ? 1 : 0;
     wire op_itype = (ex_i_opcode == `ITYPE) ? 1 : 0;
-    wire op_load = (ex_i_opcode == `LOAD_WORD) ? 1 : 0;
-    wire op_store = (ex_i_opcode == `STORE_WORD) ? 1 : 0;
+    wire op_load = (ex_i_opcode == `LOAD) ? 1 : 0;
+    wire op_store = (ex_i_opcode == `STORE) ? 1 : 0;
     wire op_branch = (ex_i_opcode == `BRANCH) ? 1 : 0;
     wire op_jal = (ex_i_opcode == `JAL) ? 1 : 0;
     wire op_jalr = (ex_i_opcode == `JALR) ? 1 : 0;
