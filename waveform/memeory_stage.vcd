@@ -1,0 +1,264 @@
+$date
+	Wed Aug 06 15:08:10 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module tb_mem_stage $end
+$var wire 1 ! me_o_we $end
+$var wire 32 " me_o_store_data [31:0] $end
+$var wire 5 # me_o_store_addr [4:0] $end
+$var wire 1 $ me_o_stb $end
+$var wire 1 % me_o_stall $end
+$var wire 1 & me_o_rd_we $end
+$var wire 32 ' me_o_rd_data [31:0] $end
+$var wire 5 ( me_o_rd_addr [4:0] $end
+$var wire 11 ) me_o_opcode [10:0] $end
+$var wire 32 * me_o_load_data [31:0] $end
+$var wire 5 + me_o_load_addr [4:0] $end
+$var wire 1 , me_o_flush $end
+$var wire 1 - me_o_cyc $end
+$var wire 1 . me_o_ce $end
+$var parameter 32 / AWIDTH $end
+$var parameter 32 0 DWIDTH $end
+$var parameter 32 1 FUNCT_WIDTH $end
+$var reg 1 2 me_clk $end
+$var reg 32 3 me_i_alu_value [31:0] $end
+$var reg 1 4 me_i_ce $end
+$var reg 1 5 me_i_flush $end
+$var reg 11 6 me_i_opcode [10:0] $end
+$var reg 5 7 me_i_rd_addr [4:0] $end
+$var reg 32 8 me_i_rd_data [31:0] $end
+$var reg 32 9 me_i_rs2_data [31:0] $end
+$var reg 1 : me_i_stall $end
+$var reg 1 ; me_rst $end
+$scope module UUT $end
+$var wire 1 2 me_clk $end
+$var wire 32 < me_i_alu_value [31:0] $end
+$var wire 1 4 me_i_ce $end
+$var wire 1 5 me_i_flush $end
+$var wire 11 = me_i_opcode [10:0] $end
+$var wire 5 > me_i_rd_addr [4:0] $end
+$var wire 32 ? me_i_rd_data [31:0] $end
+$var wire 32 @ me_i_rs2_data [31:0] $end
+$var wire 1 A me_i_stall $end
+$var wire 1 ; me_rst $end
+$var wire 1 B stall_bit $end
+$var wire 32 C me_i_load_data [31:0] $end
+$var wire 1 D me_i_ack $end
+$var parameter 32 E AWIDTH $end
+$var parameter 32 F DWIDTH $end
+$var parameter 32 G FUNCT_WIDTH $end
+$var reg 1 . me_o_ce $end
+$var reg 1 - me_o_cyc $end
+$var reg 1 , me_o_flush $end
+$var reg 5 H me_o_load_addr [4:0] $end
+$var reg 32 I me_o_load_data [31:0] $end
+$var reg 11 J me_o_opcode [10:0] $end
+$var reg 5 K me_o_rd_addr [4:0] $end
+$var reg 32 L me_o_rd_data [31:0] $end
+$var reg 1 & me_o_rd_we $end
+$var reg 1 % me_o_stall $end
+$var reg 1 $ me_o_stb $end
+$var reg 5 M me_o_store_addr [4:0] $end
+$var reg 32 N me_o_store_data [31:0] $end
+$var reg 1 ! me_o_we $end
+$var reg 1 O pending_request $end
+$var reg 5 P rd_addr_d [4:0] $end
+$var reg 32 Q rd_data_d [31:0] $end
+$var reg 1 R rd_we_d $end
+$scope module m $end
+$var wire 1 2 m_clk $end
+$var wire 1 - m_i_cyc $end
+$var wire 32 S m_i_data [31:0] $end
+$var wire 5 T m_i_load_addr [4:0] $end
+$var wire 1 $ m_i_stb $end
+$var wire 5 U m_i_store_addr [4:0] $end
+$var wire 1 ! m_i_we $end
+$var wire 1 ; m_rst $end
+$var parameter 32 V AWIDTH $end
+$var parameter 37 W DEPTH $end
+$var parameter 32 X DWIDTH $end
+$var reg 1 D m_o_ack $end
+$var reg 32 Y m_o_read_data [31:0] $end
+$var reg 1 Z m_o_stall $end
+$var integer 32 [ i [31:0] $end
+$upscope $end
+$upscope $end
+$scope task do_load $end
+$var reg 5 \ addr [4:0] $end
+$upscope $end
+$scope task do_reset $end
+$upscope $end
+$scope task do_rtype $end
+$var reg 5 ] rd_addr [4:0] $end
+$var reg 32 ^ rd_data [31:0] $end
+$upscope $end
+$scope task do_store $end
+$var reg 5 _ addr [4:0] $end
+$var reg 32 ` data [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100000 X
+b100000 W
+b101 V
+b11 G
+b100000 F
+b101 E
+b11 1
+b100000 0
+b101 /
+$end
+#0
+$dumpvars
+bx `
+bx _
+bx ^
+bx ]
+bx \
+b100000 [
+0Z
+b0 Y
+b0 U
+b0 T
+b0 S
+0R
+b0 Q
+b0 P
+0O
+b0 N
+b0 M
+b0 L
+b0 K
+b0 J
+b0 I
+b0 H
+0D
+b0 C
+0B
+0A
+b0 @
+b0 ?
+b0 >
+b0 =
+b0 <
+0;
+0:
+b0 9
+b0 8
+b0 7
+b0 6
+05
+x4
+b0 3
+02
+0.
+0-
+0,
+b0 +
+b0 *
+b0 )
+b0 (
+b0 '
+0&
+0%
+0$
+b0 #
+b0 "
+0!
+$end
+#5
+b100000 [
+12
+#10
+02
+#15
+b100000 [
+12
+#20
+b1110 "
+b1110 N
+b1110 S
+b1010 #
+b1010 M
+b1010 U
+1$
+1-
+1!
+02
+14
+b1110 9
+b1110 @
+b1010 3
+b1010 <
+b11 6
+b11 =
+b1110 `
+b1010 _
+1;
+#25
+1.
+1O
+1D
+b1010 +
+b1010 H
+b1010 T
+b0 "
+b0 N
+b0 S
+b0 #
+b0 M
+b0 U
+0$
+0-
+0!
+b10 6
+b10 =
+b1010 \
+14
+12
+#30
+02
+#35
+1R
+0D
+0O
+b11000000111001 Q
+b11 P
+b0 +
+b0 H
+b0 T
+b11000000111001 8
+b11000000111001 ?
+b11 7
+b11 >
+b0 6
+b0 =
+b11000000111001 ^
+b11 ]
+14
+12
+#40
+02
+#45
+0.
+04
+12
+#50
+02
+#55
+12
+#60
+02
+#65
+12
+#70
+02
+#75
+12
