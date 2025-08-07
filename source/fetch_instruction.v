@@ -3,14 +3,15 @@
 
 module instruction_fetch #(
     parameter IWIDTH = 32,
-    parameter AWIDTH = 32,
+    parameter AWIDTH_INSTR = 32,
     parameter PC_WIDTH = 32
 )(
-    f_clk, f_rst, f_i_instr, f_o_instr, f_o_addr_instr, f_change_pc, f_alu_pc_value, f_pc, f_o_syn, f_i_ack, f_i_stall, f_o_ce, f_o_stall
+    f_clk, f_rst, f_i_instr, f_o_instr, f_o_addr_instr, f_change_pc, f_alu_pc_value, 
+    f_pc, f_o_syn, f_i_ack, f_i_stall, f_o_ce, f_o_stall, f_i_flush, f_o_flush
 );
     input f_clk, f_rst;
     //Instruction
-    output reg [AWIDTH - 1 : 0] f_o_addr_instr;
+    output reg [AWIDTH_INSTR - 1 : 0] f_o_addr_instr;
     input [IWIDTH - 1: 0] f_i_instr;
     output reg [IWIDTH - 1: 0] f_o_instr;
     output f_o_syn;
@@ -23,9 +24,11 @@ module instruction_fetch #(
     input f_i_stall;
     output reg f_o_stall;
     output reg f_o_ce;
+    input f_i_flush;
+    output reg f_o_flush;
 
     reg [PC_WIDTH - 1 : 0] prev_pc;
-    reg [AWIDTH - 1 : 0] i_addr_instr;
+    reg [AWIDTH_INSTR - 1 : 0] i_addr_instr;
     reg ce, ce_d;
     assign f_o_syn = ce;
     wire stall = f_o_stall || f_i_stall || (f_o_syn && !f_i_ack) || !f_o_syn;
@@ -35,8 +38,13 @@ module instruction_fetch #(
             f_o_stall <= 0;
             ce <= 0;
         end
+        else if (f_i_flush) begin
+            ce <= 1'b0;
+            f_o_stall <= 1'b1;
+        end
         else if ((f_change_pc || f_i_ack) && !(f_i_stall || f_o_stall)) begin
             ce <= 0;
+            f_o_stall <= 1'b0;
         end
         else begin
             ce <= 1;
@@ -46,18 +54,24 @@ module instruction_fetch #(
     always @(posedge f_clk or negedge f_rst) begin
         if (!f_rst) begin
             f_o_stall <= 0;
+            f_o_flush <= 0;
             f_o_instr <= {IWIDTH{1'b0}};
             f_pc <= {PC_WIDTH{1'b0}};
-            i_addr_instr <= {AWIDTH{1'b0}};
-            f_o_addr_instr <= {AWIDTH{1'b0}};
+            i_addr_instr <= {AWIDTH_INSTR{1'b0}};
+            f_o_addr_instr <= {AWIDTH_INSTR{1'b0}};
             prev_pc <= {PC_WIDTH{1'b0}};
             ce_d <= 1'b0;
         end
         else begin
+            if (f_i_flush) begin
+                f_o_flush <= 1'b1;
+                f_o_instr <= {IWIDTH{1'b0}};
+            end
             if ((ce && f_i_ack && !stall) || (stall && !f_o_ce && ce)) begin
                 i_addr_instr <= prev_pc; 
                 f_o_addr_instr <= i_addr_instr;
                 f_o_instr <= f_i_instr;
+                f_o_flush <= 1'b0;
             end
             if (stall) begin
                 f_o_ce <= 0;
@@ -67,7 +81,7 @@ module instruction_fetch #(
             end
             if (f_i_ack) begin
                 prev_pc <= f_pc;
-                if (f_change_pc) begin
+                if (f_change_pc || f_i_flush) begin
                     f_pc <= f_alu_pc_value; 
                 end
                 else begin

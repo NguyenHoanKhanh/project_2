@@ -8,7 +8,8 @@ module decoder_stage #(
     parameter DWIDTH = 32,
     parameter AWIDTH = 5,
     parameter PC_WIDTH = 32,
-    parameter IWIDTH = 32
+    parameter IWIDTH = 32,
+    parameter FUNCT_WIDTH = 3
 )(
     ds_clk, ds_rst, ds_i_instr, ds_i_pc, ds_o_pc, ds_o_addr_rs1_p, ds_o_addr_rs2_p, ds_o_addr_rd_p, ds_o_funct3, ds_o_imm, ds_o_alu, ds_o_opcode, ds_o_exception, ds_i_ce, ds_o_ce, ds_i_stall, ds_o_stall, ds_i_flush, ds_o_flush, ds_data_in_rd, ds_data_out_rs1, ds_data_out_rs2, ds_we, ds_read_reg
 );
@@ -19,7 +20,7 @@ module decoder_stage #(
     output [AWIDTH - 1 : 0] ds_o_addr_rs1_p;
     output [AWIDTH - 1 : 0] ds_o_addr_rs2_p;
     output [AWIDTH - 1 : 0] ds_o_addr_rd_p;
-    output [2 : 0] ds_o_funct3;
+    output [FUNCT_WIDTH - 1 : 0] ds_o_funct3;
     output [DWIDTH - 1 : 0] ds_o_imm;
     output [`ALU_WIDTH - 1 : 0] ds_o_alu;
     output [`OPCODE_WIDTH - 1 : 0] ds_o_opcode;
@@ -43,7 +44,8 @@ module decoder_stage #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
         .IWIDTH(IWIDTH),
-        .PC_WIDTH(PC_WIDTH)
+        .PC_WIDTH(PC_WIDTH),
+        .FUNCT_WIDTH(FUNCT_WIDTH)
     ) d (
         .d_clk(ds_clk), 
         .d_rst(ds_rst), 
