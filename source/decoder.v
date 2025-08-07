@@ -115,8 +115,8 @@ module decoder #(
 
                 d_o_opcode[`RTYPE] <= opcode_rtype_d;
                 d_o_opcode[`ITYPE] <= opcode_itype_d;
-                d_o_opcode[`LOAD_WORD] <= opcode_load_word_d;
-                d_o_opcode[`STORE_WORD] <= opcode_store_word_d;
+                d_o_opcode[`LOAD] <= opcode_load_word_d;
+                d_o_opcode[`STORE] <= opcode_store_word_d;
                 d_o_opcode[`BRANCH] <= opcode_branch_d;
                 d_o_opcode[`JAL] <= opcode_jal_d;
                 d_o_opcode[`JALR] <= opcode_jalr_d;
