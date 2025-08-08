@@ -11,11 +11,11 @@ module tb_mem_stage;
     reg              me_i_ce;
     reg              me_i_stall;
     reg              me_i_flush;
-    reg  [DWIDTH-1:0] me_i_rs2_data;
-    reg  [DWIDTH-1:0] me_i_alu_value;
-    reg  [`OPCODE_WIDTH-1:0] me_i_opcode;
-    reg  [AWIDTH-1:0] me_i_rd_addr;
-    reg  [DWIDTH-1:0] me_i_rd_data;
+    reg  [DWIDTH - 1 : 0] me_i_rs2_data;
+    reg  [DWIDTH - 1 : 0] me_i_alu_value;
+    reg  [`OPCODE_WIDTH - 1 : 0] me_i_opcode;
+    reg  [AWIDTH - 1 : 0] me_i_rd_addr;
+    reg  [DWIDTH - 1 : 0] me_i_rd_data;
 
     wire             me_o_ce;
     wire             me_o_stall;
@@ -24,11 +24,12 @@ module tb_mem_stage;
     wire             me_o_cyc;
     wire             me_o_stb;
     wire             me_o_we;
-    wire [AWIDTH-1:0] me_o_store_addr;
-    wire [DWIDTH-1:0] me_o_store_data;
-    wire [AWIDTH-1:0] me_o_load_addr;
-    wire [AWIDTH-1:0] me_o_rd_addr;
-    wire [DWIDTH-1:0] me_o_rd_data;
+    wire [AWIDTH - 1 : 0] me_o_store_addr;
+    wire [DWIDTH - 1 : 0] me_o_store_data;
+    wire [AWIDTH - 1 : 0] me_o_load_addr;
+    wire [DWIDTH - 1 : 0] me_o_load_data;
+    wire [AWIDTH - 1 : 0] me_o_rd_addr;
+    wire [DWIDTH - 1 : 0] me_o_rd_data;
     wire             me_o_rd_we;
 
     // Instantiate memory stage
@@ -58,6 +59,7 @@ module tb_mem_stage;
         .me_o_store_addr(me_o_store_addr),
         .me_o_store_data(me_o_store_data),
         .me_o_load_addr(me_o_load_addr),
+        .me_o_load_data(me_o_load_data),
         .me_o_rd_addr(me_o_rd_addr),
         .me_o_rd_data(me_o_rd_data),
         .me_o_rd_we(me_o_rd_we)

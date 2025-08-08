@@ -11,7 +11,7 @@ module execute #(
     ex_i_addr_rs2, ex_i_addr_rd, ex_i_data_rs1, ex_i_data_rs2, ex_o_data_rd, 
     ex_i_funct3, ex_o_funct3, ex_i_imm, ex_o_imm, ex_i_ce, ex_o_ce, ex_i_stall, 
     ex_o_stall, ex_i_flush, ex_o_flush, ex_i_pc, ex_o_pc, ex_next_pc, ex_o_change_pc,
-    ex_o_we_reg, ex_o_valid, ex_stall_from_alu
+    ex_o_we_reg, ex_o_valid, ex_stall_from_alu, ex_o_alu_value, ex_o_addr_rd
 );
     input ex_clk, ex_rst;
     // ALU control
@@ -59,6 +59,7 @@ module execute #(
     output reg [DWIDTH - 1 : 0] ex_o_data_rs2;
     output reg [AWIDTH - 1 : 0] ex_o_addr_rd;
     output reg [DWIDTH - 1 : 0] ex_o_data_rd;
+    output reg [DWIDTH - 1 : 0] ex_o_alu_value;
     output reg ex_o_valid;
 
     //PC
@@ -130,6 +131,7 @@ module execute #(
                 end
                 if (op_rtype || op_itype) begin
                     ex_o_data_rd <= alu_value;
+                    ex_o_alu_value <= alu_value;
                 end
                 else if (op_branch && alu_value[0]) begin
                     ex_next_pc <= temp_pc + ex_i_imm;

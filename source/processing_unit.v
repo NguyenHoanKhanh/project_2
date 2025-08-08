@@ -59,6 +59,31 @@ module processing #(
     wire [`OPCODE_WIDTH - 1 : 0] pe_ex_o_opcode;
     wire [`ALU_WIDTH - 1 : 0] pe_ex_o_alu;
     wire [DWIDTH - 1 : 0] pe_ex_o_data_rd;
+    wire [DWIDTH - 1 : 0] pe_ex_o_alu_value;
+    wire [AWIDTH - 1 : 0] pe_ex_o_addr_rd;
+    wire [`OPCODE_WIDTH - 1 : 0] pe_me_o_opcode;
+    wire [AWIDTH - 1 : 0] pe_me_o_load_addr;
+    wire [DWIDTH - 1 : 0] pe_me_o_store_data;
+    wire [AWIDTH - 1 : 0] pe_me_o_store_addr;
+    wire pe_me_o_we;
+    wire pe_me_o_stb;
+    wire pe_me_o_cyc;
+    wire pe_me_o_flush;
+    wire pe_me_o_stall;
+    wire pe_me_o_ce;
+    wire [AWIDTH - 1 : 0] pe_me_o_rd_addr;
+    wire [DWIDTH - 1 : 0] pe_me_o_rd_data;
+    wire pe_me_o_rd_we;
+    wire [DWIDTH - 1 : 0] pe_me_o_load_data;
+    wire [FUNCT_WIDTH - 1 : 0] pe_me_o_funct3;
+    wire pe_wb_o_ce;
+    input [DWIDTH - 1 : 0] pe_wb_i_csr;
+    wire pe_wb_o_flush;
+    wire pe_wb_o_stall;
+    wire [PC_WIDTH - 1 : 0] pe_wb_o_next_pc;
+    output [DWIDTH - 1 : 0] pe_wb_o_rd_data;
+    output [AWIDTH - 1 : 0] pe_wb_o_rd_addr;
+    
 
     fetch_i #(
         .AWIDTH_INSTR(AWIDTH_INSTR),
@@ -146,7 +171,73 @@ module processing #(
         .ex_o_change_pc(pe_ex_o_change_pc),
         .ex_o_we_reg(pe_ex_o_we_reg), 
         .ex_o_valid(pe_ex_o_valid), 
-        .ex_stall_from_alu(pe_ex_stall_from_alu)
+        .ex_stall_from_alu(pe_ex_stall_from_alu),
+        .ex_o_alu_value(pe_ex_o_alu_value),
+        .ex_o_addr_rd(pe_ex_o_addr_rd)
+    );
+
+    mem_stage # (
+        .DWIDTH(DWIDTH),
+        .AWIDTH(AWIDTH),
+        .FUNCT_WIDTH(FUNCT_WIDTH)
+    ) ms (
+        .me_o_opcode(pe_me_o_opcode), 
+        .me_i_opcode(pe_ex_o_opcode), 
+        .me_o_load_addr(pe_me_o_load_addr), 
+        .me_o_store_data(pe_me_o_store_data), 
+        .me_o_store_addr(pe_me_o_store_addr), 
+        .me_o_we(pe_me_o_we), 
+        .me_o_stb(pe_me_o_stb), 
+        .me_o_cyc(pe_me_o_cyc), 
+        .me_i_rs2_data(pe_ds_data_out_rs2), 
+        .me_i_alu_value(pe_ex_o_alu_value), 
+        .me_o_flush(pe_me_o_flush), 
+        .me_i_flush(pe_ex_o_flush), 
+        .me_o_stall(pe_me_o_stall), 
+        .me_i_stall(pe_ex_o_stall),
+        .me_o_ce(pe_me_o_ce), 
+        .me_i_ce(pe_ex_o_ce), 
+        .me_rst(pe_rst), 
+        .me_clk(pe_clk), 
+        .me_i_rd_data(pe_ex_o_data_rd), 
+        .me_i_rd_addr(pe_ex_o_addr_rd), 
+        .me_o_rd_addr(pe_me_o_rd_addr), 
+        .me_o_rd_data(pe_me_o_rd_data), 
+        .me_o_rd_we(pe_me_o_rd_we), 
+        .me_i_funct3(pe_ex_o_funct3),
+        .me_o_load_data(pe_me_o_load_data),
+        .me_o_funct3(pe_me_o_funct3)
+    );
+
+    writeback # (
+        .DWIDTH(DWIDTH),
+        .AWIDTH(AWIDTH),
+        .FUNCT_WIDTH(FUNCT_WIDTH),
+        .PC_WIDTH(PC_WIDTH)
+    ) wb (
+        .wb_clk(pe_clk), 
+        .wb_rst(pe_rst), 
+        .wb_i_opcode(pe_me_o_opcode), 
+        .wb_i_data_load(pe_me_o_load_data), 
+        .wb_i_we_rd(pe_me_o_rd_we), 
+        .wb_o_we_rd(pe_wb_o_we_rd), 
+        .wb_i_we(pe_me_o_we), 
+        .wb_o_we(pe_wb_o_we), 
+        .wb_i_rd_addr(pe_me_o_rd_addr), 
+        .wb_o_rd_addr(pe_wb_o_rd_addr), 
+        .wb_i_rd_data(pe_me_o_rd_data), 
+        .wb_o_rd_data(pe_wb_o_rd_data), 
+        .wb_i_pc(pe_ex_o_pc), 
+        .wb_o_next_pc(pe_wb_o_next_pc), 
+        .wb_o_change_pc(pe_wb_o_change_pc), 
+        .wb_i_ce(pe_me_o_ce), 
+        .wb_o_stall(pe_wb_o_stall), 
+        .wb_o_flush(pe_wb_o_flush), 
+        .wb_i_csr(pe_wb_i_csr), 
+        .wb_i_funct(pe_me_o_funct3), 
+        .wb_i_flush(pe_me_o_flush), 
+        .wb_i_stall(pe_me_o_stall), 
+        .wb_o_ce(pe_wb_o_ce)
     );
 endmodule
 `endif 

@@ -9,7 +9,8 @@ module writeback #(
 )(
     wb_clk, wb_rst, wb_i_opcode, wb_i_data_load, wb_i_we_rd, wb_o_we_rd, wb_i_rd_addr, 
     wb_o_rd_addr, wb_i_rd_data, wb_o_rd_data, wb_i_pc, wb_o_next_pc, wb_o_change_pc, 
-    wb_i_ce, wb_o_stall, wb_o_flush, wb_i_csr, wb_i_funct, wb_i_flush, wb_i_stall, wb_o_ce
+    wb_i_ce, wb_o_stall, wb_o_flush, wb_i_csr, wb_i_funct, wb_i_flush, wb_i_stall, wb_o_ce,
+    wb_o_we, wb_i_we
 );
     input wb_clk, wb_rst;
     input [FUNCT_WIDTH - 1 : 0] wb_i_funct;
@@ -18,6 +19,8 @@ module writeback #(
     input [DWIDTH - 1 : 0] wb_i_csr;
     input wb_i_we_rd;
     output reg wb_o_we_rd;
+    input wb_i_we;
+    output reg wb_o_we;
     input [AWIDTH - 1 : 0] wb_i_rd_addr;
     input [DWIDTH - 1 : 0] wb_i_rd_data;
     output reg [AWIDTH - 1 : 0] wb_o_rd_addr;
@@ -55,14 +58,15 @@ module writeback #(
                     wb_o_flush <= 1'b0;
                     wb_o_change_pc <= 1'b0;
                     wb_o_we_rd <= wb_i_we_rd;
+                    wb_o_we <= wb_i_we;
                     wb_o_rd_addr <= wb_i_rd_addr;
-                    if (wb_opcode_load) begin
+                    if (wb_opcode_load && wb_i_we) begin
                         wb_o_rd_data <= wb_i_data_load;
                     end
                     else if (wb_opcode_system && wb_i_funct != 3'd0) begin
                         wb_o_rd_data <= wb_i_csr;
                     end
-                    else begin
+                    else if (wb_i_we_rd) begin
                         wb_o_rd_data <= wb_i_rd_data;
                     end
                     wb_o_next_pc <= wb_i_pc + 32'd4;

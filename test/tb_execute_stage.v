@@ -33,6 +33,7 @@ module tb;
     wire ex_o_we_reg; 
     wire ex_o_valid;
     wire ex_stall_from_alu;
+    wire [AWIDTH - 1 : 0] ex_o_addr_rd;
 
     execute #(
         .AWIDTH(AWIDTH),
@@ -68,7 +69,8 @@ module tb;
         .ex_o_change_pc(ex_o_change_pc),
         .ex_o_we_reg(ex_o_we_reg), 
         .ex_o_valid(ex_o_valid), 
-        .ex_stall_from_alu(ex_stall_from_alu)
+        .ex_stall_from_alu(ex_stall_from_alu),
+        .ex_o_addr_rd(ex_o_addr_rd)
     );
 
     initial begin

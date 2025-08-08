@@ -10,8 +10,8 @@ module mem_stage #(
 )(
     me_o_opcode, me_i_opcode, me_o_load_addr, me_o_store_data, me_o_store_addr, me_o_we, 
     me_o_stb, me_o_cyc, me_i_rs2_data, me_i_alu_value, me_o_flush, me_i_flush, me_o_stall, me_i_stall, 
-    me_o_ce, me_i_ce, me_rst, me_clk, me_i_rd_data, me_i_rd_addr, 
-    me_o_rd_addr, me_o_rd_data, me_o_rd_we, me_i_funct3
+    me_o_ce, me_i_ce, me_rst, me_clk, me_i_rd_data, me_i_rd_addr, me_o_funct3,
+    me_o_rd_addr, me_o_rd_data, me_o_rd_we, me_i_funct3, me_o_load_data
 );
     input me_clk;
     input me_rst;
@@ -32,6 +32,7 @@ module mem_stage #(
     output reg [AWIDTH - 1 : 0] me_o_store_addr;
     output reg [DWIDTH - 1 : 0] me_o_store_data;
     output reg [AWIDTH - 1 : 0] me_o_load_addr;
+    output reg [DWIDTH - 1 : 0] me_o_load_data;
     wire [DWIDTH - 1 : 0] me_i_load_data; 
     wire me_i_ack;
 
@@ -41,7 +42,8 @@ module mem_stage #(
     output reg [DWIDTH - 1 : 0] me_o_rd_data;
     output reg me_o_rd_we;
 
-    input [2 : 0] me_i_funct3;
+    input [FUNCT_WIDTH - 1 : 0] me_i_funct3;
+    output reg [FUNCT_WIDTH - 1 : 0] me_o_funct3;
     wire [1 : 0] byte_offset = me_i_alu_value[1 : 0];
     reg [3 : 0] byte_enable;
 
@@ -59,8 +61,7 @@ module mem_stage #(
         .m_i_store_addr(me_o_store_addr), 
         .m_i_data(me_o_store_data), 
         .m_o_read_data(me_i_load_data), 
-        .m_o_ack(me_i_ack), 
-        .m_o_stall(me_i_stall)
+        .m_o_ack(me_i_ack)
     );
 
     wire stall_bit = me_i_stall || me_o_stall;
@@ -70,6 +71,8 @@ module mem_stage #(
     reg [AWIDTH - 1 : 0] rd_addr_d;
     reg [DWIDTH - 1 : 0 ] store_data_aligned;
     wire [DWIDTH - 1 : 0] raw = me_i_load_data >> (byte_offset * 8);
+    reg [DWIDTH - 1 : 0] me_o_load_data_d;
+    reg [FUNCT_WIDTH - 1 : 0] funct_d;
 
     always @(posedge me_clk, negedge me_rst) begin
         if (!me_rst) begin
@@ -90,6 +93,8 @@ module mem_stage #(
             rd_data_d <= {DWIDTH{1'b0}};
             me_o_rd_addr <= {AWIDTH{1'b0}};
             rd_addr_d <= {AWIDTH{1'b0}};
+            me_o_load_data <= {DWIDTH{1'b0}};
+            me_o_funct3 <= {FUNCT_WIDTH{1'b0}};
         end
         else begin
             if (!me_i_flush && me_i_ack) begin
@@ -98,6 +103,8 @@ module mem_stage #(
                     me_o_rd_addr <= rd_addr_d;
                     me_o_rd_we <= rd_we_d;
                     me_o_rd_data <= rd_data_d;
+                    me_o_load_data <= me_o_load_data_d;
+                    me_o_funct3 <= funct_d;
                 end
                 rd_we_d <= 1'b0;
                 me_o_we <= 1'b0;
@@ -110,6 +117,7 @@ module mem_stage #(
             end
             if (me_i_ce && !pending_request && (me_i_opcode == `LOAD || me_i_opcode == `STORE)) begin
                 pending_request <= 1'b1;
+                funct_d <= me_i_funct3;
             end
             if (me_i_flush) begin
                 me_o_flush <= 1'b1;
@@ -179,7 +187,7 @@ module mem_stage #(
             `LOAD : begin
                 me_o_opcode = me_i_opcode;
                 me_o_load_addr = me_i_alu_value;
-                rd_data_d = final_load;
+                me_o_load_data_d = final_load;
             end
             `STORE : begin
                 me_o_opcode = me_i_opcode;
