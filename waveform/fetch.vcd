@@ -1,297 +1,334 @@
 $date
-	Tue Jul 29 11:10:52 2025
+	Fri Aug 08 22:46:27 2025
 $end
 $version
 	Icarus Verilog
 $end
 $timescale
-	1ps
+	1s
 $end
 $scope module tb_instruction_fetch $end
 $var wire 32 ! f_pc [31:0] $end
 $var wire 1 " f_o_syn $end
-$var wire 32 # f_o_instr [31:0] $end
-$var wire 1 $ f_o_ce $end
-$var wire 32 % f_o_addr_instr [31:0] $end
-$var parameter 32 & AWIDTH $end
-$var parameter 32 ' IWIDTH $end
-$var parameter 32 ( PC_WIDTH $end
-$var reg 32 ) f_alu_pc_value [31:0] $end
-$var reg 1 * f_change_pc $end
-$var reg 1 + f_clk $end
-$var reg 1 , f_i_ack $end
-$var reg 32 - f_i_instr [31:0] $end
-$var reg 1 . f_i_stall $end
-$var reg 1 / f_rst $end
+$var wire 1 # f_o_stall $end
+$var wire 32 $ f_o_instr [31:0] $end
+$var wire 1 % f_o_flush $end
+$var wire 1 & f_o_ce $end
+$var wire 32 ' f_o_addr_instr [31:0] $end
+$var parameter 32 ( AWIDTH_INSTR $end
+$var parameter 32 ) IWIDTH $end
+$var parameter 32 * PC_WIDTH $end
+$var reg 32 + f_alu_pc_value [31:0] $end
+$var reg 1 , f_change_pc $end
+$var reg 1 - f_clk $end
+$var reg 1 . f_i_ack $end
+$var reg 1 / f_i_ce $end
+$var reg 1 0 f_i_flush $end
+$var reg 32 1 f_i_instr [31:0] $end
+$var reg 1 2 f_i_stall $end
+$var reg 1 3 f_rst $end
 $scope module dut $end
-$var wire 32 0 f_alu_pc_value [31:0] $end
-$var wire 1 * f_change_pc $end
-$var wire 1 + f_clk $end
-$var wire 1 , f_i_ack $end
-$var wire 32 1 f_i_instr [31:0] $end
-$var wire 1 . f_i_stall $end
+$var wire 32 4 f_alu_pc_value [31:0] $end
+$var wire 1 , f_change_pc $end
+$var wire 1 - f_clk $end
+$var wire 1 . f_i_ack $end
+$var wire 1 / f_i_ce $end
+$var wire 1 0 f_i_flush $end
+$var wire 32 5 f_i_instr [31:0] $end
+$var wire 1 2 f_i_stall $end
 $var wire 1 " f_o_syn $end
-$var wire 1 / f_rst $end
-$var wire 1 2 stall $end
-$var parameter 32 3 AWIDTH $end
-$var parameter 32 4 IWIDTH $end
-$var parameter 32 5 PC_WIDTH $end
+$var wire 1 3 f_rst $end
+$var wire 1 6 stall $end
+$var parameter 32 7 AWIDTH_INSTR $end
+$var parameter 32 8 IWIDTH $end
+$var parameter 32 9 PC_WIDTH $end
 $var reg 1 " ce $end
-$var reg 1 6 ce_d $end
-$var reg 32 7 f_o_addr_instr [31:0] $end
-$var reg 1 $ f_o_ce $end
-$var reg 32 8 f_o_instr [31:0] $end
-$var reg 1 9 f_o_stall $end
-$var reg 32 : f_pc [31:0] $end
-$var reg 32 ; i_addr_instr [31:0] $end
-$var reg 32 < prev_pc [31:0] $end
+$var reg 1 : ce_d $end
+$var reg 32 ; f_o_addr_instr [31:0] $end
+$var reg 1 & f_o_ce $end
+$var reg 1 % f_o_flush $end
+$var reg 32 < f_o_instr [31:0] $end
+$var reg 1 # f_o_stall $end
+$var reg 32 = f_pc [31:0] $end
+$var reg 32 > i_addr_instr [31:0] $end
+$var reg 32 ? prev_pc [31:0] $end
+$upscope $end
+$scope task do_flush $end
+$var integer 32 @ cycles [31:0] $end
 $upscope $end
 $scope task do_jump $end
-$var reg 32 = pc_jump [31:0] $end
+$var reg 32 A pc [31:0] $end
 $upscope $end
 $scope task do_reset $end
-$var integer 32 > cycles [31:0] $end
+$var integer 32 B cycles [31:0] $end
 $upscope $end
 $scope task introduce_stall $end
-$var integer 32 ? counter_stall [31:0] $end
+$var integer 32 C cycles [31:0] $end
 $upscope $end
 $scope task send_instruction $end
-$var reg 32 @ instr [31:0] $end
+$var reg 32 D instr [31:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b100000 5
-b100000 4
-b100000 3
+b100000 9
+b100000 8
+b100000 7
+b100000 *
+b100000 )
 b100000 (
-b100000 '
-b100000 &
 $end
 #0
 $dumpvars
+bx D
+bx C
+b10 B
+bx A
 bx @
-bx ?
-b10 >
-bx =
+b0 ?
+b0 >
+b0 =
 b0 <
 b0 ;
-b0 :
-x9
-b0 8
-b0 7
-06
-12
+0:
+16
+b0 5
+b0 4
+03
+02
 b0 1
-b0 0
+00
 0/
 0.
-b0 -
+0-
 0,
-0+
-0*
-b0 )
-b0 %
-x$
-b0 #
+b0 +
+b0 '
+x&
+0%
+b0 $
+0#
 0"
 b0 !
 $end
-#5000
-1+
-#10000
-0+
-#15000
-12
-1"
-0$
-1/
-1+
-#20000
-0+
-#25000
-16
+#5
+1-
+#10
+0-
+#15
+0&
+13
+1-
+#20
+0-
+#25
 b100 !
-b100 :
-b10100000101000001010000010100000 #
-b10100000101000001010000010100000 8
-x2
-1,
-b10100000101000001010000010100000 -
-b10100000101000001010000010100000 1
-b10100000101000001010000010100000 @
-1+
-#30000
-0+
-#35000
-1$
-12
-0,
-1+
-#40000
-0+
-#45000
-b1000 !
-b1000 :
-b100 <
-0$
-x2
-1,
-b10110001101100011011000110110001 -
-b10110001101100011011000110110001 1
-b10110001101100011011000110110001 @
-1+
-#50000
-0+
-#55000
-1$
-12
-0,
-1+
-#60000
-0+
-#65000
-b1100 !
-b1100 :
-b1000 <
-0$
-x2
-1,
-b11000010110000101100001011000010 -
-b11000010110000101100001011000010 1
-b11000010110000101100001011000010 @
-1+
-#70000
-0+
-#75000
-1$
-12
-0,
-1+
-#80000
-0+
-#85000
-0$
+b100 =
+1/
 1.
-b11 ?
-1+
-#90000
-0+
-#95000
-b11000010110000101100001011000010 #
-b11000010110000101100001011000010 8
-b1000 ;
-1+
-#100000
-0+
-#105000
-b1000 %
-b1000 7
-1+
-#110000
-0+
-#115000
+b10100000101000001010000010100000 1
+b10100000101000001010000010100000 5
+b10100000101000001010000010100000 D
+1-
+#30
+0-
+#35
+16
+1"
 0.
-1+
-#120000
-0+
-#125000
+1-
+#40
+0-
+#45
+1:
+b1000 !
+b1000 =
+b100 ?
+b10110001101100011011000110110001 $
+b10110001101100011011000110110001 <
+0"
+16
+1.
+b10110001101100011011000110110001 1
+b10110001101100011011000110110001 5
+b10110001101100011011000110110001 D
+1-
+#50
+0-
+#55
+16
+1"
+0.
+1-
+#60
+0-
+#65
+b1100 !
+b1100 =
+b1000 ?
+b11000010110000101100001011000010 $
+b11000010110000101100001011000010 <
+b100 >
+0"
+16
+1.
+b11000010110000101100001011000010 1
+b11000010110000101100001011000010 5
+b11000010110000101100001011000010 D
+1-
+#70
+0-
+#75
+16
+1"
+0.
+1-
+#80
+0-
+#85
+b100 '
+b100 ;
+b1000 >
+12
+b11 C
+1-
+#90
+0-
+#95
+b1000 '
+b1000 ;
+1-
+#100
+0-
+#105
+1-
+#110
+0-
+#115
+02
+1-
+#120
+0-
+#125
 b10000 !
-b10000 :
-b1100 <
-b11010011110100111101001111010011 #
-b11010011110100111101001111010011 8
-x2
-1,
-b11010011110100111101001111010011 -
+b10000 =
+b1100 ?
+b11010011110100111101001111010011 $
+b11010011110100111101001111010011 <
+0"
+16
+1.
 b11010011110100111101001111010011 1
-b11010011110100111101001111010011 @
-1+
-#130000
-0+
-#135000
-1$
-12
-0,
-1+
-#140000
-0+
-#145000
+b11010011110100111101001111010011 5
+b11010011110100111101001111010011 D
+1-
+#130
+0-
+#135
+16
+1"
+0.
+1-
+#140
+0-
+#145
 b100000000 !
-b100000000 :
-b10000 <
-0$
-x2
-1,
-1*
-b100000000 )
-b100000000 0
 b100000000 =
-1+
-#150000
-0+
-#155000
-1$
-12
+b10000 ?
+b1100 >
+0"
+16
+0/
+1.
+1,
+b100000000 +
+b100000000 4
+b100000000 A
+1-
+#150
+0-
+#155
+0.
 0,
-0*
-1+
-#160000
-0+
-#165000
+1-
+#160
+0-
+#165
+b0 $
+b0 <
+1%
+1#
+10
+b10 @
+1-
+#170
+0-
+#175
+1-
+#180
+0-
+#185
+00
+1-
+#190
+0-
+#195
+1"
+0:
 b100000100 !
-b100000100 :
-b100000000 <
-0$
-x2
-1,
-b11100100111001001110010011100100 -
+b100000100 =
+b100000000 ?
+1/
+1.
 b11100100111001001110010011100100 1
-b11100100111001001110010011100100 @
-1+
-#170000
-0+
-#175000
-1$
-12
-0,
-1+
-#180000
-0+
-#185000
+b11100100111001001110010011100100 5
+b11100100111001001110010011100100 D
+1-
+#200
+0-
+#205
+0%
+b11100100111001001110010011100100 $
+b11100100111001001110010011100100 <
+b1100 '
+b1100 ;
+b100000000 >
+0.
+1-
+#210
+0-
+#215
+1:
 b100001000 !
-b100001000 :
-b100000100 <
-0$
-x2
-1,
-b11110101111101011111010111110101 -
+b100001000 =
+b100000100 ?
+b11110101111101011111010111110101 $
+b11110101111101011111010111110101 <
+b100000000 '
+b100000000 ;
+1.
 b11110101111101011111010111110101 1
-b11110101111101011111010111110101 @
-1+
-#190000
-0+
-#195000
-1$
-12
-0,
-1+
-#200000
-0+
-#205000
-0$
-1+
-#210000
-0+
-#215000
-b11110101111101011111010111110101 #
-b11110101111101011111010111110101 8
+b11110101111101011111010111110101 5
+b11110101111101011111010111110101 D
+1-
+#220
+0-
+#225
+b100000100 >
+0.
+1-
+#230
+0-
+#235
+b100000100 '
 b100000100 ;
-1+
-#220000
-0+
-#225000
-b100000100 %
-b100000100 7
-1+
+1-
+#240
+0-
+#245
+1-
+#250
+0-
+#255
+1-

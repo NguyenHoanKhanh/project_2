@@ -1,5 +1,5 @@
 $date
-	Tue Jul 29 14:42:31 2025
+	Fri Aug 08 23:02:58 2025
 $end
 $version
 	Icarus Verilog
@@ -49,66 +49,68 @@ $var wire 1 ; d_rst $end
 $var wire 1 A stall_bit $end
 $var parameter 32 B AWIDTH $end
 $var parameter 32 C DWIDTH $end
-$var parameter 32 D IWIDTH $end
-$var parameter 32 E PC_WIDTH $end
-$var reg 1 F alu_add_d $end
-$var reg 1 G alu_and_d $end
-$var reg 1 H alu_eq_d $end
-$var reg 1 I alu_ge_d $end
-$var reg 1 J alu_geu_d $end
-$var reg 1 K alu_lt_d $end
-$var reg 1 L alu_ltu_d $end
-$var reg 1 M alu_neq_d $end
-$var reg 1 N alu_or_d $end
-$var reg 1 O alu_sll_d $end
-$var reg 1 P alu_slt_d $end
-$var reg 1 Q alu_sltu_d $end
-$var reg 1 R alu_sra_d $end
-$var reg 1 S alu_srl_d $end
-$var reg 1 T alu_sub_d $end
-$var reg 1 U alu_xor_d $end
-$var reg 5 V d_o_addr_rd_p [4:0] $end
-$var reg 5 W d_o_addr_rs1_p [4:0] $end
-$var reg 5 X d_o_addr_rs2_p [4:0] $end
-$var reg 14 Y d_o_alu [13:0] $end
+$var parameter 32 D FUNCT_WIDTH $end
+$var parameter 32 E IWIDTH $end
+$var parameter 32 F PC_WIDTH $end
+$var reg 1 G alu_add_d $end
+$var reg 1 H alu_and_d $end
+$var reg 1 I alu_eq_d $end
+$var reg 1 J alu_ge_d $end
+$var reg 1 K alu_geu_d $end
+$var reg 1 L alu_lt_d $end
+$var reg 1 M alu_ltu_d $end
+$var reg 1 N alu_neq_d $end
+$var reg 1 O alu_or_d $end
+$var reg 1 P alu_sll_d $end
+$var reg 1 Q alu_slt_d $end
+$var reg 1 R alu_sltu_d $end
+$var reg 1 S alu_sra_d $end
+$var reg 1 T alu_srl_d $end
+$var reg 1 U alu_sub_d $end
+$var reg 1 V alu_xor_d $end
+$var reg 5 W d_o_addr_rd_p [4:0] $end
+$var reg 5 X d_o_addr_rs1_p [4:0] $end
+$var reg 5 Y d_o_addr_rs2_p [4:0] $end
+$var reg 14 Z d_o_alu [13:0] $end
 $var reg 1 ( d_o_ce $end
-$var reg 4 Z d_o_exception [3:0] $end
+$var reg 4 [ d_o_exception [3:0] $end
 $var reg 1 & d_o_flush $end
-$var reg 3 [ d_o_funct3 [2:0] $end
-$var reg 32 \ d_o_imm [31:0] $end
-$var reg 11 ] d_o_opcode [10:0] $end
-$var reg 32 ^ d_o_pc [31:0] $end
+$var reg 3 \ d_o_funct3 [2:0] $end
+$var reg 32 ] d_o_imm [31:0] $end
+$var reg 11 ^ d_o_opcode [10:0] $end
+$var reg 32 _ d_o_pc [31:0] $end
 $var reg 1 ! d_o_stall $end
-$var reg 3 _ funct3 [2:0] $end
-$var reg 1 ` illegal_check $end
-$var reg 32 a imm_d [31:0] $end
-$var reg 7 b opcode [6:0] $end
-$var reg 1 c opcode_auipc_d $end
-$var reg 1 d opcode_branch_d $end
-$var reg 1 e opcode_fence_d $end
-$var reg 1 f opcode_itype_d $end
-$var reg 1 g opcode_jal_d $end
-$var reg 1 h opcode_jalr_d $end
-$var reg 1 i opcode_load_word_d $end
-$var reg 1 j opcode_lui_d $end
-$var reg 1 k opcode_rtype_d $end
-$var reg 1 l opcode_store_word_d $end
-$var reg 1 m opcode_system_d $end
-$var reg 1 n system_exeption $end
-$var reg 5 o temp_addr_rd [4:0] $end
-$var reg 5 p temp_addr_rs1 [4:0] $end
-$var reg 5 q temp_addr_rs2 [4:0] $end
-$var reg 1 r valid_opcode $end
+$var reg 3 ` funct3 [2:0] $end
+$var reg 1 a illegal_check $end
+$var reg 32 b imm_d [31:0] $end
+$var reg 7 c opcode [6:0] $end
+$var reg 1 d opcode_auipc_d $end
+$var reg 1 e opcode_branch_d $end
+$var reg 1 f opcode_fence_d $end
+$var reg 1 g opcode_itype_d $end
+$var reg 1 h opcode_jal_d $end
+$var reg 1 i opcode_jalr_d $end
+$var reg 1 j opcode_load_word_d $end
+$var reg 1 k opcode_lui_d $end
+$var reg 1 l opcode_rtype_d $end
+$var reg 1 m opcode_store_word_d $end
+$var reg 1 n opcode_system_d $end
+$var reg 1 o system_exeption $end
+$var reg 5 p temp_addr_rd [4:0] $end
+$var reg 5 q temp_addr_rs1 [4:0] $end
+$var reg 5 r temp_addr_rs2 [4:0] $end
+$var reg 1 s valid_opcode $end
 $upscope $end
 $scope task reset $end
-$var integer 32 s i [31:0] $end
+$var integer 32 t i [31:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
+b100000 F
 b100000 E
-b100000 D
+b11 D
 b100000 C
 b101 B
 b100000 4
@@ -119,11 +121,12 @@ b101 0
 $end
 #0
 $dumpvars
-b0 s
-0r
+b0 t
+0s
+b0 r
 b0 q
 b0 p
-b0 o
+0o
 0n
 0m
 0l
@@ -135,20 +138,20 @@ b0 o
 0f
 0e
 0d
-0c
-bx b
-b0 a
-0`
+bx c
+b0 b
+0a
+bx `
 bx _
 bx ^
 bx ]
 bx \
 bx [
 bx Z
-bx Y
+b0 Y
 b0 X
 b0 W
-b0 V
+0V
 0U
 0T
 0S
@@ -163,8 +166,7 @@ b0 V
 0J
 0I
 0H
-0G
-1F
+1G
 0A
 b0 @
 b0 ?
@@ -195,37 +197,37 @@ bx "
 0!
 $end
 #5000
-b1 s
+b1 t
 15
 #10000
 05
 #15000
 b1 '
-b1 Z
+b1 [
 b0xxxxxxx #
-b0xxxxxxx ]
+b0xxxxxxx ^
 1;
-b10 s
+b10 t
 15
 #20000
 05
 #25000
 1(
-bx a
-1F
+bx b
+1G
 b1 /
 b1 >
-b1 o
+b1 p
 b10 -
 b10 ?
-b10 p
+b10 q
 b11 +
 b11 @
-b11 q
-1r
-1k
-b0 _
-b110011 b
+b11 r
+1s
+1l
+b0 `
+b110011 c
 b100 9
 b100 =
 b1100010000000010110011 8
@@ -236,49 +238,49 @@ b1100010000000010110011 <
 05
 #35000
 b0 '
-b0 Z
-b1 )
-b1 Y
-b110011 #
-b110011 ]
-b0 %
 b0 [
+b1 )
+b1 Z
+b110011 #
+b110011 ^
+b0 %
+b0 \
 b1 .
-b1 V
+b1 W
 b11 *
-b11 X
+b11 Y
 b10 ,
-b10 W
+b10 X
 b100 "
-b100 ^
+b100 _
 15
 #40000
 05
 #45000
 b110011 #
-b110011 ]
+b110011 ^
 b10 )
-b10 Y
+b10 Z
 b100 .
-b100 V
+b100 W
 b110 *
-b110 X
+b110 Y
 b101 ,
-b101 W
+b101 X
 b1000 "
-b1000 ^
-bx a
-1T
-0F
+b1000 _
+bx b
+1U
+0G
 b100 /
 b100 >
-b100 o
+b100 p
 b110 +
 b110 @
-b110 q
+b110 r
 b101 -
 b101 ?
-b101 p
+b101 q
 15
 b1000 9
 b1000 =
@@ -288,40 +290,40 @@ b1000000011000101000001000110011 <
 05
 #55000
 b110011 #
-b110011 ]
+b110011 ^
 15
 #60000
 05
 #65000
 b1 )
-b1 Y
+b1 Z
 b10000 $
-b10000 \
+b10000 ]
 b10011 #
-b10011 ]
+b10011 ^
 b111 .
-b111 V
+b111 W
 bx *
-bx X
+bx Y
 b1000 ,
-b1000 W
+b1000 X
 b1100 "
-b1100 ^
-b10000 a
-1F
-0T
-1f
-0k
-b10011 b
+b1100 _
+b10000 b
+1G
+0U
+1g
+0l
+b10011 c
 b111 /
 b111 >
-b111 o
+b111 p
 bx +
 bx @
-bx q
+bx r
 b1000 -
 b1000 ?
-b1000 p
+b1000 q
 15
 b1100 9
 b1100 =
@@ -331,38 +333,38 @@ b1000001000000001110010011 <
 05
 #75000
 b10011 #
-b10011 ]
+b10011 ^
 15
 #80000
 05
 #85000
 b100 $
-b100 \
+b100 ]
 b11 #
-b11 ]
+b11 ^
 b10 %
-b10 [
+b10 \
 b1001 .
-b1001 V
+b1001 W
 b1010 ,
-b1010 W
+b1010 X
 b10000 "
-b10000 ^
-b100 a
-1F
-b10 _
-1i
-0f
-b11 b
+b10000 _
+b100 b
+1G
+b10 `
+1j
+0g
+b11 c
 b1001 /
 b1001 >
-b1001 o
+b1001 p
 bx +
 bx @
-bx q
+bx r
 b1010 -
 b1010 ?
-b1010 p
+b1010 q
 15
 b10000 9
 b10000 =
@@ -372,38 +374,38 @@ b10001010010010010000011 <
 05
 #95000
 b11 #
-b11 ]
+b11 ^
 15
 #100000
 05
 #105000
 b1000 $
-b1000 \
+b1000 ]
 b100011 #
-b100011 ]
+b100011 ^
 bx .
-bx V
+bx W
 b1011 *
-b1011 X
+b1011 Y
 b1100 ,
-b1100 W
+b1100 X
 b10100 "
-b10100 ^
-b1000 a
-1F
-1l
-0i
-b10 _
-b100011 b
+b10100 _
+b1000 b
+1G
+1m
+0j
+b10 `
+b100011 c
 bx /
 bx >
-bx o
+bx p
 b1011 +
 b1011 @
-b1011 q
+b1011 r
 b1100 -
 b1100 ?
-b1100 p
+b1100 q
 15
 b10100 9
 b10100 =
@@ -413,41 +415,41 @@ b101101100010010000100011 <
 05
 #115000
 b100011 #
-b100011 ]
+b100011 ^
 15
 #120000
 05
 #125000
 b10000000000 )
-b10000000000 Y
+b10000000000 Z
 b100 $
-b100 \
+b100 ]
 b1100011 #
-b1100011 ]
+b1100011 ^
 b0 %
-b0 [
+b0 \
 b1110 *
-b1110 X
+b1110 Y
 b1101 ,
-b1101 W
+b1101 X
 b11000 "
-b11000 ^
-b100 a
-1H
-0F
-1d
-0l
-b0 _
-b1100011 b
+b11000 _
+b100 b
+1I
+0G
+1e
+0m
+b0 `
+b1100011 c
 bx /
 bx >
-bx o
+bx p
 b1110 +
 b1110 @
-b1110 q
+b1110 r
 b1101 -
 b1101 ?
-b1101 p
+b1101 q
 15
 b11000 9
 b11000 =
@@ -457,43 +459,43 @@ b111001101000001001100011 <
 05
 #135000
 b1100011 #
-b1100011 ]
+b1100011 ^
 15
 #140000
 05
 #145000
 b1 )
-b1 Y
+b1 Z
 b100000000100000000 $
-b100000000100000000 \
+b100000000100000000 ]
 b1101111 #
-b1101111 ]
+b1101111 ^
 bx %
-bx [
+bx \
 b1111 .
-b1111 V
+b1111 W
 bx *
-bx X
+bx Y
 bx ,
-bx W
+bx X
 b11100 "
-b11100 ^
-b100000000100000000 a
-1F
-0H
-bx _
-1g
-0d
-b1101111 b
+b11100 _
+b100000000100000000 b
+1G
+0I
+bx `
+1h
+0e
+b1101111 c
 b1111 /
 b1111 >
-b1111 o
+b1111 p
 bx +
 bx @
-bx q
+bx r
 bx -
 bx ?
-bx p
+bx q
 15
 b11100 9
 b11100 =
@@ -503,38 +505,38 @@ b10000000000100000011111101111 <
 05
 #155000
 b1101111 #
-b1101111 ]
+b1101111 ^
 15
 #160000
 05
 #165000
 b10100 $
-b10100 \
+b10100 ]
 b1100111 #
-b1100111 ]
+b1100111 ^
 b0 %
-b0 [
+b0 \
 b10000 .
-b10000 V
+b10000 W
 b10001 ,
-b10001 W
+b10001 X
 b100000 "
-b100000 ^
-b10100 a
-1F
-1h
-0g
-b0 _
-b1100111 b
+b100000 _
+b10100 b
+1G
+1i
+0h
+b0 `
+b1100111 c
 b10000 /
 b10000 >
-b10000 o
+b10000 p
 bx +
 bx @
-bx q
+bx r
 b10001 -
 b10001 ?
-b10001 p
+b10001 q
 15
 b100000 9
 b100000 =
@@ -544,38 +546,38 @@ b1010010001000100001100111 <
 05
 #175000
 b1100111 #
-b1100111 ]
+b1100111 ^
 15
 #180000
 05
 #185000
 b10010001101000101000000000000 $
-b10010001101000101000000000000 \
+b10010001101000101000000000000 ]
 b110111 #
-b110111 ]
+b110111 ^
 bx %
-bx [
+bx \
 b10010 .
-b10010 V
+b10010 W
 bx ,
-bx W
+bx X
 b100100 "
-b100100 ^
-b10010001101000101000000000000 a
-1F
-bx _
-1j
-0h
-b110111 b
+b100100 _
+b10010001101000101000000000000 b
+1G
+bx `
+1k
+0i
+b110111 c
 b10010 /
 b10010 >
-b10010 o
+b10010 p
 bx +
 bx @
-bx q
+bx r
 bx -
 bx ?
-bx p
+bx q
 15
 b100100 9
 b100100 =
@@ -585,34 +587,34 @@ b10010001101000101100100110111 <
 05
 #195000
 b110111 #
-b110111 ]
+b110111 ^
 15
 #200000
 05
 #205000
 b10101011110011011110000000000000 $
-b10101011110011011110000000000000 \
+b10101011110011011110000000000000 ]
 b10111 #
-b10111 ]
+b10111 ^
 b10011 .
-b10011 V
+b10011 W
 b101000 "
-b101000 ^
-b10101011110011011110000000000000 a
-1F
-1c
-0j
-bx _
-b10111 b
+b101000 _
+b10101011110011011110000000000000 b
+1G
+1d
+0k
+bx `
+b10111 c
 b10011 /
 b10011 >
-b10011 o
+b10011 p
 bx +
 bx @
-bx q
+bx r
 bx -
 bx ?
-bx p
+bx q
 15
 b101000 9
 b101000 =
@@ -622,11 +624,11 @@ b10101011110011011110100110010111 <
 05
 #215000
 b10111 #
-b10111 ]
+b10111 ^
 15
 #220000
 05
 #225000
 b10111 #
-b10111 ]
+b10111 ^
 15

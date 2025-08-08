@@ -24,6 +24,7 @@ module tb_instruction_fetch;
     // Stall interface
     reg                    f_i_stall;
     wire                   f_o_stall;
+    reg                    f_i_ce;
     wire                   f_o_ce;
 
     // Flush interface
@@ -48,6 +49,7 @@ module tb_instruction_fetch;
         .f_i_ack       (f_i_ack),
         .f_i_stall     (f_i_stall),
         .f_o_stall     (f_o_stall),
+        .f_i_ce        (f_i_ce),
         .f_o_ce        (f_o_ce),
         .f_i_flush     (f_i_flush),
         .f_o_flush     (f_o_flush)
@@ -81,6 +83,7 @@ module tb_instruction_fetch;
             f_i_instr   = instr;
             f_i_ack     = 1;
             f_i_stall   = 0;
+            f_i_ce      = 1;
             f_change_pc = 0;
             f_i_flush   = 0;
             @(posedge f_clk);
@@ -107,6 +110,7 @@ module tb_instruction_fetch;
             f_i_ack        = 1;
             f_i_stall      = 0;
             f_i_flush      = 0;
+            f_i_ce         = 0;
             @(posedge f_clk);
             f_change_pc    = 0;
             f_i_ack        = 0;
@@ -120,6 +124,7 @@ module tb_instruction_fetch;
             f_i_flush = 1;
             f_i_ack   = 0;
             f_i_stall = 0;
+            f_i_ce    = 0;
             @(posedge f_clk);
             repeat(cycles-1) @(posedge f_clk);
             f_i_flush = 0;
@@ -143,6 +148,7 @@ module tb_instruction_fetch;
         f_change_pc     = 0;
         f_alu_pc_value  = 0;
         f_i_flush       = 0;
+        f_i_ce          = 0; 
 
         // Reset
         do_reset(2);

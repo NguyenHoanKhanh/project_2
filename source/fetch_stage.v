@@ -10,7 +10,7 @@ module fetch_i #(
     parameter PC_WIDTH = 32
 )(
     fi_clk, fi_rst, fi_o_instr_fetch, fi_o_addr_instr, fi_change_pc, fi_alu_pc_value, 
-    fi_pc, fi_i_stall, fi_o_stall, fi_o_ce, fi_i_flush, fi_o_flush
+    fi_pc, fi_i_stall, fi_o_stall, fi_o_ce, fi_i_flush, fi_o_flush, fi_i_ce
 );
     input fi_clk, fi_rst;
     output [IWIDTH - 1 : 0] fi_o_instr_fetch;
@@ -22,6 +22,7 @@ module fetch_i #(
     output fi_o_stall;
     input fi_i_flush;
     output fi_o_flush;
+    input fi_i_ce;
     output fi_o_ce;
     wire [IWIDTH - 1 : 0] fi_o_instr_mem;
 
@@ -55,6 +56,7 @@ module fetch_i #(
         .f_o_syn(fi_i_syn),
         .f_i_ack(fi_o_ack),
         .f_i_stall(fi_i_stall),
+        .f_i_ce(fi_i_ce),
         .f_o_ce(fi_o_ce),
         .f_o_stall(fi_o_stall),
         .f_o_flush(fi_o_flush),

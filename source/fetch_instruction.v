@@ -7,7 +7,7 @@ module instruction_fetch #(
     parameter PC_WIDTH = 32
 )(
     f_clk, f_rst, f_i_instr, f_o_instr, f_o_addr_instr, f_change_pc, f_alu_pc_value, 
-    f_pc, f_o_syn, f_i_ack, f_i_stall, f_o_ce, f_o_stall, f_i_flush, f_o_flush
+    f_pc, f_o_syn, f_i_ack, f_i_stall, f_o_ce, f_o_stall, f_i_flush, f_o_flush, f_i_ce
 );
     input f_clk, f_rst;
     //Instruction
@@ -23,6 +23,7 @@ module instruction_fetch #(
     //Stall 
     input f_i_stall;
     output reg f_o_stall;
+    input f_i_ce;
     output reg f_o_ce;
     input f_i_flush;
     output reg f_o_flush;
@@ -46,7 +47,7 @@ module instruction_fetch #(
             ce <= 0;
             f_o_stall <= 1'b0;
         end
-        else begin
+        else if (f_i_ce)begin
             ce <= 1;
         end
     end

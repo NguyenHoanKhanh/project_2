@@ -16,7 +16,7 @@ module processing #(
     parameter DWIDTH = 32,
     parameter FUNCT_WIDTH = 3
 ) (
-    pe_clk, pe_rst, pe_fi_o_instr_fetch
+    pe_clk, pe_rst, pe_fi_i_ce, pe_fi_i_stall, pe_fi_i_flush, pe_fi_o_instr_fetch, pe_wb_o_rd_addr, pe_wb_o_rd_data
 );
     input pe_clk, pe_rst;
     output [IWIDTH - 1 : 0] pe_fi_o_instr_fetch;
@@ -25,10 +25,11 @@ module processing #(
     wire [PC_WIDTH - 1 : 0] pe_fi_alu_pc_value;
     wire [PC_WIDTH - 1 : 0] pe_fi_pc;
     wire [PC_WIDTH - 1 : 0] pe_ds_o_pc;
-    wire pe_fi_i_stall;
+    input pe_fi_i_stall;
     wire pe_fi_o_stall;
-    reg pe_fi_i_flush;
+    input pe_fi_i_flush;
     wire pe_fi_o_flush;
+    input pe_fi_i_ce;
     wire pe_fi_o_ce;
     wire ps_ds_read_reg;
     wire pe_ds_we;
@@ -100,6 +101,7 @@ module processing #(
         .fi_pc(pe_fi_pc), 
         .fi_i_stall(pe_fi_i_stall), 
         .fi_o_stall(pe_fi_o_stall), 
+        .fi_i_ce(pe_fi_i_ce),
         .fi_o_ce(pe_fi_o_ce),
         .fi_i_flush(pe_fi_i_flush),
         .fi_o_flush(pe_fi_o_flush)
