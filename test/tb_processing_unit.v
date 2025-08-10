@@ -66,7 +66,7 @@ module tb;
         pe_fi_i_ce = 1'b1;
         pe_fi_i_stall = 1'b0;
         pe_fi_i_flush = 1'b0;
-        clock(36);
+        clock(10000);
         $monitor($time, " ", "pe_fi_o_instr_fetch = %h, pe_wb_o_rd_data = %d, pe_wb_o_rd_addr = %d", pe_fi_o_instr_fetch, pe_wb_o_rd_data, pe_wb_o_rd_addr);
         #200; $finish;
     end

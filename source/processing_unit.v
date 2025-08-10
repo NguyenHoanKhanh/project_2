@@ -116,6 +116,7 @@ module processing #(
     ) ds (
         .ds_clk(pe_clk),
         .ds_rst(pe_rst),
+        .ds_i_instr(pe_fi_o_instr_fetch),
         .ds_i_pc(pe_fi_pc),
         .ds_o_pc(pe_ds_o_pc),
         .ds_o_addr_rs1_p(pe_ds_o_addr_rs1),

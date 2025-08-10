@@ -15,6 +15,7 @@ module transmit #(
 
     integer counter;
     reg [IWIDTH-1:0] mem_instr [0:DEPTH-1];
+    reg t_i_syn_d;
 
     initial begin
         // nạp hex hoặc bin, kèm start-stop
@@ -27,9 +28,11 @@ module transmit #(
             counter   <= 0;
             t_o_ack   <= 0;
             t_o_instr <= {IWIDTH{1'b0}};
+            t_i_syn_d <= 0;
         end
         else begin
-            if (t_i_syn) begin
+            t_i_syn_d <= t_i_syn;   
+            if (t_i_syn && t_i_syn_d) begin
                 t_o_instr <= mem_instr[counter];
                 t_o_ack   <= 1;
                 if (counter < DEPTH - 1) begin

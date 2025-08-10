@@ -63,7 +63,7 @@ module tb_instruction_fetch;
 
     // Waveform dump
     initial begin
-        $dumpfile("./waveform/fetch.vcd");
+        $dumpfile("./waveform/fetch_intruction.vcd");
         $dumpvars(0, tb_instruction_fetch);
     end
 
