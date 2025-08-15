@@ -9,7 +9,9 @@ module decoder #(
     parameter PC_WIDTH = 32,
     parameter FUNCT_WIDTH = 3
 )(
-    d_clk, d_rst, d_i_instr, d_i_pc, d_o_pc, d_o_addr_rs1, d_o_addr_rs1_p, d_o_addr_rs2, d_o_addr_rs2_p, d_o_addr_rd, d_o_addr_rd_p, d_o_imm, d_o_funct3, d_o_alu, d_o_opcode, d_o_exception, d_i_ce, d_o_ce, d_i_stall, d_o_stall, d_i_flush, d_o_flush
+    d_clk, d_rst, d_i_instr, d_i_pc, d_o_pc, d_o_addr_rs1, d_o_addr_rs1_p, d_o_addr_rs2, d_o_addr_rs2_p, 
+    d_o_addr_rd, d_o_addr_rd_p, d_o_imm, d_o_funct3, d_o_alu, d_o_opcode, d_o_exception, d_i_ce, d_o_ce, 
+    d_i_stall, d_o_stall, d_i_flush, d_o_flush
 );
     input d_clk, d_rst;
     input [IWIDTH - 1 : 0] d_i_instr;

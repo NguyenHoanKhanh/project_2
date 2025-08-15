@@ -14,7 +14,7 @@ module instruction_fetch #(
     output reg [AWIDTH_INSTR - 1 : 0] f_o_addr_instr;
     input [IWIDTH - 1: 0] f_i_instr;
     output reg [IWIDTH - 1: 0] f_o_instr;
-    output f_o_syn;
+    output reg f_o_syn;
     input f_i_ack;
     //PC
     input f_change_pc;
@@ -31,20 +31,8 @@ module instruction_fetch #(
     reg [PC_WIDTH - 1 : 0] prev_pc;
     reg [AWIDTH_INSTR - 1 : 0] i_addr_instr;
     reg ce, ce_d;
-
-    assign f_o_syn = ce;
-    //Combinational next state calculation
-    reg next_ce;
-    reg next_ce_d;
-    reg next_o_stall;
-    reg next_o_flush;
-    reg [PC_WIDTH - 1 : 0] next_pc;
-    reg [AWIDTH_INSTR - 1 : 0] next_i_addr_instr;
-    reg next_o_ce;
-    reg [IWIDTH - 1 : 0] next_o_instr;
-    reg [AWIDTH_INSTR - 1 : 0] next_o_addr_instr;
-    reg [PC_WIDTH - 1 : 0] next_prev_pc;
-    wire stall = f_o_stall || f_i_stall || (f_o_syn && !f_i_ack) || !f_o_syn;
+    reg f_o_syn_r;
+    wire stall = f_o_stall || f_i_stall || (f_o_syn_r && !f_i_ack);
 
     // always @(posedge f_clk or negedge f_rst) begin
     //     if (!f_rst) begin
@@ -104,84 +92,62 @@ module instruction_fetch #(
     //         end
     //     end
     // end
-
-
-    always @(posedge f_clk or negedge f_rst) begin
+    
+    always @(posedge f_clk, negedge f_rst) begin
         if (!f_rst) begin
             f_o_stall <= 1'b0;
             ce <= 1'b0;
+            ce_d <= 1'b0;
+            f_o_ce <= 1'b0;
             f_o_flush <= 1'b0;
+            f_o_stall <= 1'b0;
             f_o_instr <= {IWIDTH{1'b0}};
             f_pc <= {PC_WIDTH{1'b0}};
+            prev_pc <= {PC_WIDTH{1'b0}};
             i_addr_instr <= {AWIDTH_INSTR{1'b0}};
             f_o_addr_instr <= {AWIDTH_INSTR{1'b0}};
-            prev_pc <= {PC_WIDTH{1'b0}};
-            ce_d <= 1'b0;
-            ce <= 1'b0;
+            f_o_syn_r <= 1'b0;
         end
         else begin
-            ce <= next_ce;
-            ce_d <= next_ce_d;
-            f_o_stall <= next_o_stall;
-            f_o_flush <= next_o_flush;
-            f_o_instr <= next_o_instr;
-            f_pc <= next_pc;
-            prev_pc <= next_prev_pc;
-            i_addr_instr <= next_i_addr_instr;
-            f_o_addr_instr <= next_o_addr_instr;
-            f_o_ce <= next_o_ce;
-        end
-    end
+            f_o_syn <= ce;
+            f_o_syn_r <= f_o_syn;
+            if (f_i_flush) begin
+                ce <= 1'b0;
+                f_o_stall <= 1'b1;
+                f_o_flush <= 1'b1;
+            end
+            else if ((f_change_pc || f_i_ack) && !(f_i_stall || f_o_stall)) begin
+                ce <= 1'b1;
+                f_o_stall <= 1'b0;
+                f_o_flush <= 1'b0;
+            end
+            else if (f_i_ce) begin
+                ce <= 1'b1;
+            end
 
-    always @(*) begin
-        next_ce = ce;
-        next_ce_d = ce_d;
-        next_o_ce = f_o_ce;
-        next_o_stall = f_o_stall;
-        next_o_flush = f_o_flush;
-        next_pc = f_pc;
-        next_i_addr_instr = i_addr_instr;
-        next_o_addr_instr = f_o_addr_instr;
-        next_o_instr = f_o_instr;
-        next_prev_pc = prev_pc;
+            if((ce && f_i_ack && !stall) || (stall && !f_o_ce && ce)) begin
+                i_addr_instr <= prev_pc;
+                f_o_addr_instr <= i_addr_instr;
+                f_o_instr <= f_i_instr;
+                f_o_flush <= 1'b0;
+            end
 
-        if (f_i_flush) begin
-            next_ce = 1'b0;
-            next_o_flush = 1'b1;
-            next_o_stall = 1'b1;
-            next_o_instr = {IWIDTH{1'b0}};
-        end
-        else if ((f_change_pc || f_i_ack) && !(f_i_stall || f_o_stall)) begin
-            next_ce = 1'b1;
-            next_o_stall = 1'b0;
-            next_o_flush = 1'b0;
-        end
-        else if (f_i_ce) begin
-            next_ce = 1'b1;
-        end
-
-        if ((ce && f_i_ack && !stall) || (stall && !f_o_ce && ce)) begin
-            next_i_addr_instr = prev_pc;
-            next_o_addr_instr = i_addr_instr;
-            next_o_instr = f_i_instr;
-            next_o_flush = 1'b0;
-        end
-
-        if (stall) begin
-            next_o_ce = 1'b0;
-        end
-        else begin
-            next_o_ce = ce_d;
-        end
-
-        if (f_i_ack) begin
-            next_prev_pc = f_pc;
-            if (f_change_pc || f_i_flush) begin
-                next_pc = f_alu_pc_value;   
+            if (stall) begin
+                f_o_ce <= 1'b0;
             end
             else begin
-                next_pc = f_pc + 4;
-                next_ce_d = ce;
+                f_o_ce <= ce_d;
+            end
+
+            if (f_i_ack) begin
+                prev_pc <= f_pc;
+                if (f_change_pc || f_i_flush) begin
+                    f_pc <= f_alu_pc_value;
+                end
+                else begin
+                    f_pc <= f_pc + 4;
+                    ce_d <= ce;
+                end
             end
         end
     end

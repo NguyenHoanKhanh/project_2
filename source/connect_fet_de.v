@@ -5,7 +5,7 @@
 
 module connect #(
     parameter IWIDTH = 32,
-    parameter DEPTH = 36,
+    parameter DEPTH = 100,
     parameter AWIDTH_INSTR = 32,
     parameter PC_WIDTH = 32,
     parameter AWIDTH = 5,

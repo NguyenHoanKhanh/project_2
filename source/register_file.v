@@ -25,7 +25,7 @@ module register #(
     always @(posedge r_clk, negedge r_rst) begin
         if (!r_rst) begin
             for (i = 0; i < DWIDTH; i = i + 1) begin
-                data[i] <= i;
+                data[i] <= {DWIDTH{1'b0}};
             end
             r_data_out_rs1 <= {DWIDTH{1'b0}};
             r_data_out_rs2 <= {DWIDTH{1'b0}};

@@ -80,25 +80,29 @@ module tb;
         @(posedge c_clk);
         fi_i_ce = 1'b1;
 
-        for (i = 0; i < 10; i = i + 1) begin
+        for (i = 0; i < 5; i = i + 1) begin
             ds_we = 1'b1;
             ds_data_in_rd = i;
             @(posedge c_clk);
         end
         ds_we = 1'b0;
 
-        for (i = 0; i < 10; i = i + 1) begin
+        for (i = 0; i < 5; i = i + 1) begin
             @(posedge c_clk);
             ds_read_reg = 1'b1;
         end
         ds_read_reg = 1'b0;
-
         repeat(36) @(posedge c_clk);
-        #2000; 
+        #200; 
         $finish;
     end
 
     initial begin
-        $monitor($time, " ", "fi_o_instr_fetch = %h, ds_data_out_rs1 = %d, ds_data_out_rs2 = %d, ds_o_opcode = %b, ds_o_alu = %b, ds_o_imm = %b, ds_o_funct3 = %b, ds_o_addr_rd_p = %d, ds_o_addr_rs2_p = %d, ds_o_addr_rs1_p = %d", fi_o_instr_fetch, ds_data_out_rs1, ds_data_out_rs2, ds_o_opcode, ds_o_alu, ds_o_imm, ds_o_funct3, ds_o_addr_rd_p, ds_o_addr_rs2_p, ds_o_addr_rs1_p);
-    end
+    $monitor("%0t fi_o_instr_fetch = %h, ds_data_out_rs1 = %0d, ds_data_out_rs2 = %0d, ds_o_opcode = %b, ds_o_alu = %b, ds_o_imm = %b, ds_o_funct3 = %b, ds_o_addr_rd_p = %0d, ds_o_addr_rs2_p = %0d, ds_o_addr_rs1_p = %0d",
+           $time,
+           fi_o_instr_fetch, ds_data_out_rs1, ds_data_out_rs2,
+           ds_o_opcode, ds_o_alu, ds_o_imm, ds_o_funct3,
+           ds_o_addr_rd_p, ds_o_addr_rs2_p, ds_o_addr_rs1_p);
+end
+
 endmodule

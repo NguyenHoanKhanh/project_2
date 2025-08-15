@@ -1,6 +1,7 @@
 `include "./source/transmit_instruction.v"
 module tb;
     parameter IWIDTH = 32;
+    parameter DEPTH = 36;
     reg t_clk, t_rst;
     wire [IWIDTH - 1 : 0] t_o_instr;
     reg t_i_syn;
@@ -8,7 +9,8 @@ module tb;
     integer i;
 
     transmit #(
-        .IWIDTH(IWIDTH)
+        .IWIDTH(IWIDTH),
+        .DEPTH(DEPTH)
     ) t (
         .t_clk(t_clk),
         .t_rst(t_rst),
@@ -43,7 +45,7 @@ module tb;
                 @(posedge t_clk);
                 t_i_syn = 1'b1;
                 @(posedge t_clk);
-                $display($time, " ", "instr = %h, ack = %b", t_o_instr, t_o_ack);
+                $display($time, " ", "instr = %h, ack = %b, %d", t_o_instr, t_o_ack, i);
                 @(posedge t_clk);
                 t_i_syn = 1'b0;
                 @(posedge t_clk);
@@ -54,7 +56,7 @@ module tb;
     initial begin
         reset(2);
         @(posedge t_clk);
-        display(30);
+        display(36);
         #200; $finish;
     end
 endmodule
