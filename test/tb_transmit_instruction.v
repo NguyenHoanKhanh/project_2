@@ -46,7 +46,6 @@ module tb;
                 t_i_syn = 1'b1;
                 @(posedge t_clk);
                 $display($time, " ", "instr = %h, ack = %b, %d", t_o_instr, t_o_ack, i);
-                @(posedge t_clk);
                 t_i_syn = 1'b0;
                 @(posedge t_clk);
             end
