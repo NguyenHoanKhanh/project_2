@@ -29,70 +29,11 @@ module instruction_fetch #(
     output reg f_o_flush;
     //Internal state regs
     reg [PC_WIDTH - 1 : 0] prev_pc;
-    reg [AWIDTH_INSTR - 1 : 0] i_addr_instr;
     reg ce, ce_d;
     reg f_o_syn_r;
     wire stall = f_o_stall || f_i_stall || (f_o_syn_r && !f_i_ack);
+    reg init_done;
 
-    // always @(posedge f_clk or negedge f_rst) begin
-    //     if (!f_rst) begin
-    //         f_o_stall <= 0;
-    //         ce <= 0;
-    //     end
-    //     else if (f_i_flush) begin
-    //         ce <= 1'b0;
-    //         f_o_stall <= 1'b1;
-    //     end
-    //     else if ((f_change_pc || f_i_ack) && !(f_i_stall || f_o_stall)) begin
-    //         ce <= 0;
-    //         f_o_stall <= 1'b0;
-    //     end
-    //     else if (f_i_ce)begin
-    //         ce <= 1;
-    //     end
-    // end
-
-    // always @(posedge f_clk or negedge f_rst) begin
-    //     if (!f_rst) begin
-    //         f_o_stall <= 0;
-    //         f_o_flush <= 0;
-    //         f_o_instr <= {IWIDTH{1'b0}};
-    //         f_pc <= {PC_WIDTH{1'b0}};
-    //         i_addr_instr <= {AWIDTH_INSTR{1'b0}};
-    //         f_o_addr_instr <= {AWIDTH_INSTR{1'b0}};
-    //         prev_pc <= {PC_WIDTH{1'b0}};
-    //         ce_d <= 1'b0;
-    //     end
-    //     else begin
-    //         if (f_i_flush) begin
-    //             f_o_flush <= 1'b1;
-    //             f_o_instr <= {IWIDTH{1'b0}};
-    //         end
-    //         if ((ce && f_i_ack && !stall) || (stall && !f_o_ce && ce)) begin
-    //             i_addr_instr <= prev_pc; 
-    //             f_o_addr_instr <= i_addr_instr;
-    //             f_o_instr <= f_i_instr;
-    //             f_o_flush <= 1'b0;
-    //         end
-    //         if (stall) begin
-    //             f_o_ce <= 0;
-    //         end
-    //         else begin
-    //             f_o_ce <= ce_d;
-    //         end
-    //         if (f_i_ack) begin
-    //             prev_pc <= f_pc;
-    //             if (f_change_pc || f_i_flush) begin
-    //                 f_pc <= f_alu_pc_value; 
-    //             end
-    //             else begin
-    //                 f_pc <= f_pc + 4;
-    //                 ce_d <= ce;
-    //             end
-    //         end
-    //     end
-    // end
-    
     always @(posedge f_clk, negedge f_rst) begin
         if (!f_rst) begin
             f_o_stall <= 1'b0;
@@ -104,50 +45,66 @@ module instruction_fetch #(
             f_o_instr <= {IWIDTH{1'b0}};
             f_pc <= {PC_WIDTH{1'b0}};
             prev_pc <= {PC_WIDTH{1'b0}};
-            i_addr_instr <= {AWIDTH_INSTR{1'b0}};
             f_o_addr_instr <= {AWIDTH_INSTR{1'b0}};
             f_o_syn_r <= 1'b0;
+            f_o_syn <= 1'b0;
+            init_done <= 1'b0;
         end
         else begin
-            f_o_syn <= ce;
-            f_o_syn_r <= f_o_syn;
-            if (f_i_flush) begin
-                ce <= 1'b0;
-                f_o_stall <= 1'b1;
-                f_o_flush <= 1'b1;
-            end
-            else if ((f_change_pc || f_i_ack) && !(f_i_stall || f_o_stall)) begin
+            if (!init_done) begin
+                init_done <= 1'b1;
                 ce <= 1'b1;
-                f_o_stall <= 1'b0;
-                f_o_flush <= 1'b0;
-            end
-            else if (f_i_ce) begin
-                ce <= 1'b1;
-            end
-
-            if((ce && f_i_ack && !stall) || (stall && !f_o_ce && ce)) begin
-                i_addr_instr <= prev_pc;
-                f_o_addr_instr <= i_addr_instr;
-                f_o_instr <= f_i_instr;
-                f_o_flush <= 1'b0;
-            end
-
-            if (stall) begin
-                f_o_ce <= 1'b0;
+                f_o_syn <= 1'b1;
+                f_o_syn_r <= 1'b1;
+                f_pc <= f_pc + 4;
             end
             else begin
-                f_o_ce <= ce_d;
-            end
-
-            if (f_i_ack) begin
-                prev_pc <= f_pc;
-                if (f_change_pc || f_i_flush) begin
-                    f_pc <= f_alu_pc_value;
+                // existing CE / request generation
+                if (f_i_flush) begin
+                    ce <= 1'b0;
+                    f_o_stall <= 1'b1;
+                    f_o_flush <= 1'b1;
+                end
+                else if ((f_change_pc || f_i_ack) && !(f_i_stall || f_o_stall)) begin
+                    ce <= 1'b1;
+                    f_o_stall <= 1'b0;
+                    f_o_flush <= 1'b0;
+                end
+                else if (f_i_ce) begin
+                    ce <= 1'b1;
+                end
+                // SYN generation: set when request; pre-increment PC to reduce latency
+                if (!f_o_syn && ce && !f_i_ack && !f_i_stall && !f_o_stall) begin
+                    f_o_syn <= 1'b1;
+                    f_pc <= f_pc + 4;
+                end
+                else if (f_i_ack || f_i_flush) begin
+                    f_o_syn <= 1'b0;
+                end
+                // output instruction when acked and allowed
+                if((ce && f_i_ack && !stall) || (stall && !f_o_ce && ce)) begin
+                    f_o_addr_instr <= prev_pc;
+                    f_o_instr <= f_i_instr;
+                    f_o_flush <= 1'b0;
+                end
+                // CE output control
+                if (stall) begin
+                    f_o_ce <= 1'b0;
                 end
                 else begin
-                    f_pc <= f_pc + 4;
-                    ce_d <= ce;
+                    f_o_ce <= ce_d;
                 end
+                // update PC/ce_d when ack arrives
+                if (f_i_ack) begin
+                    prev_pc <= f_pc;
+                    if (f_change_pc || f_i_flush) begin
+                        f_pc <= f_alu_pc_value;
+                    end
+                    else begin
+                        ce_d <= ce;
+                    end
+                end
+                f_o_syn_r <= f_o_syn;
             end
         end
     end

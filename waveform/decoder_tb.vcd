@@ -1,0 +1,802 @@
+$date
+	Sun Aug 17 11:52:09 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module tb_decoder $end
+$var wire 1 ! d_o_stall $end
+$var wire 32 " d_o_pc [31:0] $end
+$var wire 11 # d_o_opcode [10:0] $end
+$var wire 32 $ d_o_imm [31:0] $end
+$var wire 3 % d_o_funct3 [2:0] $end
+$var wire 1 & d_o_flush $end
+$var wire 4 ' d_o_exception [3:0] $end
+$var wire 1 ( d_o_ce $end
+$var wire 14 ) d_o_alu [13:0] $end
+$var wire 5 * d_o_addr_rs2_p [4:0] $end
+$var wire 5 + d_o_addr_rs2 [4:0] $end
+$var wire 5 , d_o_addr_rs1_p [4:0] $end
+$var wire 5 - d_o_addr_rs1 [4:0] $end
+$var wire 5 . d_o_addr_rd_p [4:0] $end
+$var wire 5 / d_o_addr_rd [4:0] $end
+$var parameter 32 0 AWIDTH $end
+$var parameter 32 1 CLK_PERIOD $end
+$var parameter 32 2 DWIDTH $end
+$var parameter 32 3 IWIDTH $end
+$var parameter 32 4 PC_WIDTH $end
+$var reg 1 5 d_clk $end
+$var reg 1 6 d_i_ce $end
+$var reg 1 7 d_i_flush $end
+$var reg 32 8 d_i_instr [31:0] $end
+$var reg 32 9 d_i_pc [31:0] $end
+$var reg 1 : d_i_stall $end
+$var reg 1 ; d_rst $end
+$scope function calc_expected_imm $end
+$var reg 32 < instr [31:0] $end
+$var reg 7 = opcode [6:0] $end
+$upscope $end
+$scope function get_rd $end
+$var reg 32 > instr [31:0] $end
+$upscope $end
+$scope function get_rs1 $end
+$var reg 32 ? instr [31:0] $end
+$upscope $end
+$scope function get_rs2 $end
+$var reg 32 @ instr [31:0] $end
+$upscope $end
+$scope module uut $end
+$var wire 1 5 d_clk $end
+$var wire 1 6 d_i_ce $end
+$var wire 1 7 d_i_flush $end
+$var wire 32 A d_i_instr [31:0] $end
+$var wire 32 B d_i_pc [31:0] $end
+$var wire 1 : d_i_stall $end
+$var wire 5 C d_o_addr_rd [4:0] $end
+$var wire 5 D d_o_addr_rs1 [4:0] $end
+$var wire 5 E d_o_addr_rs2 [4:0] $end
+$var wire 1 & d_o_flush $end
+$var wire 1 ! d_o_stall $end
+$var wire 1 ; d_rst $end
+$var wire 1 F stall_bit $end
+$var parameter 32 G AWIDTH $end
+$var parameter 32 H DWIDTH $end
+$var parameter 32 I FUNCT_WIDTH $end
+$var parameter 32 J IWIDTH $end
+$var parameter 32 K PC_WIDTH $end
+$var reg 1 L alu_add_d $end
+$var reg 1 M alu_and_d $end
+$var reg 1 N alu_eq_d $end
+$var reg 1 O alu_ge_d $end
+$var reg 1 P alu_geu_d $end
+$var reg 1 Q alu_lt_d $end
+$var reg 1 R alu_ltu_d $end
+$var reg 1 S alu_neq_d $end
+$var reg 1 T alu_or_d $end
+$var reg 1 U alu_sll_d $end
+$var reg 1 V alu_slt_d $end
+$var reg 1 W alu_sltu_d $end
+$var reg 1 X alu_sra_d $end
+$var reg 1 Y alu_srl_d $end
+$var reg 1 Z alu_sub_d $end
+$var reg 1 [ alu_xor_d $end
+$var reg 5 \ d_o_addr_rd_p [4:0] $end
+$var reg 5 ] d_o_addr_rs1_p [4:0] $end
+$var reg 5 ^ d_o_addr_rs2_p [4:0] $end
+$var reg 14 _ d_o_alu [13:0] $end
+$var reg 1 ( d_o_ce $end
+$var reg 4 ` d_o_exception [3:0] $end
+$var reg 3 a d_o_funct3 [2:0] $end
+$var reg 32 b d_o_imm [31:0] $end
+$var reg 11 c d_o_opcode [10:0] $end
+$var reg 32 d d_o_pc [31:0] $end
+$var reg 3 e funct3 [2:0] $end
+$var reg 1 f illegal_check $end
+$var reg 32 g imm_d [31:0] $end
+$var reg 7 h opcode [6:0] $end
+$var reg 1 i opcode_auipc_d $end
+$var reg 1 j opcode_branch_d $end
+$var reg 1 k opcode_fence_d $end
+$var reg 1 l opcode_itype_d $end
+$var reg 1 m opcode_jal_d $end
+$var reg 1 n opcode_jalr_d $end
+$var reg 1 o opcode_load_word_d $end
+$var reg 1 p opcode_lui_d $end
+$var reg 1 q opcode_rtype_d $end
+$var reg 1 r opcode_store_word_d $end
+$var reg 1 s opcode_system_d $end
+$var reg 1 t system_exeption $end
+$var reg 5 u temp_addr_rd [4:0] $end
+$var reg 5 v temp_addr_rs1 [4:0] $end
+$var reg 5 w temp_addr_rs2 [4:0] $end
+$var reg 1 x valid_opcode $end
+$upscope $end
+$scope task apply_and_capture $end
+$var reg 32 y instr [31:0] $end
+$var reg 32 z pc [31:0] $end
+$upscope $end
+$scope task check_outputs $end
+$var reg 32 { exp_imm [31:0] $end
+$var reg 5 | exp_rd [4:0] $end
+$var reg 5 } exp_rs1 [4:0] $end
+$var reg 5 ~ exp_rs2 [4:0] $end
+$var reg 32 !" instr [31:0] $end
+$var reg 1 "" ok $end
+$var reg 32 #" pc [31:0] $end
+$var integer 32 $" test_id [31:0] $end
+$upscope $end
+$scope task do_reset $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100000 K
+b100000 J
+b11 I
+b100000 H
+b101 G
+b100000 4
+b100000 3
+b100000 2
+b1010 1
+b101 0
+$end
+#0
+$dumpvars
+bx $"
+bx #"
+x""
+bx !"
+bx ~
+bx }
+bx |
+bx {
+bx z
+bx y
+0x
+b0 w
+b0 v
+b0 u
+0t
+0s
+0r
+0q
+0p
+0o
+0n
+0m
+0l
+0k
+0j
+0i
+b0 h
+b0 g
+0f
+b0 e
+bx d
+bx c
+bx b
+bx a
+b0 `
+bx _
+b0 ^
+b0 ]
+b0 \
+0[
+0Z
+0Y
+0X
+0W
+0V
+0U
+0T
+0S
+0R
+0Q
+0P
+0O
+0N
+0M
+1L
+0F
+b0 E
+b0 D
+b0 C
+b0 B
+b0 A
+bx @
+bx ?
+bx >
+bx =
+bx <
+0;
+0:
+b0 9
+b0 8
+07
+06
+05
+b0 /
+b0 .
+b0 -
+b0 ,
+b0 +
+b0 *
+bx )
+0(
+b0 '
+0&
+bx %
+bx $
+bx #
+bx "
+0!
+$end
+#5
+15
+#10
+05
+#15
+1F
+1!
+b1 '
+b1 `
+b0 #
+b0 c
+1;
+15
+#20
+05
+#25
+bx g
+1L
+b1 /
+b1 C
+b1 u
+b10 -
+b10 D
+b10 v
+b11 +
+b11 E
+b11 w
+1x
+1q
+b110011 h
+16
+b100 z
+b1100010000000010110011 y
+b100 9
+b100 B
+b1100010000000010110011 8
+b1100010000000010110011 A
+15
+#30
+05
+#35
+0F
+0!
+b0 '
+b0 `
+b110011 #
+b110011 c
+15
+#40
+05
+#45
+1(
+bx g
+1Z
+0L
+b100 /
+b100 C
+b100 u
+b110 +
+b110 E
+b110 w
+b101 -
+b101 D
+b101 v
+b1000 z
+b1000000011000101000001000110011 y
+b1000 9
+b1000 B
+b1000000011000101000001000110011 8
+b1000000011000101000001000110011 A
+0""
+b0 {
+b110011 =
+b1100010000000010110011 <
+b1 |
+b1100010000000010110011 >
+b11 ~
+b1100010000000010110011 @
+b10 }
+b1100010000000010110011 ?
+b100 #"
+b1100010000000010110011 !"
+b1 $"
+16
+15
+#50
+05
+#55
+b110011 #
+b110011 c
+b10 )
+b10 _
+b0 %
+b0 a
+b100 .
+b100 \
+b110 *
+b110 ^
+b101 ,
+b101 ]
+b1000 "
+b1000 d
+15
+#60
+05
+#65
+b110011 #
+b110011 c
+b1100 "
+b1100 d
+b10000 g
+1L
+0Z
+1l
+0q
+b10011 h
+b111 /
+b111 C
+b111 u
+b0 +
+b0 E
+b0 w
+b1000 -
+b1000 D
+b1000 v
+b1100 z
+b1000001000000001110010011 y
+b1100 9
+b1100 B
+b1000001000000001110010011 8
+b1000001000000001110010011 A
+1""
+b1000000011000101000001000110011 <
+b100 |
+b1000000011000101000001000110011 >
+b110 ~
+b1000000011000101000001000110011 @
+b101 }
+b1000000011000101000001000110011 ?
+b1000 #"
+b1000000011000101000001000110011 !"
+b10 $"
+16
+15
+#70
+05
+#75
+b1 )
+b1 _
+b10000 $
+b10000 b
+b10011 #
+b10011 c
+b111 .
+b111 \
+b0 *
+b0 ^
+b1000 ,
+b1000 ]
+15
+#80
+05
+#85
+b10011 #
+b10011 c
+b10000 "
+b10000 d
+b100 g
+1L
+b10 e
+1o
+0l
+b11 h
+b1001 /
+b1001 C
+b1001 u
+b1010 -
+b1010 D
+b1010 v
+b10000 z
+b10001010010010010000011 y
+b10000 9
+b10000 B
+b10001010010010010000011 8
+b10001010010010010000011 A
+0""
+b10000 {
+b10011 =
+b1000001000000001110010011 <
+b111 |
+b1000001000000001110010011 >
+b10000 ~
+b1000001000000001110010011 @
+b1000 }
+b1000001000000001110010011 ?
+b1100 #"
+b1000001000000001110010011 !"
+b11 $"
+16
+15
+#90
+05
+#95
+b100 $
+b100 b
+b11 #
+b11 c
+b10 %
+b10 a
+b1001 .
+b1001 \
+b1010 ,
+b1010 ]
+15
+#100
+05
+#105
+b11 #
+b11 c
+b10100 "
+b10100 d
+b1000 g
+1L
+b1011 +
+b1011 E
+b1011 w
+1r
+0o
+b10 e
+b100011 h
+b0 /
+b0 C
+b0 u
+b1100 -
+b1100 D
+b1100 v
+b10100 z
+b101101100010010000100011 y
+b10100 9
+b10100 B
+b101101100010010000100011 8
+b101101100010010000100011 A
+0""
+b100 {
+b11 =
+b10001010010010010000011 <
+b1001 |
+b10001010010010010000011 >
+b100 ~
+b10001010010010010000011 @
+b1010 }
+b10001010010010010000011 ?
+b10000 #"
+b10001010010010010000011 !"
+b100 $"
+16
+15
+#110
+05
+#115
+b1000 $
+b1000 b
+b100011 #
+b100011 c
+b0 .
+b0 \
+b1011 *
+b1011 ^
+b1100 ,
+b1100 ]
+15
+#120
+05
+#125
+b100011 #
+b100011 c
+b11000 "
+b11000 d
+b100 g
+1N
+0L
+1j
+0r
+b0 e
+b1100011 h
+b1110 +
+b1110 E
+b1110 w
+b1101 -
+b1101 D
+b1101 v
+b11000 z
+b111001101000001001100011 y
+b11000 9
+b11000 B
+b111001101000001001100011 8
+b111001101000001001100011 A
+0""
+b1000 {
+b100011 =
+b101101100010010000100011 <
+b1000 |
+b101101100010010000100011 >
+b1011 ~
+b101101100010010000100011 @
+b1100 }
+b101101100010010000100011 ?
+b10100 #"
+b101101100010010000100011 !"
+b101 $"
+16
+15
+#130
+05
+#135
+b10000000000 )
+b10000000000 _
+b100 $
+b100 b
+b1100011 #
+b1100011 c
+b0 %
+b0 a
+b1110 *
+b1110 ^
+b1101 ,
+b1101 ]
+15
+#140
+05
+#145
+b1100011 #
+b1100011 c
+b11100 "
+b11100 d
+b100000000100000000 g
+1L
+0N
+b1111 /
+b1111 C
+b1111 u
+1m
+0j
+b1101111 h
+b0 +
+b0 E
+b0 w
+b0 -
+b0 D
+b0 v
+b11100 z
+b10000000000100000011111101111 y
+b11100 9
+b11100 B
+b10000000000100000011111101111 8
+b10000000000100000011111101111 A
+0""
+b100 {
+b1100011 =
+b111001101000001001100011 <
+b100 |
+b111001101000001001100011 >
+b1110 ~
+b111001101000001001100011 @
+b1101 }
+b111001101000001001100011 ?
+b11000 #"
+b111001101000001001100011 !"
+b110 $"
+16
+15
+#150
+05
+#155
+b1 )
+b1 _
+b100000000100000000 $
+b100000000100000000 b
+b1101111 #
+b1101111 c
+b1111 .
+b1111 \
+b0 *
+b0 ^
+b0 ,
+b0 ]
+15
+#160
+05
+#165
+b1101111 #
+b1101111 c
+b100000 "
+b100000 d
+b10100 g
+1L
+b10001 -
+b10001 D
+b10001 v
+1n
+0m
+b1100111 h
+b10000 /
+b10000 C
+b10000 u
+b100000 z
+b1010010001000100001100111 y
+b100000 9
+b100000 B
+b1010010001000100001100111 8
+b1010010001000100001100111 A
+0""
+b100000000100000000 {
+b1101111 =
+b10000000000100000011111101111 <
+b1111 |
+b10000000000100000011111101111 >
+b0 ~
+b10000000000100000011111101111 @
+b100 }
+b10000000000100000011111101111 ?
+b11100 #"
+b10000000000100000011111101111 !"
+b111 $"
+16
+15
+#170
+05
+#175
+b10100 $
+b10100 b
+b1100111 #
+b1100111 c
+b10000 .
+b10000 \
+b10001 ,
+b10001 ]
+15
+#180
+05
+#185
+b1100111 #
+b1100111 c
+b100100 "
+b100100 d
+b10010001101000101000000000000 g
+1L
+1p
+0n
+b110111 h
+b10010 /
+b10010 C
+b10010 u
+b0 -
+b0 D
+b0 v
+b100100 z
+b10010001101000101100100110111 y
+b100100 9
+b100100 B
+b10010001101000101100100110111 8
+b10010001101000101100100110111 A
+0""
+b10100 {
+b1100111 =
+b1010010001000100001100111 <
+b10000 |
+b1010010001000100001100111 >
+b10100 ~
+b1010010001000100001100111 @
+b10001 }
+b1010010001000100001100111 ?
+b100000 #"
+b1010010001000100001100111 !"
+b1000 $"
+16
+15
+#190
+05
+#195
+b10010001101000101000000000000 $
+b10010001101000101000000000000 b
+b110111 #
+b110111 c
+b10010 .
+b10010 \
+b0 ,
+b0 ]
+15
+#200
+05
+#205
+b110111 #
+b110111 c
+b101000 "
+b101000 d
+b10101011110011011110000000000000 g
+1L
+1i
+0p
+b10111 h
+b10011 /
+b10011 C
+b10011 u
+b101000 z
+b10101011110011011110100110010111 y
+b101000 9
+b101000 B
+b10101011110011011110100110010111 8
+b10101011110011011110100110010111 A
+0""
+b10010001101000101000000000000 {
+b110111 =
+b10010001101000101100100110111 <
+b10010 |
+b10010001101000101100100110111 >
+b11 ~
+b10010001101000101100100110111 @
+b1000 }
+b10010001101000101100100110111 ?
+b100100 #"
+b10010001101000101100100110111 !"
+b1001 $"
+16
+15
+#210
+05
+#215
+b10101011110011011110000000000000 $
+b10101011110011011110000000000000 b
+b10111 #
+b10111 c
+b10011 .
+b10011 \
+15
+#220
+05
+#225
+0(
+b10111 #
+b10111 c
+0""
+b10101011110011011110000000000000 {
+b10111 =
+b10101011110011011110100110010111 <
+b10011 |
+b10101011110011011110100110010111 >
+b11100 ~
+b10101011110011011110100110010111 @
+b11011 }
+b10101011110011011110100110010111 ?
+b101000 #"
+b10101011110011011110100110010111 !"
+b1010 $"
+06
+15
+#230
+05
+#235
+15
+#240
+05
+#245
+15

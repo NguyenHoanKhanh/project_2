@@ -17,7 +17,6 @@ module tb_decoder_stage;
     reg ds_i_flush;
     reg [DWIDTH-1:0] ds_data_in_rd;
     reg ds_we;
-    reg ds_read_reg;
 
     wire [PC_WIDTH - 1 : 0] ds_o_pc;
     wire [AWIDTH - 1 : 0] ds_o_addr_rs1_p;
@@ -63,8 +62,7 @@ module tb_decoder_stage;
         .ds_data_in_rd(ds_data_in_rd),
         .ds_data_out_rs1(ds_data_out_rs1),
         .ds_data_out_rs2(ds_data_out_rs2),
-        .ds_we(ds_we),
-        .ds_read_reg(ds_read_reg)
+        .ds_we(ds_we)
     );
 
     // Clock generation
@@ -99,18 +97,16 @@ module tb_decoder_stage;
         ds_i_flush = 0;
         ds_data_in_rd = 0;
         ds_we = 0;
-        ds_read_reg = 0;
 
         reset(2);
         ds_i_ce = 1;
 
         // Test: simple ADD
         // instruction encoding for add x1,x2,x3
-        ds_i_instr = 32'b0000000_00011_00010_000_00001_0110011;
+        ds_i_instr = 32'b0000001_00011_00010_000_00001_0110011;
         ds_i_pc    = 32'd4;
         ds_we      = 1; // write-back to RF
         ds_data_in_rd = 32'hDEADBEEF;
-        ds_read_reg = 1;
         @(posedge ds_clk);
         @(posedge ds_clk);
 

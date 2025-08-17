@@ -5,10 +5,10 @@ module register #(
     parameter DWIDTH = 32,
     parameter AWIDTH = 5
 )(
-    r_clk, r_rst, r_addr_rs_1, r_addr_rs_2, r_addr_rd, r_data_rd, r_data_out_rs1, r_data_out_rs2, r_we, r_read_reg
+    r_clk, r_rst, r_addr_rs_1, r_addr_rs_2, r_addr_rd, r_data_rd, r_data_out_rs1, r_data_out_rs2, r_we
 );
     input r_clk, r_rst;
-    input r_we, r_read_reg;
+    input r_we;
     input [AWIDTH - 1 : 0] r_addr_rs_1;
     input [AWIDTH - 1 : 0] r_addr_rs_2;
     input [AWIDTH - 1 : 0] r_addr_rd;
@@ -25,7 +25,7 @@ module register #(
     always @(posedge r_clk, negedge r_rst) begin
         if (!r_rst) begin
             for (i = 0; i < (1 << AWIDTH); i = i + 1) begin
-                data[i] <= {DWIDTH{1'b0}};
+                data[i] <= i;
             end
             r_data_out_rs1 <= {DWIDTH{1'b0}};
             r_data_out_rs2 <= {DWIDTH{1'b0}};

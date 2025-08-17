@@ -14,7 +14,7 @@ module connect #(
 )(
     c_clk, c_rst, fi_i_stall, fi_i_flush, fi_i_ce, fi_o_instr_fetch, ds_data_out_rs2, ds_data_out_rs1,
     ds_data_in_rd, ds_o_opcode, ds_o_alu, ds_o_imm, ds_o_funct3, ds_o_addr_rd_p, ds_o_addr_rs1_p, 
-    ds_o_addr_rs2_p, ds_we, ds_read_reg
+    ds_o_addr_rs2_p, ds_we
 );
     input c_clk, c_rst;
     output [IWIDTH - 1 : 0] fi_o_instr_fetch;
@@ -28,7 +28,6 @@ module connect #(
     input fi_i_flush;
     wire fi_o_flush;
     input fi_i_ce;
-    input ds_read_reg;
     input ds_we;
     output [DWIDTH - 1 : 0] ds_data_out_rs2;
     output [DWIDTH - 1 : 0] ds_data_out_rs1;
@@ -96,8 +95,7 @@ module connect #(
         .ds_data_in_rd(ds_data_in_rd), 
         .ds_data_out_rs1(ds_data_out_rs1), 
         .ds_data_out_rs2(ds_data_out_rs2), 
-        .ds_we(ds_we), 
-        .ds_read_reg(ds_read_reg)
+        .ds_we(ds_we)
     );
 endmodule
 

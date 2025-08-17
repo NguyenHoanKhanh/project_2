@@ -13,8 +13,7 @@ module decoder_stage #(
 )(
     ds_clk, ds_rst, ds_i_instr, ds_i_pc, ds_o_pc, ds_o_addr_rs1_p, ds_o_addr_rs2_p, ds_o_addr_rd_p, 
     ds_o_funct3, ds_o_imm, ds_o_alu, ds_o_opcode, ds_o_exception, ds_i_ce, ds_o_ce, ds_i_stall, 
-    ds_o_stall, ds_i_flush, ds_o_flush, ds_data_in_rd, ds_data_out_rs1, ds_data_out_rs2, ds_we, 
-    ds_read_reg
+    ds_o_stall, ds_i_flush, ds_o_flush, ds_data_in_rd, ds_data_out_rs1, ds_data_out_rs2, ds_we
 );
     input ds_clk, ds_rst;
     input [IWIDTH - 1 : 0] ds_i_instr;
@@ -38,7 +37,6 @@ module decoder_stage #(
     output [DWIDTH - 1 : 0] ds_data_out_rs1;
     output [DWIDTH - 1 : 0] ds_data_out_rs2;
     input ds_we;
-    input ds_read_reg;
 
     wire [AWIDTH - 1 : 0] ds_o_addr_rd;
     wire [AWIDTH - 1 : 0] ds_o_addr_rs1;
@@ -86,8 +84,7 @@ module decoder_stage #(
         .r_data_rd(ds_data_in_rd), 
         .r_data_out_rs1(ds_data_out_rs1), 
         .r_data_out_rs2(ds_data_out_rs2), 
-        .r_we(ds_we), 
-        .r_read_reg(ds_read_reg)
+        .r_we(ds_we)
     );
 endmodule
 `endif 
