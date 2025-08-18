@@ -1,5 +1,5 @@
 $date
-	Fri Aug 08 23:12:09 2025
+	Tue Aug 19 00:23:50 2025
 $end
 $version
 	Icarus Verilog
@@ -14,7 +14,7 @@ $var wire 1 # ex_o_valid $end
 $var wire 1 $ ex_o_stall $end
 $var wire 32 % ex_o_pc [31:0] $end
 $var wire 11 & ex_o_opcode [10:0] $end
-$var wire 12 ' ex_o_imm [11:0] $end
+$var wire 32 ' ex_o_imm [31:0] $end
 $var wire 3 ( ex_o_funct3 [2:0] $end
 $var wire 1 ) ex_o_flush $end
 $var wire 32 * ex_o_data_rd [31:0] $end
@@ -106,7 +106,7 @@ $var reg 32 w ex_o_data_rs1 [31:0] $end
 $var reg 32 x ex_o_data_rs2 [31:0] $end
 $var reg 1 ) ex_o_flush $end
 $var reg 3 y ex_o_funct3 [2:0] $end
-$var reg 12 z ex_o_imm [11:0] $end
+$var reg 32 z ex_o_imm [31:0] $end
 $var reg 11 { ex_o_opcode [10:0] $end
 $var reg 32 | ex_o_pc [31:0] $end
 $var reg 1 $ ex_o_stall $end
@@ -228,7 +228,7 @@ b0 %
 0$
 0#
 0"
-x!
+0!
 $end
 #5
 14
@@ -446,8 +446,8 @@ b0 }
 b10101011110011010001000000000000 *
 b10101011110011010001000000000000 v
 1"
-b1000110100 '
-b1000110100 z
+b10101011110011010001001000110100 '
+b10101011110011010001001000110100 z
 b0 x
 b0 w
 b111 &
@@ -484,6 +484,8 @@ b100000000 '
 b100000000 z
 b1000 &
 b1000 {
+1#
+1"
 b10000000000000 %
 b10000000000000 |
 b10000000000000 /
@@ -516,6 +518,8 @@ b10000 '
 b10000 z
 b101 &
 b101 {
+1#
+1"
 b11000000000000 %
 b11000000000000 |
 b11000000010000 /
@@ -559,6 +563,10 @@ b100 &
 b100 {
 b1010 -
 b1010 t
+0#
+0"
+1+
+1)
 b100000000000000 %
 b100000000000000 |
 b100000000000100 /
@@ -567,12 +575,16 @@ b100000000000100 p
 #100
 04
 #105
+1+
+1)
 b100000000000100 /
 b100000000000100 p
 14
 #110
 04
 #115
+1+
+1)
 b100000000000100 /
 b100000000000100 p
 14

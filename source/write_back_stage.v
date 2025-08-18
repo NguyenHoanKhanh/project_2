@@ -36,7 +36,7 @@ module writeback #(
     input wb_i_flush;
     output reg wb_o_flush;
 
-    wire wb_opcode_load = (wb_i_opcode == `LOAD) ? 1 : 0;
+    wire wb_opcode_load = (wb_i_opcode == `LOAD_WORD) ? 1 : 0;
     wire wb_opcode_system = (wb_i_opcode == `SYSTEM) ? 1 : 0;
     wire stall_bit = wb_i_stall || wb_o_stall;
 

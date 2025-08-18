@@ -37,8 +37,8 @@ module execute #(
     output reg [`OPCODE_WIDTH - 1 : 0] ex_o_opcode;
     wire op_rtype = (ex_i_opcode == `RTYPE) ? 1 : 0;
     wire op_itype = (ex_i_opcode == `ITYPE) ? 1 : 0;
-    wire op_load = (ex_i_opcode == `LOAD) ? 1 : 0;
-    wire op_store = (ex_i_opcode == `STORE) ? 1 : 0;
+    wire op_load = (ex_i_opcode == `LOAD_WORD) ? 1 : 0;
+    wire op_store = (ex_i_opcode == `STORE_WORD) ? 1 : 0;
     wire op_branch = (ex_i_opcode == `BRANCH) ? 1 : 0;
     wire op_jal = (ex_i_opcode == `JAL) ? 1 : 0;
     wire op_jalr = (ex_i_opcode == `JALR) ? 1 : 0;
@@ -72,7 +72,7 @@ module execute #(
     input [FUNCT_WIDTH - 1 : 0] ex_i_funct3;
     output reg [FUNCT_WIDTH - 1 : 0] ex_o_funct3;
     input [DWIDTH - 1 : 0] ex_i_imm;
-    output reg [11 : 0] ex_o_imm;
+    output reg [DWIDTH - 1 : 0] ex_o_imm;
     output reg ex_o_we_reg;
     
     //Enable, stall, flush pipeline
@@ -94,11 +94,11 @@ module execute #(
 
     always @(posedge ex_clk, negedge ex_rst) begin
         if (!ex_rst) begin
-            // ex_stall_from_alu <= 1'b0;
+            ex_stall_from_alu <= 1'b0;
             ex_o_flush <= 1'b0;
             ex_o_stall <= 1'b0;
             ex_o_we_reg <= 1'b0;
-            ex_o_imm <= 12'b0;
+            ex_o_imm <= {DWIDTH{1'b0}};
             ex_o_funct3 <= {FUNCT_WIDTH{1'b0}};
             ex_next_pc <= {PC_WIDTH{1'b0}};
             ex_o_change_pc <= 1'b0;
@@ -117,6 +117,13 @@ module execute #(
             ex_next_pc        <= temp_pc;
             ex_o_pc           <= temp_pc;
             ex_o_addr_rd      <= ex_i_addr_rd;     
+             // default/clear per-cycle values (prevents stale outputs)
+            ex_o_flush        <= 1'b0;
+            ex_o_change_pc    <= 1'b0;
+            ex_o_we_reg       <= 1'b0;
+            ex_o_valid        <= 1'b0;
+            ex_stall_from_alu <= 1'b0;
+            ex_o_stall        <= 1'b0; // registered stall flag (sampled)
             if (!ex_i_flush) begin
                 if (ex_i_ce && !stall_bit) begin
                     ex_o_alu <= ex_i_alu;
@@ -126,8 +133,9 @@ module execute #(
                     ex_o_addr_rs2 <= ex_i_addr_rs2;
                     ex_o_data_rs1 <= ex_i_data_rs1;
                     ex_o_data_rs2 <= ex_i_data_rs2;
-                    ex_o_imm <= ex_i_imm[11 : 0];
-                    // ex_stall_from_alu <= (op_load || op_store) ? 1 : 0;
+                    ex_o_imm <= ex_i_imm;
+                    ex_stall_from_alu <= (op_load || op_store) ? 1 : 0;
+                    ex_o_stall <= (op_load || op_store) ? 1 : 0;
                 end
                 if (op_rtype || op_itype) begin
                     ex_o_data_rd <= alu_value;
@@ -188,72 +196,70 @@ module execute #(
     always @(*) begin
         a = (op_jal || op_auipc) ? ex_i_pc : op_lui ? {DWIDTH{1'b0}} : ex_i_data_rs1;
         b = (op_rtype || op_branch) ? ex_i_data_rs2 : ex_i_imm;
+        alu_value = {DWIDTH{1'b0}};
 
-        case (1'b1)
-            alu_add : begin
-                alu_value = a + b;
+        if (alu_add) begin
+            alu_value = a + b;
+        end
+        else if (alu_sub) begin
+            alu_value = a - b;
+        end
+        else if (alu_slt) begin
+            if ($signed (a) < $signed(b)) begin
+                alu_value = {31'b0, 1'b1};
             end
-            alu_sub : begin
-                alu_value = a - b;
+            else begin
+                alu_value = 32'b0;
             end
-            alu_slt : begin
-                if ($signed (a) < $signed(b)) begin
-                    alu_value = {31'b0, 1'b1};
-                end
-                else begin
-                    alu_value = 32'b0;
-                end
+        end
+        else if (alu_sltu) begin
+            if ($unsigned (a) < $unsigned(b)) begin
+                alu_value = {31'b0, 1'b1};
             end
-            alu_sltu : begin
-                if ($unsigned (a) < $unsigned(b)) begin
-                    alu_value = {31'b0, 1'b1};
-                end
-                else begin
-                    alu_value = 32'b0;
-                end
+            else begin
+                alu_value = 32'b0;
             end
-            alu_xor : begin
-                alu_value = a ^ b;
+        end
+        else if (alu_xor) begin
+            alu_value = a ^ b;
+        end
+        else if (alu_or) begin
+            alu_value = a | b;
+        end
+        else if (alu_and) begin
+            alu_value = a & b;
+        end
+        else if (alu_sll) begin
+            alu_value = a << shamt;
+        end
+        else if (alu_srl) begin
+            alu_value = a >> shamt;
+        end
+        else if (alu_sra) begin
+            alu_value = $signed(a) >>> shamt;
+        end
+        else if (alu_eq) begin
+            alu_value = (a == b) ? 32'd1 : 32'd0;
+        end
+        else if (alu_neq) begin
+            alu_value = (a == b) ? 32'd0 : 32'd1;
+        end
+        else if (alu_ge) begin
+            if ($signed (a) >= $signed(b)) begin
+                alu_value = {31'b0, 1'b1};
             end
-            alu_or : begin
-                alu_value = a | b;
+            else begin
+                alu_value = 32'b0;
             end
-            alu_and : begin
-                alu_value = a & b;
+        end
+        else if (alu_geu) begin
+            if ($unsigned (a) >= $unsigned(b)) begin
+                alu_value = {31'b0, 1'b1};
             end
-            alu_sll : begin
-                alu_value = a << shamt;
+            else begin
+                alu_value = 32'b0;
             end
-            alu_srl : begin
-                alu_value = a >> shamt;
-            end
-            alu_sra : begin
-                alu_value = $signed(a) >>> shamt;
-            end
-            alu_eq : begin
-                alu_value = (a == b) ? 32'd1 : 32'd0;
-            end
-            alu_neq : begin
-                alu_value = (a == b) ? 32'd0 : 32'd1;
-            end
-            alu_ge : begin
-                if ($signed (a) >= $signed(b)) begin
-                    alu_value = {31'b0, 1'b1};
-                end
-                else begin
-                    alu_value = 32'b0;
-                end
-            end
-            alu_geu : begin
-                if ($unsigned (a) >= $unsigned(b)) begin
-                    alu_value = {31'b0, 1'b1};
-                end
-                else begin
-                    alu_value = 32'b0;
-                end
-            end
-            default : alu_value = {DWIDTH{1'b0}};
-        endcase
+        end
     end
 endmodule
 `endif 

@@ -17,8 +17,8 @@
 `define OPCODE_WIDTH 11
 `define RTYPE 0 //Arithmetic operations between two registers
 `define ITYPE 1 //Arithmetic operations between one register and immediate value
-`define LOAD 2 //Retrieve data from memory to store in register (rs1 +imm)
-`define STORE 3 //Retrieve data from register to store in memory (rs1 + imm)
+`define LOAD_WORD 2 //Retrieve data from memory to store in register (rs1 +imm)
+`define STORE_WORD 3 //Retrieve data from register to store in memory (rs1 + imm)
 `define BRANCH 4 //Branch instruction(pc = pc + 4)
 `define JAL 5 //Calculate to jump and store value in target register (pc + imm) 
 `define JALR 6 //Calculate target to jump (rs1 + imm)

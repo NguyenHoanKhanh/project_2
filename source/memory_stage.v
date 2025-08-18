@@ -115,7 +115,7 @@ module mem_stage #(
                 store_data_aligned <= {DWIDTH{1'b0}};
                 pending_request <= 1'b0;
             end
-            if (me_i_ce && !pending_request && (me_i_opcode == `LOAD || me_i_opcode == `STORE)) begin
+            if (me_i_ce && !pending_request && (me_i_opcode == `LOAD_WORD || me_i_opcode == `STORE_WORD)) begin
                 pending_request <= 1'b1;
                 funct_d <= me_i_funct3;
             end
@@ -140,12 +140,12 @@ module mem_stage #(
         me_o_stb = 1'b0;
         me_o_stall = 1'b0;
         if (me_i_ce && !pending_request) begin
-            if (me_i_opcode == `LOAD) begin
+            if (me_i_opcode == `LOAD_WORD) begin
                 me_o_we = 1'b0;
                 me_o_cyc = 1'b1;
                 me_o_stb = 1'b1;
             end
-            else if (me_i_opcode == `STORE) begin
+            else if (me_i_opcode == `STORE_WORD) begin
                 me_o_we = 1'b1;
                 me_o_cyc = 1'b1;
                 me_o_stb = 1'b1;
@@ -184,12 +184,12 @@ module mem_stage #(
         rd_addr_d = {AWIDTH{1'b0}};
         rd_data_d = {DWIDTH{1'b0}};
         case (me_i_opcode)
-            `LOAD : begin
+            `LOAD_WORD : begin
                 me_o_opcode = me_i_opcode;
                 me_o_load_addr = me_i_alu_value;
                 me_o_load_data_d = final_load;
             end
-            `STORE : begin
+            `STORE_WORD : begin
                 me_o_opcode = me_i_opcode;
                 me_o_store_addr = me_i_alu_value;
                 me_o_store_data = store_data_aligned;
