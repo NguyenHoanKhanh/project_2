@@ -117,7 +117,7 @@ module execute #(
             ex_next_pc        <= temp_pc;
             ex_o_pc           <= temp_pc;
             ex_o_addr_rd      <= ex_i_addr_rd;     
-             // default/clear per-cycle values (prevents stale outputs)
+            // default/clear per-cycle values (prevents stale outputs)
             ex_o_flush        <= 1'b0;
             ex_o_change_pc    <= 1'b0;
             ex_o_we_reg       <= 1'b0;
@@ -135,16 +135,24 @@ module execute #(
                     ex_o_data_rs2 <= ex_i_data_rs2;
                     ex_o_imm <= ex_i_imm;
                     ex_stall_from_alu <= (op_load || op_store) ? 1 : 0;
+                    ex_o_alu_value <= alu_value;
                     ex_o_stall <= (op_load || op_store) ? 1 : 0;
                 end
                 if (op_rtype || op_itype) begin
                     ex_o_data_rd <= alu_value;
-                    ex_o_alu_value <= alu_value;
+                    ex_o_valid <= 1'b1;
                 end
-                else if (op_branch && alu_value[0]) begin
-                    ex_next_pc <= temp_pc + ex_i_imm;
-                    ex_o_change_pc <= ex_i_ce;
-                    ex_o_flush <= ex_i_ce;
+                else if (op_branch) begin
+                    if (alu_value[0]) begin //Bit 0 is value of the comparison
+                        ex_next_pc <= temp_pc + ex_i_imm;
+                        ex_o_change_pc <= ex_i_ce;
+                        ex_o_flush <= ex_i_ce;
+                    end
+                    else begin
+                        ex_next_pc <= temp_pc + 32'd4;
+                        ex_o_change_pc <= 1'b0;
+                        ex_o_flush <= 1'b0;
+                    end
                 end
                 else if (op_jal) begin
                     ex_next_pc <= temp_pc + ex_i_imm;
@@ -155,14 +163,14 @@ module execute #(
                     ex_o_valid <= 1'b1;
                 end
                 else if (op_jalr) begin
-                    ex_next_pc <= ex_i_data_rs1 + ex_i_imm;
+                    ex_next_pc <= (ex_i_data_rs1 + ex_i_imm) & ~32'h1;
                     ex_o_change_pc <= ex_i_ce;
                     ex_o_flush <= ex_i_ce;
                     ex_o_we_reg <= 1'b1;
                     ex_o_data_rd <= temp_pc + 4;
                     ex_o_valid <= 1'b1;
                 end
-                if (op_lui) begin
+                else if (op_lui) begin
                     ex_o_change_pc <= 1'b0;
                     ex_o_flush <= 1'b0;
                     ex_o_we_reg <= 1'b1;
