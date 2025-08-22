@@ -12,10 +12,11 @@ module tb_memory;
     reg                   m_i_cyc;
     reg                   m_i_stb;
     reg                   m_i_we;
-    reg [3:0]             m_i_be_enable;
+    reg                   m_i_rd;
+    reg [3:0]             m_i_byte_enable;
     reg [AWIDTH-1:0]      m_i_load_addr;
     reg [AWIDTH-1:0]      m_i_store_addr;
-    reg [DWIDTH-1:0]      m_i_data;
+    reg [DWIDTH-1:0]      m_i_data_store;
 
     // Outputs
     wire [DWIDTH-1:0]     m_o_read_data;
@@ -31,12 +32,13 @@ module tb_memory;
         .m_i_cyc       (m_i_cyc),
         .m_i_stb       (m_i_stb),
         .m_i_we        (m_i_we),
-        .m_i_be_enable (m_i_be_enable),
+        .m_i_byte_enable (m_i_byte_enable),
         .m_i_load_addr (m_i_load_addr),
         .m_i_store_addr(m_i_store_addr),
-        .m_i_data      (m_i_data),
+        .m_i_data_store (m_i_data_store),
         .m_o_read_data (m_o_read_data),
-        .m_o_ack       (m_o_ack)
+        .m_o_ack       (m_o_ack),
+        .m_i_rd(m_i_rd)
     );
 
     // Clock generator: 10 ns period
@@ -52,10 +54,11 @@ module tb_memory;
             m_i_cyc       = 0;
             m_i_stb       = 0;
             m_i_we        = 0;
-            m_i_be_enable = 4'b0;
+            m_i_rd        = 0;
+            m_i_byte_enable = 4'b0;
             m_i_load_addr = 0;
             m_i_store_addr= 0;
-            m_i_data      = 0;
+            m_i_data_store      = 0;
             #20;
             m_rst = 1;
         end
@@ -70,13 +73,13 @@ module tb_memory;
         m_i_cyc        = 1;
         m_i_stb        = 1;
         m_i_we         = 1;
-        m_i_be_enable  = 4'b1111;        // full word byte-enable
+        m_i_byte_enable  = 4'b1111;        // full word byte-enable
         m_i_store_addr = 5;
-        m_i_data       = 32'hDEADBEEF;
+        m_i_data_store       = 32'hDEADBEEF;
         @(posedge m_clk);
         // wait for ack
         wait (m_o_ack);
-        $display("%0t WRITE ACK, addr=%0d data=0x%h", $time, m_i_store_addr, m_i_data);
+        $display("%0t WRITE ACK, addr=%0d data=0x%h", $time, m_i_store_addr, m_i_data_store);
         // deassert
         m_i_cyc = 0;
         m_i_stb = 0;
@@ -86,7 +89,7 @@ module tb_memory;
         // Read transaction: read from address 5
         m_i_cyc       = 1;
         m_i_stb       = 1;
-        m_i_we        = 0;
+        m_i_rd        = 1;
         m_i_load_addr = 5;
         @(posedge m_clk);
         wait (m_o_ack);

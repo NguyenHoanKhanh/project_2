@@ -61,11 +61,11 @@
 `define FUNCT3_LTU 3'b110
 `define FUNCT3_GEU 3'b111 
 
-`define FUNCT_LB 3'b000
-`define FUNCT_LH 3'b001
-`define FUNCT_LW 3'b010
+`define FUNCT_LB 3'b000 //char 8 bit
+`define FUNCT_LH 3'b001 //short 16 bit  
+`define FUNCT_LW 3'b010 //int 32 bit
 `define FUNCT_LBU 3'b100
 `define FUNCT_LHU 3'b101
-`define FUNCT_SB 3'b000
-`define FUNCT_SH 3'b001
-`define FUNCT_SW 3'b010
+`define FUNCT_SB 3'b000 //char 8 bit 
+`define FUNCT_SH 3'b001 //short 16 bit
+`define FUNCT_SW 3'b010 //int 32 bit

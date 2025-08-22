@@ -50,6 +50,7 @@ module writeback #(
             wb_o_stall <= 1'b0;
             wb_o_flush <= 1'b0;
             wb_o_ce <= 1'b0;
+            wb_o_we <= 1'b0;
         end
         else begin
             if (!wb_i_flush) begin
@@ -72,9 +73,9 @@ module writeback #(
                     wb_o_next_pc <= wb_i_pc + 32'd4;
                 end
                 else begin
-                    wb_o_flush <= 1'b1;
-                    wb_o_stall <= 1'b1;
-                    wb_o_change_pc <= 1'b1;
+                    wb_o_we_rd <= 1'b0;
+                    wb_o_rd_addr <= {AWIDTH{1'b0}};
+                    wb_o_rd_data <= {DWIDTH{1'b0}};
                 end
             end
         end

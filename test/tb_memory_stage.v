@@ -88,7 +88,7 @@ module tb_mem_stage;
     task do_store(input [AWIDTH-1:0] addr, input [DWIDTH-1:0] data);
     begin
         // Drive inputs
-        me_i_opcode    = `STORE;
+        me_i_opcode    = `STORE_WORD;
         me_i_alu_value = addr;
         me_i_rs2_data  = data;
         me_i_ce        = 1;
