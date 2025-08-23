@@ -77,6 +77,7 @@ module tb_mem_stage;
         me_i_flush = 0;
         me_i_alu_value = 0;
         me_i_rs2_data = 0;
+
     end
     always #5 me_clk = ~me_clk;
     

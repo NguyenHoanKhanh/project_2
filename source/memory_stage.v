@@ -21,6 +21,7 @@ module mem_stage #(
     output reg me_o_stall;
     input me_i_flush;
     output reg me_o_flush;
+    wire m_i_stall;
 
     input [DWIDTH - 1 : 0] me_i_alu_value;
     input [DWIDTH - 1 : 0] me_i_rs2_data;
@@ -62,6 +63,7 @@ module mem_stage #(
         .m_i_stb(me_o_stb), 
         .m_i_we(me_o_we),
         .m_i_rd(me_o_rd),
+        .m_o_stall(m_i_stall),
         .m_i_byte_enable(byte_enable),
         .m_i_load_addr(me_o_load_addr), 
         .m_i_store_addr(me_o_store_addr), 
@@ -70,7 +72,7 @@ module mem_stage #(
         .m_o_ack(me_i_ack)
     );
 
-    wire stall_bit = me_i_stall || me_o_stall;
+    wire stall_bit = me_i_stall || me_o_stall || m_i_stall;
     reg pending_request;
     // pipeline/commit registers (unchanged semantics)
     reg rd_we_d;
@@ -162,13 +164,13 @@ module mem_stage #(
         me_o_cyc = 1'b0;
         me_o_stb = 1'b0;
         if (me_i_ce && !pending_request) begin
-            if (me_i_opcode == `LOAD_WORD) begin
-                me_o_rd = 1'b1;
+            if (me_i_opcode == `STORE_WORD) begin
+                me_o_we = 1'b1;
                 me_o_cyc = 1'b1;
                 me_o_stb = 1'b1;
             end
-            else if (me_i_opcode == `STORE_WORD) begin
-                me_o_we = 1'b1;
+            else if (me_i_opcode == `LOAD_WORD) begin
+                me_o_rd = 1'b1;
                 me_o_cyc = 1'b1;
                 me_o_stb = 1'b1;
             end

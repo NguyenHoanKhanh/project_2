@@ -1,42 +1,53 @@
 $date
-	Mon Aug 04 01:17:25 2025
+	Sat Aug 23 15:12:01 2025
 $end
 $version
 	Icarus Verilog
 $end
 $timescale
-	1s
+	1ps
 $end
-$scope module tb $end
-$var wire 1 ! m_o_stall $end
-$var wire 32 " m_o_read_data [31:0] $end
-$var wire 1 # m_o_ack $end
-$var parameter 32 $ AWIDTH $end
-$var parameter 32 % DWIDTH $end
-$var reg 1 & m_clk $end
-$var reg 5 ' m_i_addr [4:0] $end
-$var reg 1 ( m_i_cyc $end
-$var reg 32 ) m_i_data [31:0] $end
-$var reg 4 * m_i_sel [3:0] $end
+$scope module tb_memory $end
+$var wire 32 ! m_o_read_data [31:0] $end
+$var wire 1 " m_o_ack $end
+$var parameter 32 # AWIDTH $end
+$var parameter 32 $ DWIDTH $end
+$var reg 1 % m_clk $end
+$var reg 4 & m_i_byte_enable [3:0] $end
+$var reg 1 ' m_i_cyc $end
+$var reg 32 ( m_i_data_store [31:0] $end
+$var reg 5 ) m_i_load_addr [4:0] $end
+$var reg 1 * m_i_rd $end
 $var reg 1 + m_i_stb $end
-$var reg 1 , m_i_we $end
-$var reg 1 - m_rst $end
-$scope module m $end
-$var wire 1 & m_clk $end
-$var wire 5 . m_i_addr [4:0] $end
-$var wire 1 ( m_i_cyc $end
-$var wire 32 / m_i_data [31:0] $end
-$var wire 4 0 m_i_sel [3:0] $end
+$var reg 5 , m_i_store_addr [4:0] $end
+$var reg 1 - m_i_we $end
+$var reg 1 . m_rst $end
+$scope module uut $end
+$var wire 1 % m_clk $end
+$var wire 4 / m_i_byte_enable [3:0] $end
+$var wire 1 ' m_i_cyc $end
+$var wire 32 0 m_i_data_store [31:0] $end
+$var wire 5 1 m_i_load_addr [4:0] $end
+$var wire 1 * m_i_rd $end
 $var wire 1 + m_i_stb $end
-$var wire 1 , m_i_we $end
-$var wire 1 - m_rst $end
-$var parameter 32 1 AWIDTH $end
-$var parameter 37 2 DEPTH $end
-$var parameter 32 3 DWIDTH $end
-$var reg 1 # m_o_ack $end
-$var reg 32 4 m_o_read_data [31:0] $end
-$var reg 1 ! m_o_stall $end
-$var integer 32 5 i [31:0] $end
+$var wire 5 2 m_i_store_addr [4:0] $end
+$var wire 1 - m_i_we $end
+$var wire 1 . m_rst $end
+$var wire 32 3 mask [31:0] $end
+$var parameter 32 4 AWIDTH $end
+$var parameter 37 5 DEPTH $end
+$var parameter 32 6 DWIDTH $end
+$var reg 32 7 data_reg [31:0] $end
+$var reg 5 8 load_addr_reg [4:0] $end
+$var reg 1 " m_o_ack $end
+$var reg 32 9 m_o_read_data [31:0] $end
+$var reg 1 : m_o_stall $end
+$var reg 32 ; mask_reg [31:0] $end
+$var reg 1 < rd_reg $end
+$var reg 1 = req_active $end
+$var reg 5 > store_addr_reg [4:0] $end
+$var reg 1 ? we_reg $end
+$var integer 32 @ i [31:0] $end
 $upscope $end
 $scope task reset $end
 $upscope $end
@@ -44,121 +55,120 @@ $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b100000 3
-b100000 2
-b101 1
-b100000 %
-b101 $
+b100000 6
+b100000 5
+b101 4
+b100000 $
+b101 #
 $end
 #0
 $dumpvars
-b100000 5
-b0 4
+b100000 @
+x?
+bx >
+0=
+x<
+bx ;
+0:
+b0 9
+bx 8
+bx 7
+b0 3
+b0 2
+b0 1
 b0 0
 b0 /
-b0 .
+0.
 0-
-0,
+b0 ,
 0+
-b0 *
+0*
 b0 )
-0(
-b0 '
-0&
-0#
-b0 "
-0!
+b0 (
+0'
+b0 &
+0%
+0"
+b0 !
 $end
-#5
-b100000 5
-1&
-#10
-0&
+#5000
+b100000 @
+1%
+#10000
+0%
+#15000
+b100000 @
+1%
+#20000
+0%
+1.
+#25000
+1=
+0<
+1?
+b0 ;
+b11011110101011011011111011101111 7
+b101 >
+b0 8
+b11111111111111111111111111111111 3
+b11011110101011011011111011101111 (
+b11011110101011011011111011101111 0
+b101 ,
+b101 2
+b1111 &
+b1111 /
 1-
-#15
-1&
-#20
-0&
-#25
-1#
-1(
 1+
-1&
-#30
-0&
-#35
-1#
-1,
-1&
-#40
-0&
-#45
-1#
-b1010 )
-b1010 /
-b101 '
-b101 .
-1&
-#50
-0&
-#55
-b1010 "
-b1010 4
-1#
-0,
-1&
-#60
-0&
-#65
-1#
-1&
-#70
-0&
-#75
-1#
-1&
-#80
-0&
-#85
-1#
-1&
-#90
-0&
-#95
-1#
-1&
-#100
-0&
-#105
-1#
-1&
-#110
-0&
-#115
-1#
-1&
-#120
-0&
-#125
-1#
-1&
-#130
-0&
-#135
-1#
-1&
-#140
-0&
-#145
-1#
-1&
-#150
-0&
-#155
-1#
-1&
-#160
-0&
-#165
-1#
-1&
+1'
+1%
+#30000
+0%
+#35000
+0-
+0+
+0'
+0=
+1"
+1:
+1%
+#40000
+0%
+#45000
+1=
+1<
+0?
+b11111111111111111111111111111111 ;
+b101 8
+0:
+0"
+b101 )
+b101 1
+1*
+1+
+1'
+1%
+#50000
+0%
+#55000
+0+
+0'
+0=
+1"
+b11011110101011011011111011101111 !
+b11011110101011011011111011101111 9
+1:
+1%
+#60000
+0%
+#65000
+0:
+0"
+1%
+#70000
+0%
+#75000
+1%
+#80000
+0%
+#85000
+1%

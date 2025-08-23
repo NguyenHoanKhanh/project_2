@@ -47,6 +47,11 @@ module tb_memory;
         forever #5 m_clk = ~m_clk;
     end
 
+    initial begin
+        $dumpfile("./waveform/memory.vcd");
+        $dumpvars(0, tb_memory);
+    end
+
     // Reset task
     task reset();
         begin
