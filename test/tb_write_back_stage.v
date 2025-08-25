@@ -69,9 +69,14 @@ module tb_writeback;
     // Clock generation
     initial begin
         wb_clk = 0;
-        forever #5 wb_clk = ~wb_clk;
     end
+    always #5 wb_clk = ~wb_clk;
 
+    initial begin
+        $dumpfile("./waveform/writeback.vcd");
+        $dumpvars(0, tb_writeback);
+    end
+    
     // Reset task
     task reset(input integer cycles);
         begin
@@ -104,7 +109,7 @@ module tb_writeback;
         wb_i_ce        = 1;
         wb_i_we        = 1;
         wb_i_we_rd     = 1;
-        wb_i_opcode    = `LOAD;
+        wb_i_opcode    = `LOAD_WORD;
         wb_i_funct     = 3'd0;
         wb_i_rd_addr   = 5'd10;
         @(posedge wb_clk);

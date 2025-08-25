@@ -1,0 +1,192 @@
+$date
+	Mon Aug 25 15:18:35 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tb_writeback $end
+$var wire 1 ! wb_o_we_rd $end
+$var wire 1 " wb_o_we $end
+$var wire 1 # wb_o_stall $end
+$var wire 32 $ wb_o_rd_data [31:0] $end
+$var wire 5 % wb_o_rd_addr [4:0] $end
+$var wire 32 & wb_o_next_pc [31:0] $end
+$var wire 1 ' wb_o_flush $end
+$var wire 1 ( wb_o_change_pc $end
+$var wire 1 ) wb_o_ce $end
+$var parameter 32 * AWIDTH $end
+$var parameter 32 + DWIDTH $end
+$var parameter 32 , FUNCT_WIDTH $end
+$var parameter 32 - PC_WIDTH $end
+$var reg 1 . wb_clk $end
+$var reg 1 / wb_i_ce $end
+$var reg 32 0 wb_i_csr [31:0] $end
+$var reg 32 1 wb_i_data_load [31:0] $end
+$var reg 1 2 wb_i_flush $end
+$var reg 3 3 wb_i_funct [2:0] $end
+$var reg 11 4 wb_i_opcode [10:0] $end
+$var reg 32 5 wb_i_pc [31:0] $end
+$var reg 5 6 wb_i_rd_addr [4:0] $end
+$var reg 32 7 wb_i_rd_data [31:0] $end
+$var reg 1 8 wb_i_stall $end
+$var reg 1 9 wb_i_we $end
+$var reg 1 : wb_i_we_rd $end
+$var reg 1 ; wb_rst $end
+$scope module uut $end
+$var wire 1 < stall_bit $end
+$var wire 1 . wb_clk $end
+$var wire 1 / wb_i_ce $end
+$var wire 32 = wb_i_csr [31:0] $end
+$var wire 32 > wb_i_data_load [31:0] $end
+$var wire 1 2 wb_i_flush $end
+$var wire 3 ? wb_i_funct [2:0] $end
+$var wire 11 @ wb_i_opcode [10:0] $end
+$var wire 32 A wb_i_pc [31:0] $end
+$var wire 5 B wb_i_rd_addr [4:0] $end
+$var wire 32 C wb_i_rd_data [31:0] $end
+$var wire 1 8 wb_i_stall $end
+$var wire 1 9 wb_i_we $end
+$var wire 1 : wb_i_we_rd $end
+$var wire 1 ; wb_rst $end
+$var wire 1 D wb_opcode_system $end
+$var wire 1 E wb_opcode_load $end
+$var parameter 32 F AWIDTH $end
+$var parameter 32 G DWIDTH $end
+$var parameter 32 H FUNCT_WIDTH $end
+$var parameter 32 I PC_WIDTH $end
+$var reg 1 ) wb_o_ce $end
+$var reg 1 ( wb_o_change_pc $end
+$var reg 1 ' wb_o_flush $end
+$var reg 32 J wb_o_next_pc [31:0] $end
+$var reg 5 K wb_o_rd_addr [4:0] $end
+$var reg 32 L wb_o_rd_data [31:0] $end
+$var reg 1 # wb_o_stall $end
+$var reg 1 " wb_o_we $end
+$var reg 1 ! wb_o_we_rd $end
+$upscope $end
+$scope task reset $end
+$var integer 32 M cycles [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100000 I
+b11 H
+b100000 G
+b101 F
+b100000 -
+b11 ,
+b100000 +
+b101 *
+$end
+#0
+$dumpvars
+b10 M
+b0 L
+b0 K
+b0 J
+0E
+0D
+b0 C
+b0 B
+b0 A
+b0 @
+b0 ?
+b0 >
+b0 =
+0<
+0;
+0:
+09
+08
+b0 7
+b0 6
+b0 5
+b0 4
+b0 3
+02
+b0 1
+b0 0
+0/
+0.
+0)
+0(
+0'
+b0 &
+b0 %
+b0 $
+0#
+0"
+0!
+$end
+#5000
+1.
+#10000
+0.
+#15000
+1;
+1.
+#20000
+0.
+#25000
+b100 &
+b100 J
+b1010 %
+b1010 K
+1"
+1!
+1E
+b1010 6
+b1010 B
+b10 4
+b10 @
+1:
+19
+1/
+1.
+#30000
+0.
+#35000
+b11011110101011011011111011101111 $
+b11011110101011011011111011101111 L
+b11011110101011011011111011101111 1
+b11011110101011011011111011101111 >
+1.
+#40000
+0.
+#45000
+b0 $
+b0 L
+b0 %
+b0 K
+0!
+0/
+1.
+#50000
+0.
+#55000
+1.
+#60000
+0.
+#65000
+1.
+#70000
+0.
+#75000
+1.
+#80000
+0.
+#85000
+1.
+#90000
+0.
+#95000
+1.
+#100000
+0.
+#105000
+1.
