@@ -39,7 +39,7 @@ module decoder #(
     assign d_o_addr_rs2 = temp_addr_rs2;
     assign d_o_addr_rs1 = temp_addr_rs1;
     assign d_o_addr_rd = temp_addr_rd;
-    reg [2 : 0] funct3;
+    reg [FUNCT_WIDTH - 1 : 0] funct3;
     reg [6 : 0] opcode;
 
     reg [31 : 0] imm_d;
@@ -81,6 +81,7 @@ module decoder #(
     always @(posedge d_clk, negedge d_rst) begin
         if (!d_rst) begin
             d_o_ce <= 0;
+            d_o_pc <= {PC_WIDTH{1'b0}};
             valid_opcode <= 1'b0;
             illegal_check <= 1'b0;
             system_exeption <= 1'b0;
@@ -154,7 +155,24 @@ module decoder #(
         temp_addr_rs2 = {AWIDTH{1'b0}};
         temp_addr_rd  = {AWIDTH{1'b0}};
         opcode = d_i_instr[6 : 0];
-        funct3        = 3'b0;
+        funct3        = {FUNCT_WIDTH{1'b0}};
+        imm_d = {DWIDTH{1'b0}};
+        alu_add_d = 0;
+        alu_sub_d = 0;
+        alu_slt_d = 0;
+        alu_sltu_d = 0;
+        alu_xor_d = 0;
+        alu_or_d = 0;
+        alu_and_d = 0;
+        alu_sll_d = 0;
+        alu_srl_d = 0;
+        alu_sra_d = 0;
+        alu_eq_d = 0;
+        alu_neq_d = 0;
+        alu_lt_d = 0;
+        alu_ltu_d = 0;
+        alu_ge_d = 0;
+        alu_geu_d = 0;
         
         opcode_rtype_d = opcode == `OPCODE_RTYPE;
         opcode_itype_d = opcode == `OPCODE_ITYPE;
@@ -195,34 +213,42 @@ module decoder #(
             temp_addr_rs2 = {AWIDTH{1'b0}};
             temp_addr_rs1 = {AWIDTH{1'b0}};
             temp_addr_rd = d_i_instr[11 : 7];
-            funct3 = {AWIDTH{1'b0}};
+            funct3 = {FUNCT_WIDTH{1'b0}};
         end
         else begin
             temp_addr_rs2 = {AWIDTH{1'b0}};
             temp_addr_rs1 = {AWIDTH{1'b0}};
             temp_addr_rd = {AWIDTH{1'b0}};
             opcode = {`OPCODE_WIDTH{1'b0}};
-            funct3 = {3{1'b0}};
+            funct3 = {FUNCT_WIDTH{1'b0}};
         end
-    end
 
-    always @(*) begin
-        alu_add_d = 0;
-        alu_sub_d = 0;
-        alu_slt_d = 0;
-        alu_sltu_d = 0;
-        alu_xor_d = 0;
-        alu_or_d = 0;
-        alu_and_d = 0;
-        alu_sll_d = 0;
-        alu_srl_d = 0;
-        alu_sra_d = 0;
-        alu_eq_d = 0;
-        alu_neq_d = 0;
-        alu_lt_d = 0;
-        alu_ltu_d = 0;
-        alu_ge_d = 0;
-        alu_geu_d = 0;
+        case (opcode)
+            `OPCODE_RTYPE : begin
+                imm_d = {32{1'b0}};
+            end
+            `OPCODE_ITYPE, `OPCODE_JALR, `OPCODE_LOAD : begin
+                imm_d = {{20{d_i_instr[31]}}, d_i_instr[31 : 20]};
+            end
+            `OPCODE_STORE : begin
+                imm_d = {{20{d_i_instr[31]}}, d_i_instr[31 : 25], d_i_instr[11 : 7]};
+            end
+            `OPCODE_BRANCH : begin
+                imm_d = {{20{d_i_instr[31]}}, d_i_instr[7], d_i_instr[30 : 25], d_i_instr[11 : 8], 1'b0};
+            end
+            `OPCODE_JAL : begin
+                imm_d = {{12{d_i_instr[31]}}, d_i_instr[19 : 12], d_i_instr[20], d_i_instr[30 : 21], 1'b0};
+            end
+            `OPCODE_LUI, `OPCODE_AUIPC : begin
+                imm_d = {d_i_instr[31 : 12], {12{1'b0}}};
+            end
+            `OPCODE_SYSTEM, `OPCODE_FENCE : begin
+                imm_d = {{20{1'b0}}, d_i_instr[31 : 20]};
+            end
+            default : begin
+                imm_d = {32{1'b0}}; 
+            end
+        endcase
 
         if (opcode == `OPCODE_RTYPE || opcode == `OPCODE_ITYPE) begin
             if (opcode == `OPCODE_RTYPE) begin
@@ -262,36 +288,6 @@ module decoder #(
         else begin
             alu_add_d = 1;
         end
-    end
-
-    always @(*) begin
-        imm_d = 0;
-        case (opcode)
-            `OPCODE_RTYPE : begin
-                imm_d = {32{1'b0}};
-            end
-            `OPCODE_ITYPE, `OPCODE_JALR, `OPCODE_LOAD : begin
-                imm_d = {{20{d_i_instr[31]}}, d_i_instr[31 : 20]};
-            end
-            `OPCODE_STORE : begin
-                imm_d = {{20{d_i_instr[31]}}, d_i_instr[31 : 25], d_i_instr[11 : 7]};
-            end
-            `OPCODE_BRANCH : begin
-                imm_d = {{20{d_i_instr[31]}}, d_i_instr[7], d_i_instr[30 : 25], d_i_instr[11 : 8], 1'b0};
-            end
-            `OPCODE_JAL : begin
-                imm_d = {{12{d_i_instr[31]}}, d_i_instr[19 : 12], d_i_instr[20], d_i_instr[30 : 21], 1'b0};
-            end
-            `OPCODE_LUI, `OPCODE_AUIPC : begin
-                imm_d = {d_i_instr[31 : 12], {12{1'b0}}};
-            end
-            `OPCODE_SYSTEM, `OPCODE_FENCE : begin
-                imm_d = {{20{1'b0}}, d_i_instr[31 : 20]};
-            end
-            default : begin
-                imm_d = {32{1'b0}}; 
-            end
-        endcase
     end
 endmodule
 `endif 

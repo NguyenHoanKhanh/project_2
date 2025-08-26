@@ -60,8 +60,8 @@ module connect #(
         .fi_pc(fi_pc), 
         .fi_i_stall(fi_i_stall), 
         .fi_o_stall(fi_o_stall), 
-        .fi_o_ce(fi_o_ce), 
         .fi_i_ce(fi_i_ce),
+        .fi_o_ce(fi_o_ce), 
         .fi_i_flush(fi_i_flush), 
         .fi_o_flush(fi_o_flush)
     );

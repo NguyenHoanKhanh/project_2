@@ -3,7 +3,8 @@
 
 module transmit #(
     parameter IWIDTH = 32,
-    parameter DEPTH  = 36
+    parameter DEPTH  = 36,
+    parameter DWIDTH = 32
 )(
     t_clk, t_rst, t_i_syn, t_o_instr, t_o_ack
 );
@@ -18,7 +19,7 @@ module transmit #(
 
     always @(posedge t_clk or negedge t_rst) begin
         if (!t_rst) begin
-            counter   <= 0;
+            counter   <= {DWIDTH{1'b0}};
             t_o_ack   <= 1'b0;
             t_o_instr <= {IWIDTH{1'b0}};
             // nạp hex hoặc bin, kèm start-stop

@@ -1,0 +1,2 @@
+
+    parameter AWIDTH = 5,

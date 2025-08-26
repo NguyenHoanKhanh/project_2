@@ -3,7 +3,7 @@
 
 module register #(
     parameter DWIDTH = 32,
-    parameter AWIDTH = 5
+    parameter AWIDTH = 3
 )(
     r_clk, r_rst, r_addr_rs_1, r_addr_rs_2, r_addr_rd, r_data_rd, r_data_out_rs1, r_data_out_rs2, r_we
 );
