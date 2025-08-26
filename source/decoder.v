@@ -17,6 +17,7 @@ module decoder #(
     input [IWIDTH - 1 : 0] d_i_instr;
     input [PC_WIDTH - 1 : 0] d_i_pc;
     output reg [PC_WIDTH - 1 : 0] d_o_pc;
+    // d_o_addr_rx is used for testbench's output and d_o_addr_rx_p is use for pipeline's output
     output [AWIDTH - 1 : 0] d_o_addr_rs1;
     output [AWIDTH - 1 : 0] d_o_addr_rs2;
     output reg [AWIDTH - 1 : 0] d_o_addr_rs1_p;
@@ -137,7 +138,8 @@ module decoder #(
             d_o_exception[`ECALL] <= (system_exeption && d_i_instr[21 : 20] == 2'b00) ? 1 : 0;
             d_o_exception[`EBREAK] <= (system_exeption && d_i_instr[21 : 20] == 2'b01) ? 1 : 0;
             d_o_exception[`MRET] <= (system_exeption && d_i_instr[21 : 20] == 2'b10) ? 1 : 0;
-
+            //Anytime, if this stage receive flush or stall signal, Signal o_ce will not be turn on
+            //Concurrently, this stage will be postponed
             if (d_i_flush && !stall_bit) begin
                 d_o_ce <= 0;
             end
