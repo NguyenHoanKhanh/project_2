@@ -7,7 +7,7 @@ module tb_decoder_stage_alt;
     parameter AWIDTH = 5;
     parameter PC_WIDTH = 32;
     parameter IWIDTH = 32;
-    
+
     reg ds_clk;
     reg ds_rst; 
     reg [IWIDTH-1:0] ds_i_instr;
@@ -78,7 +78,7 @@ module tb_decoder_stage_alt;
 
     // waveform
     initial begin
-        $dumpfile("decoder_stage_alt.vcd");
+        $dumpfile("./waveform/decoder_stage.vcd");
         $dumpvars(0, tb_decoder_stage_alt);
     end
 
