@@ -189,7 +189,11 @@ module execute #(
     end
 
     always @(*) begin
+        a = (op_jal || op_auipc) ? ex_i_pc : op_lui ? {DWIDTH{1'b0}} : ex_i_data_rs1;
+        b = (op_rtype || op_branch) ? ex_i_data_rs2 : ex_i_imm;
+        alu_value = {DWIDTH{1'b0}};
         ex_o_ce = 0;
+        
         if (ex_i_flush && !stall_bit) begin
             ex_o_ce = 0;
         end
@@ -199,12 +203,6 @@ module execute #(
         else if (stall_bit && !ex_i_stall) begin
             ex_o_ce = 0;
         end
-    end
-
-    always @(*) begin
-        a = (op_jal || op_auipc) ? ex_i_pc : op_lui ? {DWIDTH{1'b0}} : ex_i_data_rs1;
-        b = (op_rtype || op_branch) ? ex_i_data_rs2 : ex_i_imm;
-        alu_value = {DWIDTH{1'b0}};
 
         if (alu_add) begin
             alu_value = a + b;

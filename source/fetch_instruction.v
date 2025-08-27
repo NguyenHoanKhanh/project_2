@@ -73,14 +73,14 @@ module instruction_fetch #(
                 else if (f_i_ce) begin
                     ce <= 1'b1;
                 end
-                // SYN generation: set when request; pre-increment PC to reduce latency
-                if (!f_o_syn && ce && !f_i_ack && !f_i_stall && !f_o_stall) begin
-                    f_o_syn <= 1'b1;
-                    f_pc <= f_pc + 4;
-                end
-                else if (f_i_ack || f_i_flush) begin
-                    f_o_syn <= 1'b0;
-                end
+                // // SYN generation: set when request; pre-increment PC to reduce latency
+                // if (!f_o_syn && ce && !f_i_ack && !f_i_stall && !f_o_stall) begin
+                //     f_o_syn <= 1'b1;
+                //     f_pc <= f_pc + 4;
+                // end
+                // else if (f_i_ack || f_i_flush) begin
+                //     f_o_syn <= 1'b0;
+                // end
                 // output instruction when acked and allowed
                 if((ce && f_i_ack && !stall) || (stall && !f_o_ce && ce)) begin
                     f_o_addr_instr <= prev_pc;
@@ -97,6 +97,7 @@ module instruction_fetch #(
                 // update PC/ce_d when ack arrives
                 if (f_i_ack) begin
                     prev_pc <= f_pc;
+                    f_o_syn <= 1'b0;
                     if (f_change_pc || f_i_flush) begin
                         f_pc <= f_alu_pc_value;
                     end
