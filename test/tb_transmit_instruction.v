@@ -6,6 +6,7 @@ module tb;
     wire [IWIDTH - 1 : 0] t_o_instr;
     reg t_i_syn;
     wire t_o_ack;
+    wire t_o_last;
     integer i;
 
     transmit #(
@@ -16,7 +17,8 @@ module tb;
         .t_rst(t_rst),
         .t_o_instr(t_o_instr),
         .t_i_syn(t_i_syn),
-        .t_o_ack(t_o_ack)
+        .t_o_ack(t_o_ack),
+        .t_o_last(t_o_last)
     );
 
     initial begin
@@ -45,7 +47,7 @@ module tb;
                 @(posedge t_clk);
                 t_i_syn = 1'b1;
                 @(posedge t_clk);
-                $display($time, " ", "instr = %h, ack = %b, %d", t_o_instr, t_o_ack, i);
+                $display($time, " ", "instr = %h, ack = %b, last = %b, %d", t_o_instr, t_o_ack, t_o_last, i);
                 t_i_syn = 1'b0;
                 @(posedge t_clk);
             end
