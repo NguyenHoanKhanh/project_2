@@ -51,6 +51,11 @@ module tb;
 
     initial begin
         c_clk = 1'b0;
+        fi_i_stall = 1'b0;
+        fi_i_flush = 1'b0;
+        fi_i_ce = 1'b0;
+        ds_data_in_rd = {DWIDTH{1'b0}};
+        ds_we = 1'b0;
         i = 0;
     end
     always #5 c_clk = ~c_clk;
@@ -82,11 +87,6 @@ module tb;
     endtask
 
     initial begin
-        fi_i_stall = 1'b0;
-        fi_i_flush = 1'b0;
-        fi_i_ce = 1'b0;
-        ds_data_in_rd = {DWIDTH{1'b0}};
-        ds_we = 1'b0;
         reset(2);
         @(posedge c_clk);
         for (i = 0; i < 5; i = i + 1) begin
