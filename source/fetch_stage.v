@@ -29,6 +29,7 @@ module fetch_i #(
 
     wire fi_i_syn;
     wire fi_o_ack;
+    wire fi_o_last;
 
     transmit #(
         .IWIDTH(IWIDTH),
@@ -38,7 +39,8 @@ module fetch_i #(
         .t_rst(fi_rst),
         .t_i_syn(fi_i_syn),
         .t_o_instr(fi_o_instr_mem),
-        .t_o_ack(fi_o_ack)
+        .t_o_ack(fi_o_ack),
+        .t_o_last(fi_o_last)
     );
 
     instruction_fetch #(
@@ -61,7 +63,8 @@ module fetch_i #(
         .f_i_stall(fi_i_stall),
         .f_o_stall(fi_o_stall),
         .f_i_flush(fi_i_flush),
-        .f_o_flush(fi_o_flush)
+        .f_o_flush(fi_o_flush),
+        .f_i_last(fi_o_last)
     );
 endmodule
 `endif

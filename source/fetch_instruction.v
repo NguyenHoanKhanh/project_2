@@ -89,7 +89,7 @@ module instruction_fetch #(
                         f_o_flush <= 1'b0;
                     end
                 end
-                // When ack is sampled (=1), consume returned instruction
+                // When ack = 1, consume returned instruction
                 if (temp_ack) begin
                     f_o_addr_instr <= prev_pc;
                     f_o_instr <= f_i_instr;

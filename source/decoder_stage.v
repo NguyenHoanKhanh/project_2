@@ -1,8 +1,8 @@
-`include "./source/decoder.v"
-`include "./source/register_file.v"
-
 `ifndef DECODER_STAGE_V
 `define DECODER_STAGE_V
+
+`include "./source/decoder.v"
+`include "./source/register_file.v"
 
 module decoder_stage #(
     parameter DWIDTH = 32,

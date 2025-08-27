@@ -77,7 +77,7 @@ module decoder #(
     reg illegal_check;
     reg system_exeption;
     wire stall_bit = d_o_stall || d_i_stall;
-    assign d_o_stall = d_i_stall || d_o_exception[`ILLEGAL];
+    assign d_o_stall = d_i_stall || (d_o_exception[`ILLEGAL] && d_o_ce);
     assign d_o_flush = d_i_flush || d_o_exception[`ECALL];
     always @(posedge d_clk, negedge d_rst) begin
         if (!d_rst) begin
@@ -134,10 +134,16 @@ module decoder #(
             end
 
             d_o_opcode <= opcode;
-            d_o_exception[`ILLEGAL] <= !valid_opcode || illegal_check;
-            d_o_exception[`ECALL] <= (system_exeption && d_i_instr[21 : 20] == 2'b00) ? 1 : 0;
-            d_o_exception[`EBREAK] <= (system_exeption && d_i_instr[21 : 20] == 2'b01) ? 1 : 0;
-            d_o_exception[`MRET] <= (system_exeption && d_i_instr[21 : 20] == 2'b10) ? 1 : 0;
+
+            if (d_i_ce && !stall_bit) begin
+                d_o_exception[`ILLEGAL] <= !valid_opcode || illegal_check;
+                d_o_exception[`ECALL] <= (system_exeption && d_i_instr[21 : 20] == 2'b00) ? 1 : 0;
+                d_o_exception[`EBREAK] <= (system_exeption && d_i_instr[21 : 20] == 2'b01) ? 1 : 0;
+                d_o_exception[`MRET] <= (system_exeption && d_i_instr[21 : 20] == 2'b10) ? 1 : 0;
+            end
+            else begin
+                d_o_exception <= {`EXCEPTION_WIDTH{1'b0}};
+            end
             //Anytime, if this stage receive flush or stall signal, Signal o_ce will not be turn on
             //Concurrently, this stage will be postponed
             if (d_i_flush && !stall_bit) begin
