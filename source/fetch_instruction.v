@@ -38,6 +38,7 @@ module instruction_fetch #(
     reg temp_ack, temp_last;
     reg req; //value equal to syn
 
+    //The solution of using temporary variables and replacement variables with the same meaning is to avoid falling into race signals leading to a dealock
     always @(posedge f_clk, negedge f_rst) begin
         if (!f_rst) begin
             f_o_stall <= 1'b0;
