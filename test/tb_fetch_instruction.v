@@ -6,7 +6,7 @@ module tb_instruction_fetch;
     parameter IWIDTH        = 32;
     parameter AWIDTH_INSTR  = 32;
     parameter PC_WIDTH      = 32;
-    parameter DEPTH         = 64; // local memory entries for TB
+    parameter DEPTH         = 32; // local memory entries for TB
 
     // Clock and reset
     reg                    f_clk;
@@ -18,6 +18,7 @@ module tb_instruction_fetch;
     wire [AWIDTH_INSTR-1:0] f_o_addr_instr;
     wire                   f_o_syn;          // request from fetch (to mem/transmit)
     reg                    f_i_ack;          // ack from mem/transmit (emulated)
+    reg                    f_i_last;
     reg                    f_i_stall;        // downstream stall input (consumer busy)
     wire                   f_o_stall;        // fetch asserts when it cannot accept more requests
     reg                    f_i_ce;           // allow fetch
@@ -27,7 +28,7 @@ module tb_instruction_fetch;
     reg                    f_change_pc;
     reg  [PC_WIDTH-1:0]    f_alu_pc_value;
     wire [PC_WIDTH-1:0]    f_pc;
-
+    integer i;
     // Instantiate DUT
     instruction_fetch #(
         .IWIDTH(IWIDTH),
@@ -49,7 +50,8 @@ module tb_instruction_fetch;
         .f_i_ce        (f_i_ce),
         .f_o_ce        (f_o_ce),
         .f_i_flush     (f_i_flush),
-        .f_o_flush     (f_o_flush)
+        .f_o_flush     (f_o_flush),
+        .f_i_last      (f_i_last)
     );
 
     // Simple memory to emulate transmit: feed deterministic words
@@ -59,6 +61,7 @@ module tb_instruction_fetch;
     // Clock
     initial begin
         f_clk = 0;
+        i = 0;
         forever #5 f_clk = ~f_clk; // 10 ns period
     end
 
@@ -119,37 +122,35 @@ module tb_instruction_fetch;
         if (!f_rst) begin
             f_i_instr <= {IWIDTH{1'b0}};
             f_i_ack   <= 1'b0;
+            f_i_last  <= 1'b0;
             mem_ptr   <= 0;
-        end else begin
+            for (i = 0; i <= DEPTH; i = i + 1) begin
+                mem[i] = 32'h1000_0000 + i; // simple increasing patterns for visibility
+            end
+        end 
+        else begin
             if (f_o_syn) begin
                 f_i_instr <= mem[mem_ptr];
                 f_i_ack   <= 1'b1;
                 // advance pointer so next request gets next instruction
-                if (mem_ptr < DEPTH-1) mem_ptr <= mem_ptr + 1;
-                else mem_ptr <= 0;
-            end else begin
+                mem_ptr <= (mem_ptr < DEPTH - 1) ? mem_ptr + 1 : 0;
+                f_i_last <= (mem_ptr == DEPTH - 1) ? 1 : 0;
+            end 
+            else begin
                 f_i_ack <= 1'b0;
+                f_i_last <= 1'b0;
             end
-        end
-    end
-
-    // Initialize memory with recognizable patterns
-    integer i;
-    initial begin
-        for (i = 0; i < DEPTH; i = i + 1) begin
-            mem[i] = 32'h1000_0000 + i; // simple increasing patterns for visibility
         end
     end
 
     // Monitoring: print concise table each cycle
     initial begin
-        $display("TIME clk rst | pc    addr_req  instr_in   syn ack stall_i stall_o ce out_flush");
-        $display("--------------------------------------------------------------------------");
+        
         forever @(posedge f_clk) begin
-            $display("%4t  %b   %h | %h | %h | %h | %b | %b   |   %b   |   %b  |  %b",
-                     $time, f_clk, f_rst,
+            $display($time, " ", "clk = %b, rst = %b, pc = %h, addr_req = %h, instr_in = %h, syn = %b, ack = %b, stall_i = %b, stall_o = %b, ce = %b, out_flush = %b, f_i_last = %b", 
+                     f_clk, f_rst,
                      f_pc, f_o_addr_instr, f_i_instr,
-                     f_o_syn, f_i_ack, f_i_stall, f_o_stall, f_o_ce, f_o_flush);
+                     f_o_syn, f_i_ack, f_i_stall, f_o_stall, f_o_ce, f_o_flush, f_i_last);
         end
     end
 
@@ -162,9 +163,10 @@ module tb_instruction_fetch;
         f_change_pc     = 0;
         f_alu_pc_value  = 0;
         f_i_flush       = 0;
-        f_i_ce          = 1; // allow fetch to start
+        f_i_ce          = 0; // allow fetch to start
         // reset
         do_reset(2);
+        f_i_ce          = 1; // allow fetch to start
 
         // let DUT run and fetch a few instructions automatically
         repeat (6) @(posedge f_clk); // observe startup
@@ -188,10 +190,9 @@ module tb_instruction_fetch;
         do_flush(2);
 
         // allow more cycles to observe streaming
-        repeat (8) @(posedge f_clk);
-
+        repeat (7) @(posedge f_clk);
         $display("TEST COMPLETE");
-        #10 $finish;
+        $finish;
     end
 
 endmodule

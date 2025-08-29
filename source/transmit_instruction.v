@@ -29,14 +29,14 @@ module transmit #(
         end
         else begin
             if (t_i_syn) begin
-                t_o_instr = mem_instr[counter];
-                t_o_ack   = 1'b1;
-                t_o_last = (counter == DEPTH - 1) ? 1 : 0;
-                counter = (counter < DEPTH - 1) ? counter + 1 : 0;
+                t_o_instr <= mem_instr[counter];
+                t_o_ack   <= 1'b1;
+                t_o_last <= (counter == DEPTH - 1) ? 1 : 0;
+                counter <= (counter < DEPTH - 1) ? counter + 1 : 0;
             end
             else begin
-                t_o_ack = 1'b0;
-                t_o_last = 1'b0;
+                t_o_ack <= 1'b0;
+                t_o_last <= 1'b0;
             end
         end
     end

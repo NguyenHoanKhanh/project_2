@@ -62,20 +62,21 @@ module tb;
 
     task display (input integer counter);
         begin
+            fi_i_ce = 1'b1; 
+            @(posedge fi_clk)
             for (i = 0; i < counter; i = i + 1) begin
-                @(posedge fi_clk);
-                $display($time, " ", "addr = %d, instruction = %h, syn = %b, ack = %b", i, fi_o_instr_fetch, fi.fi_i_syn, fi.fi_o_ack);
+                @(posedge fi_clk)
+                $display($time, " ", "addr = %d, instruction = %h, syn = %b, ack = %b, fi_o_last = %b", i, fi_o_instr_fetch, fi.fi_i_syn, fi.fi_o_ack, fi.fi_o_last);
             end
         end
     endtask
 
     initial begin
-        reset(2);
-        @(posedge fi_clk);
-        fi_i_ce = 1'b1;
         fi_i_stall = 1'b0;
         fi_i_flush = 1'b0;
+        reset(2);
+        // @(posedge fi_clk)
         display(36);
-        #200; $finish;
+        $finish;
     end
 endmodule
