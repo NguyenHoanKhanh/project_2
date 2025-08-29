@@ -96,7 +96,7 @@ module tb;
         end
         @(posedge c_clk);
         ds_we = 1'b0;
-        display(30);
+        display(37);
         #20;
         $finish;
     end

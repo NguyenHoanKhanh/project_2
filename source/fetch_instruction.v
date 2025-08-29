@@ -30,16 +30,15 @@ module instruction_fetch #(
     input f_i_flush;
     output reg f_o_flush;
     //Internal state regs
-    reg [PC_WIDTH - 1 : 0] prev_pc;
     reg ce, ce_d;
     reg f_o_syn_r;
     wire stall = f_o_stall || f_i_stall || (f_o_syn_r && !f_i_ack);
     reg init_done;
     reg temp_ack, temp_last;
-    reg req; //value equal to syn
-    reg [PC_WIDTH - 1 : 0] issued_pc;
+    reg req; //Req is value equal to syn is used as a replacement variable in some conditions coordinate the pc and syn signal
+    reg [PC_WIDTH - 1 : 0] issued_pc; //This variable is used for the temporary storage of the PC value each time it is updated
 
-    //The solution of using temporary variables and replacement variables with the same meaning is to avoid falling into race signals leading to a dealock
+    //The solution of using temporary variables and replacement variables with the same meaning is avoid falling into race signals leading to a deadlock
     always @(posedge f_clk, negedge f_rst) begin
         if (!f_rst) begin
             f_o_stall <= 1'b0;
@@ -50,7 +49,6 @@ module instruction_fetch #(
             f_o_stall <= 1'b0;
             f_o_instr <= {IWIDTH{1'b0}};
             f_pc <= {PC_WIDTH{1'b0}};
-            prev_pc <= {PC_WIDTH{1'b0}};
             f_o_addr_instr <= {AWIDTH_INSTR{1'b0}};
             f_o_syn_r <= 1'b0;
             f_o_syn <= 1'b0;
@@ -118,7 +116,7 @@ module instruction_fetch #(
             end
         end
     end
-
+    //Combinative of always is used to 
     always @(*) begin
         temp_ack = f_i_ack;
         temp_last = f_i_last;
@@ -127,8 +125,6 @@ module instruction_fetch #(
             f_o_addr_instr = issued_pc;
             f_o_instr = f_i_instr;
             f_o_flush = 1'b0;
-            // // update prev_pc to the pre-increment for f_pc
-            // prev_pc = f_pc;
             // if slave said last, stop request; otherwise continue streaming
             if (temp_last) begin
                 req = 1'b0;
