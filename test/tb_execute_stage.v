@@ -11,16 +11,21 @@ module tb;
     wire [`ALU_WIDTH - 1 : 0] ex_o_alu;
     wire [`OPCODE_WIDTH - 1 : 0] ex_o_opcode;
     reg [AWIDTH - 1 : 0] ex_i_addr_rs1;
+    wire [AWIDTH - 1 : 0] ex_o_addr_rs1;
     reg [AWIDTH - 1 : 0] ex_i_addr_rs2;
+    wire [AWIDTH - 1 : 0] ex_o_addr_rs2;
     reg [AWIDTH - 1 : 0] ex_i_addr_rd;
+    wire [AWIDTH - 1 : 0] ex_o_addr_rd;
     reg [DWIDTH - 1 : 0] ex_i_data_rs1;
+    wire [DWIDTH - 1 : 0] ex_o_data_rs1;
     reg [DWIDTH - 1 : 0] ex_i_data_rs2;
+    wire [DWIDTH - 1 : 0] ex_o_data_rs2;
     wire [DWIDTH - 1 : 0] ex_o_data_rd; 
+    wire [DWIDTH - 1 : 0] ex_o_alu_value;
     reg [FUNCT_WIDTH - 1 : 0] ex_i_funct3; 
     wire [FUNCT_WIDTH - 1 : 0] ex_o_funct3;
     reg [DWIDTH - 1 : 0] ex_i_imm; 
     wire [DWIDTH - 1 : 0] ex_o_imm;
-    // wire [11 : 0] ex_o_imm;
     reg ex_i_ce;
     wire ex_o_ce;
     reg ex_i_stall;
@@ -34,7 +39,6 @@ module tb;
     wire ex_o_we_reg; 
     wire ex_o_valid;
     wire ex_stall_from_alu;
-    wire [AWIDTH - 1 : 0] ex_o_addr_rd;
 
     execute #(
         .AWIDTH(AWIDTH),
@@ -49,10 +53,14 @@ module tb;
         .ex_o_alu(ex_o_alu), 
         .ex_o_opcode(ex_o_opcode),
         .ex_i_addr_rs1(ex_i_addr_rs1), 
-        .ex_i_addr_rs2(ex_i_addr_rs2), 
+        .ex_o_addr_rs1(ex_o_addr_rs1),
+        .ex_i_addr_rs2(ex_i_addr_rs2),
+        .ex_o_addr_rs2(ex_o_addr_rs2), 
         .ex_i_addr_rd(ex_i_addr_rd), 
         .ex_i_data_rs1(ex_i_data_rs1), 
-        .ex_i_data_rs2(ex_i_data_rs2), 
+        .ex_o_data_rs1(ex_o_data_rs1),
+        .ex_i_data_rs2(ex_i_data_rs2),
+        .ex_o_data_rs2(ex_o_data_rs2), 
         .ex_o_data_rd(ex_o_data_rd), 
         .ex_i_funct3(ex_i_funct3), 
         .ex_o_funct3(ex_o_funct3), 
@@ -71,7 +79,8 @@ module tb;
         .ex_o_we_reg(ex_o_we_reg), 
         .ex_o_valid(ex_o_valid), 
         .ex_stall_from_alu(ex_stall_from_alu),
-        .ex_o_addr_rd(ex_o_addr_rd)
+        .ex_o_addr_rd(ex_o_addr_rd),
+        .ex_o_alu_value(ex_o_alu_value)
     );
 
     initial begin
@@ -81,8 +90,8 @@ module tb;
     // Clock generation
     initial begin
         ex_clk = 0;
-        forever #5 ex_clk = ~ex_clk;
     end
+    always #5 ex_clk = ~ex_clk;
 
     task reset();
         begin
@@ -114,11 +123,18 @@ module tb;
             ex_i_ce = 1;
             ex_i_flush = 0;
             ex_i_stall = 0;
-            #10;
-            $display("Result: ex_o_data_rd = 0x%h", ex_o_data_rd);
+            ex_i_addr_rs1 = 5'd1;
+            ex_i_addr_rs2 = 5'd2;
+            ex_i_addr_rd  = 5'd3;
+            @(posedge ex_clk);
+            #1;
+            $display("Time = %0d", $time);
             $display("NextPC: ex_next_pc = 0x%h", ex_next_pc);
-            $display("ChangePC: %b, WE: %b, Valid: %b\n",
-                     ex_o_change_pc, ex_o_we_reg, ex_o_valid);
+            $display("rs1 = %d, rs2 = %d", ex_o_data_rs1, ex_o_data_rs2);
+            $display("Alu value : ex_o_alu_value = 0x%h", ex_o_alu_value);
+            $display("Result: ex_o_data_rd = 0x%h", ex_o_data_rd);
+            $display("ChangePC: %b, WE: %b, Valid: %b, Stall = %b, Ce = %b\n",
+                     ex_o_change_pc, ex_o_we_reg, ex_o_valid, ex_o_stall, ex_o_ce);
         end
     endtask
 

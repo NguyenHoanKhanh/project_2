@@ -25,7 +25,7 @@ module transmit #(
             t_o_instr <= {IWIDTH{1'b0}};
             t_o_last <= 1'b0;
             // nạp hex hoặc bin, kèm start-stop
-            $readmemh("./source/instr.txt", mem_instr, 0, DEPTH - 1);
+            $readmemh("./source/abc.txt", mem_instr, 0, DEPTH - 1);
         end
         else begin
             if (t_i_syn) begin

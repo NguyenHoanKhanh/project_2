@@ -19,6 +19,8 @@ module tb;
     wire [FUNCT_WIDTH - 1 : 0] ds_o_funct3;
     wire [AWIDTH - 1 : 0] ds_o_addr_rd_p, ds_o_addr_rs1_p, ds_o_addr_rs2_p;
     reg ds_we;
+    wire ds_o_stall, ds_o_flush, ds_o_ce;
+    wire [PC_WIDTH - 1 : 0] ds_o_pc;
     integer i;
 
     connect # (
@@ -46,7 +48,11 @@ module tb;
         .ds_o_addr_rd_p(ds_o_addr_rd_p), 
         .ds_o_addr_rs1_p(ds_o_addr_rs1_p), 
         .ds_o_addr_rs2_p(ds_o_addr_rs2_p),
-        .ds_we(ds_we)
+        .ds_we(ds_we),
+        .ds_o_stall(ds_o_stall),
+        .ds_o_flush(ds_o_flush),
+        .ds_o_ce(ds_o_ce),
+        .ds_o_pc(ds_o_pc)
     );
 
     initial begin
