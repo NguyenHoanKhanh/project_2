@@ -41,6 +41,7 @@ module decoder_stage #(
     wire [AWIDTH - 1 : 0] ds_o_addr_rd;
     wire [AWIDTH - 1 : 0] ds_o_addr_rs1;
     wire [AWIDTH - 1 : 0] ds_o_addr_rs2;
+    
     decoder # (
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
@@ -78,8 +79,8 @@ module decoder_stage #(
     ) re (
         .r_clk(ds_clk), 
         .r_rst(ds_rst), 
-        .r_addr_rs_1(ds_o_addr_rs1_p), 
-        .r_addr_rs_2(ds_o_addr_rs2_p), 
+        .r_addr_rs1(ds_o_addr_rs1_p), 
+        .r_addr_rs2(ds_o_addr_rs2_p), 
         .r_addr_rd(ds_o_addr_rd_p), 
         .r_data_rd(ds_data_in_rd), 
         .r_data_out_rs1(ds_data_out_rs1), 
