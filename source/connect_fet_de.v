@@ -5,7 +5,7 @@
 
 module connect #(
     parameter IWIDTH = 32,
-    parameter DEPTH = 100,
+    parameter DEPTH = 36,
     parameter AWIDTH_INSTR = 32,
     parameter PC_WIDTH = 32,
     parameter AWIDTH = 5,
@@ -14,7 +14,7 @@ module connect #(
 )(
     c_clk, c_rst, fi_i_stall, fi_i_flush, fi_i_ce, fi_o_instr_fetch, ds_data_out_rs2, ds_data_out_rs1,
     ds_data_in_rd, ds_o_opcode, ds_o_alu, ds_o_imm, ds_o_funct3, ds_o_addr_rd_p, ds_o_addr_rs1_p, 
-    ds_o_addr_rs2_p, ds_we
+    ds_o_addr_rs2_p, ds_we, ds_o_ce, ds_o_stall, ds_o_flush, ds_o_pc
 );
     input c_clk, c_rst;
     output [IWIDTH - 1 : 0] fi_o_instr_fetch;
@@ -32,9 +32,9 @@ module connect #(
     output [DWIDTH - 1 : 0] ds_data_out_rs2;
     output [DWIDTH - 1 : 0] ds_data_out_rs1;
     input [DWIDTH - 1 : 0] ds_data_in_rd;
-    wire ds_o_flush;
-    wire ds_o_stall;
-    wire ds_o_ce;
+    output ds_o_flush;
+    output ds_o_stall;
+    output ds_o_ce;
     wire [3 : 0] ds_o_exception;
     output [`OPCODE_WIDTH - 1 : 0] ds_o_opcode;
     output [`ALU_WIDTH - 1 : 0] ds_o_alu;
@@ -43,7 +43,7 @@ module connect #(
     output [AWIDTH - 1 : 0] ds_o_addr_rd_p;
     output [AWIDTH - 1 : 0] ds_o_addr_rs2_p;
     output [AWIDTH - 1 : 0] ds_o_addr_rs1_p;
-    wire [PC_WIDTH - 1 : 0] ds_o_pc;
+    output [PC_WIDTH - 1 : 0] ds_o_pc;
 
     fetch_i # (
         .IWIDTH(IWIDTH),
