@@ -79,6 +79,7 @@ module decoder #(
     wire stall_bit = d_o_stall || d_i_stall;
     assign d_o_stall = d_i_stall || (d_o_exception[`ILLEGAL] && d_o_ce);
     assign d_o_flush = d_i_flush || d_o_exception[`ECALL];
+
     always @(posedge d_clk, negedge d_rst) begin
         if (!d_rst) begin
             d_o_ce <= 0;
@@ -136,7 +137,7 @@ module decoder #(
             d_o_opcode <= opcode;
 
             if (d_i_ce && !stall_bit) begin
-                d_o_exception[`ILLEGAL] <= !valid_opcode || illegal_check;
+                d_o_exception[`ILLEGAL] <= !valid_opcode || illegal_check;  
                 d_o_exception[`ECALL] <= (system_exeption && d_i_instr[21 : 20] == 2'b00) ? 1 : 0;
                 d_o_exception[`EBREAK] <= (system_exeption && d_i_instr[21 : 20] == 2'b01) ? 1 : 0;
                 d_o_exception[`MRET] <= (system_exeption && d_i_instr[21 : 20] == 2'b10) ? 1 : 0;
@@ -163,8 +164,10 @@ module decoder #(
         temp_addr_rs2 = {AWIDTH{1'b0}};
         temp_addr_rd  = {AWIDTH{1'b0}};
         opcode = d_i_instr[6 : 0];
-        funct3        = {FUNCT_WIDTH{1'b0}};
+        funct3 = {FUNCT_WIDTH{1'b0}};
         imm_d = {DWIDTH{1'b0}};
+        illegal_check = 0;
+
         alu_add_d = 0;
         alu_sub_d = 0;
         alu_slt_d = 0;
@@ -197,15 +200,48 @@ module decoder #(
         system_exeption = opcode == `OPCODE_SYSTEM && funct3 == 0;
         valid_opcode = (opcode_rtype_d || opcode_itype_d || opcode_load_word_d || opcode_store_word_d || opcode_branch_d || opcode_jal_d || 
         opcode_jalr_d || opcode_lui_d || opcode_auipc_d || opcode_system_d || opcode_fence_d);
-        illegal_check = (opcode_itype_d && (alu_sll_d || alu_srl_d || alu_sra_d) && d_i_instr[25] == 0);
-
+        
+        //Check illegal signal 
+        if (opcode_itype_d) begin
+            illegal_check = (alu_sll_d || alu_srl_d || alu_sra_d) && d_i_instr[25] != 0;
+        end
+        else if (opcode_rtype_d) begin
+            if (!((funct3 == `FUNCT3_ADD && (d_i_instr[30] == 0 || d_i_instr[30] == 1)) || 
+                (funct3 == `FUNCT3_SLT) || (funct3 == `FUNCT3_SLTU) || (funct3 == `FUNCT3_XOR) || 
+                (funct3 == `FUNCT3_OR) || (funct3 == `FUNCT3_AND) || (funct3 == `FUNCT3_SLL) ||
+                (funct3 == `FUNCT3_SRA && (d_i_instr[30] == 0 || d_i_instr[30] == 1)))) begin
+                illegal_check = 1;
+                // $display($time, " Illegal R-type funct3=%b, funct7[30]=%b for instr=%h", funct3, d_i_instr[30], d_i_instr);
+            end
+        end
+        else if (opcode_load_word_d) begin
+            if (!(funct3 == `FUNCT_LB || funct3 == `FUNCT_LH || funct3 == `FUNCT_LW || 
+                funct3 == `FUNCT_LBU || funct3 == `FUNCT_LHU)) begin
+                illegal_check = 1;
+                // $display($time, " Illegal LOAD funct3=%b for instr=%h", funct3, d_i_instr);
+            end
+        end
+        else if (opcode_store_word_d) begin
+            if (!(funct3 == `FUNCT_SB || funct3 == `FUNCT_SW || funct3 == `FUNCT_SH)) begin
+                illegal_check = 1;
+                // $display($time, " Illegal STORE funct3=%b for instr=%h", funct3, d_i_instr);
+            end
+        end
+        else if (opcode_branch_d) begin
+            if (!(funct3 == `FUNCT3_EQ || funct3 == `FUNCT3_NEQ || funct3 == `FUNCT3_LT || 
+                funct3 == `FUNCT3_GE || funct3 == `FUNCT3_GEU || funct3 == `FUNCT3_LTU)) begin
+                illegal_check = 1;
+                // $display($time, " Illegal BRANCH funct3=%b for instr=%h", funct3, d_i_instr);
+            end
+        end
         if (opcode_rtype_d) begin
             temp_addr_rs2 = d_i_instr[24 : 20];
             temp_addr_rs1 = d_i_instr[19 : 15];
             temp_addr_rd = d_i_instr[11 : 7];
             funct3 = d_i_instr[14 : 12];
         end
-        else if (opcode_itype_d || opcode_load_word_d || opcode_jalr_d || opcode_system_d || opcode_fence_d) begin
+        else if (opcode_itype_d || opcode_load_word_d || opcode_jalr_d || opcode_system_d || 
+            opcode_fence_d) begin
             temp_addr_rs2 = {AWIDTH{1'b0}};
             temp_addr_rs1 = d_i_instr[19 : 15];
             temp_addr_rd = d_i_instr[11 : 7];
@@ -229,6 +265,8 @@ module decoder #(
             temp_addr_rd = {AWIDTH{1'b0}};
             opcode = {`OPCODE_WIDTH{1'b0}};
             funct3 = {FUNCT_WIDTH{1'b0}};
+            illegal_check = 1;
+            // $display($time, " Illegal opcode=%b for instr=%h", opcode, d_i_instr);
         end
 
         case (opcode)
@@ -255,6 +293,8 @@ module decoder #(
             end
             default : begin
                 imm_d = {32{1'b0}}; 
+                illegal_check = 1;
+                // $display($time, " Default case: Illegal opcode=%b for instr=%h", opcode, d_i_instr);
             end
         endcase
 
@@ -266,22 +306,52 @@ module decoder #(
                 else if (funct3 == `FUNCT3_ADD && d_i_instr[30] == 1) begin
                     alu_sub_d = 1;
                 end
+                else if (funct3 == `FUNCT3_SLT) begin
+                    alu_slt_d = 1;
+                end
+                else if (funct3 == `FUNCT3_SLTU) begin
+                    alu_sltu_d = 1;
+                end
+                else if (funct3 == `FUNCT3_XOR) begin
+                    alu_xor_d = 1;
+                end
+                else if (funct3 == `FUNCT3_OR) begin
+                    alu_or_d = 1;
+                end
+                else if (funct3 == `FUNCT3_AND) begin
+                    alu_and_d = 1;
+                end
+                else if (funct3 == `FUNCT3_SLL) begin
+                    alu_sll_d = 1;
+                end
+                else if (funct3 == `FUNCT3_SRA) begin
+                    if (d_i_instr[30] == 0) begin
+                        alu_srl_d = 1;
+                    end
+                    else begin
+                        alu_sra_d = 1;
+                    end
+                end
+                else begin
+                    illegal_check = 1; // Funct3 không hợp lệ cho R-type
+                    // $display($time, " Illegal R-type funct3=%b, funct7[30]=%b for instr=%h", funct3, d_i_instr[30], d_i_instr);
+                end
             end
             else begin
                 alu_add_d = funct3 == `FUNCT3_ADD ? 1 : 0;
-            end
-            alu_slt_d = funct3 == `FUNCT3_SLT ? 1 : 0;
-            alu_sltu_d = funct3 == `FUNCT3_SLTU ? 1 : 0;
-            alu_xor_d = funct3 == `FUNCT3_XOR ? 1 : 0;
-            alu_or_d = funct3 == `FUNCT3_OR ? 1 : 0;
-            alu_and_d = funct3 == `FUNCT3_AND ? 1 : 0;
-            alu_sll_d = funct3 == `FUNCT3_SLL ? 1 : 0;
-            if (funct3 == `FUNCT3_SRA) begin
-                if (d_i_instr[30] == 0) begin
-                    alu_srl_d = 1;
-                end
-                else begin
-                    alu_sra_d = 1;
+                alu_slt_d = funct3 == `FUNCT3_SLT ? 1 : 0;
+                alu_sltu_d = funct3 == `FUNCT3_SLTU ? 1 : 0;
+                alu_xor_d = funct3 == `FUNCT3_XOR ? 1 : 0;
+                alu_or_d = funct3 == `FUNCT3_OR ? 1 : 0;
+                alu_and_d = funct3 == `FUNCT3_AND ? 1 : 0;
+                alu_sll_d = funct3 == `FUNCT3_SLL ? 1 : 0;
+                alu_srl_d = (funct3 == `FUNCT3_SRA && d_i_instr[30] == 0) ? 1 : 0;
+                alu_sra_d = (funct3 == `FUNCT3_SRA && d_i_instr[30] == 1) ? 1 : 0;
+                if (!(funct3 == `FUNCT3_ADD || funct3 == `FUNCT3_SLT || funct3 == `FUNCT3_SLTU || 
+                    funct3 == `FUNCT3_XOR || funct3 == `FUNCT3_OR || funct3 == `FUNCT3_AND || 
+                    funct3 == `FUNCT3_SLL || funct3 == `FUNCT3_SRA)) begin
+                    illegal_check = 1;
+                    // $display($time, " Illegal I-type funct3=%b for instr=%h", funct3, d_i_instr);
                 end
             end
         end
@@ -292,6 +362,11 @@ module decoder #(
             alu_ge_d = funct3 == `FUNCT3_GE ? 1 : 0;
             alu_ltu_d = funct3 == `FUNCT3_LTU ? 1 : 0;
             alu_geu_d = funct3 == `FUNCT3_GEU ? 1 : 0;
+            if (!(funct3 == `FUNCT3_EQ || funct3 == `FUNCT3_NEQ || funct3 == `FUNCT3_LT || 
+                funct3 == `FUNCT3_GE || funct3 == `FUNCT3_LTU || `FUNCT3_GEU)) begin
+                illegal_check = 1;
+                // $display($time, " Illegal BRANCH funct3=%b for instr=%h", funct3, d_i_instr);
+            end
         end
         else begin
             alu_add_d = 1;
