@@ -228,10 +228,10 @@ module decoder #(
             end
         end
         else if (opcode_branch_d) begin
-            if (!(funct3 == `FUNCT3_EQ || funct3 == `FUNCT3_NEQ || funct3 == `FUNCT3_LT || 
-                funct3 == `FUNCT3_GE || funct3 == `FUNCT3_GEU || funct3 == `FUNCT3_LTU)) begin
+            if (!(funct3 == `FUNCT3_EQ  || funct3 == `FUNCT3_NEQ ||
+                funct3 == `FUNCT3_LT  || funct3 == `FUNCT3_GE  ||
+                funct3 == `FUNCT3_LTU || funct3 == `FUNCT3_GEU)) begin
                 illegal_check = 1;
-                // $display($time, " Illegal BRANCH funct3=%b for instr=%h", funct3, d_i_instr);
             end
         end
         if (opcode_rtype_d) begin
@@ -362,10 +362,10 @@ module decoder #(
             alu_ge_d = funct3 == `FUNCT3_GE ? 1 : 0;
             alu_ltu_d = funct3 == `FUNCT3_LTU ? 1 : 0;
             alu_geu_d = funct3 == `FUNCT3_GEU ? 1 : 0;
-            if (!(funct3 == `FUNCT3_EQ || funct3 == `FUNCT3_NEQ || funct3 == `FUNCT3_LT || 
-                funct3 == `FUNCT3_GE || funct3 == `FUNCT3_LTU || `FUNCT3_GEU)) begin
+            if (!(funct3 == `FUNCT3_EQ  || funct3 == `FUNCT3_NEQ ||
+                funct3 == `FUNCT3_LT  || funct3 == `FUNCT3_GE  ||
+                funct3 == `FUNCT3_LTU || funct3 == `FUNCT3_GEU)) begin
                 illegal_check = 1;
-                // $display($time, " Illegal BRANCH funct3=%b for instr=%h", funct3, d_i_instr);
             end
         end
         else begin
