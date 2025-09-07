@@ -209,7 +209,7 @@ module mem_stage #(
             end
         endcase
     end
-
+    // Store needs to align input data (from register → memory) and create byte_enable.
     always @(*) begin
         byte_enable = 4'd0;
         byte_enable_d = 4'd0;
@@ -252,7 +252,7 @@ module mem_stage #(
             end 
         endcase
     end
-
+    //Load needs to shift the output data (from memory → register) and extend correctly.
     reg [DWIDTH - 1 : 0] final_load;
     wire [DWIDTH - 1 : 0] raw = me_i_load_data >> (byte_offset * 8);
     always @(*) begin
