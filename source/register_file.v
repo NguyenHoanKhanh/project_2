@@ -21,16 +21,14 @@ module register #(
     reg [DWIDTH - 1 : 0] data [0 : DEPTH - 1];
     wire r_wb;
 
+    //This signal is used to ensure that it obligatorily has enough two parts are we and address != 0 only then can the write occur
     assign r_wb = r_we && r_addr_rd != {AWIDTH{1'b0}};
 
     always @(posedge r_clk, negedge r_rst) begin
         if (!r_rst) begin
-            for (i = 0; i < 255; i = i + 1) begin
-                data[i] <= i;
+            for (i = 0; i < (1 << AWIDTH); i = i + 1) begin
+                data[i] <= {DWIDTH{1'b0}};
             end
-            data[0] <= 32'b0;  // x0 luôn = 0
-            data[1] <= 32'd5;  // x1 = 5 để test
-            data[2] <= 32'd10; // x2 = 10 để test
             r_data_out_rs1 <= {DWIDTH{1'b0}};
             r_data_out_rs2 <= {DWIDTH{1'b0}};
         end
