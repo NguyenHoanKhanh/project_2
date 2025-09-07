@@ -21,7 +21,7 @@ module memory #(
     output reg m_o_ack;
     output reg m_o_stall;
 
-    reg req_active;
+    reg req_active; // Variable transient for stall 
     reg [AWIDTH - 1 : 0] load_addr_reg;
     reg [AWIDTH - 1 : 0] store_addr_reg; 
     reg [DWIDTH - 1 : 0] data_reg;
@@ -54,6 +54,7 @@ module memory #(
 // When there are storage requests, the full set of values will be prepared, such as the store
 // value, store address when the value needs to be stored in memory, or the load address when 
 // the value needs to be read from memory 
+// All of signals below are used to receive adequate signals before being applied to memory, in order to avoid stalling
             if (!req_active) begin 
                 if (m_i_cyc && m_i_stb) begin
                     load_addr_reg <= m_i_load_addr;
