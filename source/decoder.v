@@ -75,7 +75,7 @@ module decoder #(
 
     reg valid_opcode;
     reg illegal_check;
-    reg system_exeption;
+    wire [11 : 0] system_exception = d_i_instr[31 : 20];
     wire stall_bit = d_o_stall || d_i_stall;
     assign d_o_stall = d_i_stall || (d_o_exception[`ILLEGAL] && d_o_ce);
     assign d_o_flush = d_i_flush || d_o_exception[`ECALL];
@@ -86,7 +86,6 @@ module decoder #(
             d_o_pc <= {PC_WIDTH{1'b0}};
             valid_opcode <= 1'b0;
             illegal_check <= 1'b0;
-            system_exeption <= 1'b0;
             d_o_addr_rs1_p <= {AWIDTH{1'b0}};
             d_o_addr_rs2_p <= {AWIDTH{1'b0}};
             d_o_addr_rd_p <= {AWIDTH{1'b0}};
@@ -133,16 +132,21 @@ module decoder #(
                 d_o_opcode[`SYSTEM] <= opcode_system_d;
                 d_o_opcode[`FENCE] <= opcode_fence_d;
             end
-
-            d_o_opcode <= opcode;
-
             if (d_i_ce && !stall_bit) begin
                 d_o_exception[`ILLEGAL] <= !valid_opcode || illegal_check;  
-                d_o_exception[`ECALL] <= (system_exeption && d_i_instr[21 : 20] == 2'b00) ? 1 : 0;
-                d_o_exception[`EBREAK] <= (system_exeption && d_i_instr[21 : 20] == 2'b01) ? 1 : 0;
-                d_o_exception[`MRET] <= (system_exeption && d_i_instr[21 : 20] == 2'b10) ? 1 : 0;
+                if (opcode_system_d && funct3 == 3'b000) begin
+                    d_o_exception[`ECALL] <= (system_exception == 12'h000);
+                    d_o_exception[`EBREAK] <= (system_exception == 12'h001);
+                    d_o_exception[`MRET] <= (system_exception == 12'h302);
+                end
+                else begin
+                    d_o_exception[`ECALL] <= 1'b0;
+                    d_o_exception[`EBREAK] <= 1'b0;
+                    d_o_exception[`MRET] <= 1'b0;
+                end
             end
             else begin
+                illegal_check <= 1'b0;
                 d_o_exception <= {`EXCEPTION_WIDTH{1'b0}};
             end
             //Anytime, if this stage receive flush or stall signal, Signal o_ce will not be turn on
@@ -197,10 +201,11 @@ module decoder #(
         opcode_system_d = opcode == `OPCODE_SYSTEM; 
         opcode_fence_d = opcode == `OPCODE_FENCE; 
 
-        system_exeption = opcode == `OPCODE_SYSTEM && funct3 == 0;
+        // d_o_opcode <= opcode;            
         valid_opcode = (opcode_rtype_d || opcode_itype_d || opcode_load_word_d || opcode_store_word_d || opcode_branch_d || opcode_jal_d || 
         opcode_jalr_d || opcode_lui_d || opcode_auipc_d || opcode_system_d || opcode_fence_d);
-        
+
+        //Calculating exception
         //Check illegal signal 
         if (opcode_itype_d) begin
             illegal_check = (alu_sll_d || alu_srl_d || alu_sra_d) && d_i_instr[25] != 0;
@@ -234,6 +239,10 @@ module decoder #(
                 illegal_check = 1;
             end
         end
+        else if (opcode_fence_d) begin
+            illegal_check = !((d_i_instr[14 : 12] == 3'b000) || (d_i_instr[14 : 12] == 3'b001));
+        end
+                
         if (opcode_rtype_d) begin
             temp_addr_rs2 = d_i_instr[24 : 20];
             temp_addr_rs1 = d_i_instr[19 : 15];
@@ -263,7 +272,6 @@ module decoder #(
             temp_addr_rs2 = {AWIDTH{1'b0}};
             temp_addr_rs1 = {AWIDTH{1'b0}};
             temp_addr_rd = {AWIDTH{1'b0}};
-            opcode = {`OPCODE_WIDTH{1'b0}};
             funct3 = {FUNCT_WIDTH{1'b0}};
             illegal_check = 1;
             // $display($time, " Illegal opcode=%b for instr=%h", opcode, d_i_instr);
@@ -300,36 +308,74 @@ module decoder #(
 
         if (opcode == `OPCODE_RTYPE || opcode == `OPCODE_ITYPE) begin
             if (opcode == `OPCODE_RTYPE) begin
-                if (funct3 == `FUNCT3_ADD && d_i_instr[30] == 0) begin
-                    alu_add_d = 1;
-                end
-                else if (funct3 == `FUNCT3_ADD && d_i_instr[30] == 1) begin
-                    alu_sub_d = 1;
-                end
-                else if (funct3 == `FUNCT3_SLT) begin
-                    alu_slt_d = 1;
-                end
-                else if (funct3 == `FUNCT3_SLTU) begin
-                    alu_sltu_d = 1;
-                end
-                else if (funct3 == `FUNCT3_XOR) begin
-                    alu_xor_d = 1;
-                end
-                else if (funct3 == `FUNCT3_OR) begin
-                    alu_or_d = 1;
-                end
-                else if (funct3 == `FUNCT3_AND) begin
-                    alu_and_d = 1;
-                end
-                else if (funct3 == `FUNCT3_SLL) begin
-                    alu_sll_d = 1;
-                end
-                else if (funct3 == `FUNCT3_SRA) begin
-                    if (d_i_instr[30] == 0) begin
-                        alu_srl_d = 1;
+                if (funct3 == `FUNCT3_ADD) begin
+                    if (d_i_instr[31 : 25] == `FUNCT7_ZERO) begin
+                        alu_add_d = 1;
+                    end
+                    else if (d_i_instr[31 : 25] == `FUNCT7_SUB) begin
+                        alu_sub_d = 1;
                     end
                     else begin
+                        illegal_check = 1;
+                    end
+                end
+                else if (funct3 == `FUNCT3_SLL) begin
+                    if (d_i_instr[31 : 25] == `FUNCT7_SLL) begin
+                        alu_sll_d = 1;
+                    end
+                    else begin
+                        illegal_check = 1;
+                    end
+                end
+                else if (funct3 == `FUNCT3_SLT) begin
+                    if (d_i_instr[31 : 25] == `FUNCT7_SLT) begin
+                        alu_slt_d = 1;
+                    end
+                    else begin
+                        illegal_check = 1;
+                    end
+                end
+                else if (funct3 == `FUNCT3_SLTU) begin
+                    if (d_i_instr[31 : 25] == `FUNCT7_SLTU) begin
+                        alu_sltu_d = 1;
+                    end
+                    else begin
+                        illegal_check = 1;
+                    end
+                end
+                else if (funct3 == `FUNCT3_XOR) begin
+                    if (d_i_instr[31 : 25] == `FUNCT7_XOR) begin
+                        alu_xor_d = 1;
+                    end
+                    else begin
+                        illegal_check = 1;
+                    end
+                end
+                else if (funct3 == `FUNCT3_OR) begin
+                    if (d_i_instr[31 : 25] == `FUNCT7_OR) begin
+                        alu_or_d = 1;
+                    end
+                    else begin
+                        illegal_check = 1;
+                    end
+                end
+                else if (funct3 == `FUNCT3_AND) begin
+                    if (d_i_instr[31 : 25] == `FUNCT7_AND) begin
+                        alu_and_d = 1;
+                    end
+                    else begin
+                        illegal_check = 1;
+                    end
+                end
+                else if (funct3 == `FUNCT3_SRA) begin
+                    if (d_i_instr[31 : 25] == `FUNCT7_SRL) begin
+                        alu_srl_d = 1;
+                    end
+                    else if (d_i_instr[31 : 25] == `FUNCT7_SRA) begin
                         alu_sra_d = 1;
+                    end
+                    else begin
+                        illegal_check = 1;
                     end
                 end
                 else begin
@@ -344,9 +390,9 @@ module decoder #(
                 alu_xor_d = funct3 == `FUNCT3_XOR ? 1 : 0;
                 alu_or_d = funct3 == `FUNCT3_OR ? 1 : 0;
                 alu_and_d = funct3 == `FUNCT3_AND ? 1 : 0;
-                alu_sll_d = funct3 == `FUNCT3_SLL ? 1 : 0;
-                alu_srl_d = (funct3 == `FUNCT3_SRA && d_i_instr[30] == 0) ? 1 : 0;
-                alu_sra_d = (funct3 == `FUNCT3_SRA && d_i_instr[30] == 1) ? 1 : 0;
+                alu_sll_d = (funct3 == `FUNCT3_SLL && d_i_instr[31 : 25] == `FUNCT7_SLL) ? 1 : 0;
+                alu_srl_d = (funct3 == `FUNCT3_SRA && d_i_instr[31 : 25] == `FUNCT7_SRL) ? 1 : 0;
+                alu_sra_d = (funct3 == `FUNCT3_SRA && d_i_instr[31 : 25] == `FUNCT7_SRA) ? 1 : 0;
                 if (!(funct3 == `FUNCT3_ADD || funct3 == `FUNCT3_SLT || funct3 == `FUNCT3_SLTU || 
                     funct3 == `FUNCT3_XOR || funct3 == `FUNCT3_OR || funct3 == `FUNCT3_AND || 
                     funct3 == `FUNCT3_SLL || funct3 == `FUNCT3_SRA)) begin
