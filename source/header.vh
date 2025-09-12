@@ -46,13 +46,12 @@
 `define OPCODE_FENCE 7'b0001111
 
 `define FUNCT3_ADD 3'b000
-`define FUNCT3_SUB 3'b001
+`define FUNCT3_SLL 3'b001
 `define FUNCT3_SLT 3'b010 
 `define FUNCT3_SLTU 3'b011
 `define FUNCT3_XOR 3'b100
 `define FUNCT3_OR 3'b110
 `define FUNCT3_AND 3'b111
-`define FUNCT3_SLL 3'b001
 `define FUNCT3_SRA 3'b101
 `define FUNCT3_EQ 3'b000
 `define FUNCT3_NEQ 3'b001
@@ -64,8 +63,21 @@
 `define FUNCT_LB 3'b000 //char 8 bit
 `define FUNCT_LH 3'b001 //short 16 bit  
 `define FUNCT_LW 3'b010 //int 32 bit
-`define FUNCT_LBU 3'b100
-`define FUNCT_LHU 3'b101
+`define FUNCT_LBU 3'b100 // char unsigned 8 bit
+`define FUNCT_LHU 3'b101 // short unsigned 16 bit
 `define FUNCT_SB 3'b000 //char 8 bit 
 `define FUNCT_SH 3'b001 //short 16 bit
 `define FUNCT_SW 3'b010 //int 32 bit
+
+// Funct7 will decide the operation from the instruction and not based 
+// on the instruction bits anymore
+`define FUNCT7_ZERO 7'b0000000
+`define FUNCT7_SUB 7'b0100000
+`define FUNCT7_SLL 7'b0000000
+`define FUNCT7_SLT 7'b0000000
+`define FUNCT7_SLTU 7'b0000000
+`define FUNCT7_XOR 7'b0000000
+`define FUNCT7_SRL 7'b0000000
+`define FUNCT7_SRA 7'b0100000
+`define FUNCT7_OR 7'b0000000
+`define FUNCT7_AND 7'b0000000
