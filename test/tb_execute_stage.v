@@ -105,6 +105,22 @@ module tb;
         end
     endtask
 
+    function [`ALU_WIDTH-1:0] ALU1;
+        input integer idx;
+        begin
+            ALU1 = {`ALU_WIDTH{1'b0}};
+            ALU1[idx] = 1'b1;
+        end
+    endfunction
+
+    function [`OPCODE_WIDTH-1:0] OP1;
+        input integer idx;
+        begin
+            OP1 = {`OPCODE_WIDTH{1'b0}};
+            OP1[idx] = 1'b1;
+        end
+    endfunction
+
     task test_instruction(
         input [`ALU_WIDTH-1:0] alu,
         input [`OPCODE_WIDTH-1:0] opcode,
@@ -121,7 +137,7 @@ module tb;
             ex_i_imm = imm;
             ex_i_pc = pc;
             ex_i_ce = 1;
-            ex_i_flush = 0;
+            ex_i_flush = 0;  
             ex_i_stall = 0;
             ex_i_addr_rs1 = 5'd1;
             ex_i_addr_rs2 = 5'd2;
@@ -142,28 +158,29 @@ module tb;
         reset();
 
         // ADD: 10 + 20
-        test_instruction(`ADD, `RTYPE, 32'd10, 32'd20, 32'd0, 32'h1000);
+        test_instruction(ALU1(`ADD), OP1(`RTYPE), 32'd10, 32'd20, 32'd0, 32'h1000);
 
         // SUB: 50 - 30
-        test_instruction(`SUB, `RTYPE, 32'd50, 32'd30, 32'd0, 32'h1004);
+        test_instruction(ALU1(`SUB), OP1(`RTYPE), 32'd50, 32'd30, 32'd0, 32'h1004);
 
         // SLL: 1 << 3 = 8
-        test_instruction(`SLL, `RTYPE, 32'd1, 32'd3, 32'd0, 32'h1008);
+        test_instruction(ALU1(`SLL), OP1(`RTYPE), 32'd1, 32'd3, 32'd0, 32'h1008);
 
         // SRA: signed(-16) >>> 2 = -4
-        test_instruction(`SRA, `RTYPE, -32'd16, 32'd2, 32'd0, 32'h100C);
+        test_instruction(ALU1(`SRA), OP1(`RTYPE), -32'sd16, 32'd2, 32'd0, 32'h100C);
 
-        // LUI: imm = 0xABCD000
-        test_instruction(`ADD, `LUI, 32'd0, 32'd0, 32'hABCD1234, 32'h1010);
+        // LUI: imm phải là (upper20 << 12) vì bạn đang bypass decoder
+        test_instruction(ALU1(`ADD), OP1(`LUI), 32'd0, 32'd0, 32'hABCD1000, 32'h1010);
 
         // AUIPC: pc + imm
-        test_instruction(`ADD, `AUIPC, 32'd0, 32'd0, 32'h100, 32'h2000);
+        test_instruction(ALU1(`ADD), OP1(`AUIPC), 32'd0, 32'd0, 32'h100, 32'h2000);
 
         // JAL: pc + imm, rd = pc + 4
-        test_instruction(`ADD, `JAL, 32'd0, 32'd0, 32'h10, 32'h3000);
+        test_instruction(ALU1(`ADD), OP1(`JAL), 32'd0, 32'd0, 32'h10, 32'h3000);
 
-        // BRANCH: (10 == 10) => jump
-        test_instruction(`EQ, `BRANCH, 32'd10, 32'd10, 32'h4, 32'h4000);
+        // BRANCH (BEQ): 10 == 10
+        test_instruction(ALU1(`EQ), OP1(`BRANCH), 32'd10, 32'd10, 32'h4, 32'h4000);
+
 
         // Done
         #20;

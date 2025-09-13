@@ -62,8 +62,8 @@ module tb_instruction_fetch;
     initial begin
         f_clk = 0;
         i = 0;
-        forever #5 f_clk = ~f_clk; // 10 ns period
     end
+    always #5 f_clk = ~f_clk; // 10 ns period
 
     // Waveform
     initial begin
@@ -190,7 +190,7 @@ module tb_instruction_fetch;
         do_flush(2);
 
         // allow more cycles to observe streaming
-        repeat (7) @(posedge f_clk);
+        repeat (8) @(posedge f_clk);
         $display("TEST COMPLETE");
         $finish;
     end

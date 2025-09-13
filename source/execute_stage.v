@@ -18,35 +18,35 @@ module execute #(
     // ALU control
     input [`ALU_WIDTH - 1 : 0] ex_i_alu;
     output reg [`ALU_WIDTH - 1 : 0] ex_o_alu;
-    wire alu_add = (ex_i_alu == `ADD) ? 1 : 0;
-    wire alu_sub = (ex_i_alu == `SUB) ? 1 : 0;
-    wire alu_slt = (ex_i_alu == `SLT) ? 1 : 0;
-    wire alu_sltu = (ex_i_alu == `SLTU) ? 1 : 0;
-    wire alu_xor = (ex_i_alu == `XOR) ? 1 : 0;
-    wire alu_or = (ex_i_alu == `OR) ? 1 : 0;
-    wire alu_and = (ex_i_alu == `AND) ? 1 : 0;
-    wire alu_sll = (ex_i_alu == `SLL) ? 1 : 0;
-    wire alu_srl = (ex_i_alu == `SRL) ? 1 : 0;
-    wire alu_sra = (ex_i_alu == `SRA) ? 1 : 0;
-    wire alu_eq = (ex_i_alu == `EQ) ? 1 : 0;
-    wire alu_neq = (ex_i_alu == `NEQ) ? 1 : 0;
-    wire alu_ge = (ex_i_alu == `GE) ? 1 : 0;
-    wire alu_geu = (ex_i_alu == `GEU) ? 1 : 0;
+    wire alu_add = ex_i_alu[`ADD];
+    wire alu_sub = ex_i_alu[`SUB];
+    wire alu_slt = ex_i_alu[`SLT];
+    wire alu_sltu = ex_i_alu[`SLTU];
+    wire alu_xor = ex_i_alu[`XOR];
+    wire alu_or = ex_i_alu[`OR];
+    wire alu_and = ex_i_alu[`AND];
+    wire alu_sll = ex_i_alu[`SLL];
+    wire alu_srl = ex_i_alu[`SRL];
+    wire alu_sra = ex_i_alu[`SRA];
+    wire alu_eq = ex_i_alu[`EQ];
+    wire alu_neq = ex_i_alu[`NEQ];
+    wire alu_ge = ex_i_alu[`GE];
+    wire alu_geu = ex_i_alu[`GEU];
 
     // OPCODE control
     input [`OPCODE_WIDTH - 1 : 0] ex_i_opcode;
     output reg [`OPCODE_WIDTH - 1 : 0] ex_o_opcode;
-    wire op_rtype = (ex_i_opcode == `RTYPE) ? 1 : 0;
-    wire op_itype = (ex_i_opcode == `ITYPE) ? 1 : 0;
-    wire op_load = (ex_i_opcode == `LOAD_WORD) ? 1 : 0;
-    wire op_store = (ex_i_opcode == `STORE_WORD) ? 1 : 0;
-    wire op_branch = (ex_i_opcode == `BRANCH) ? 1 : 0;
-    wire op_jal = (ex_i_opcode == `JAL) ? 1 : 0;
-    wire op_jalr = (ex_i_opcode == `JALR) ? 1 : 0;
-    wire op_lui = (ex_i_opcode == `LUI) ? 1 : 0;
-    wire op_auipc = (ex_i_opcode == `AUIPC) ? 1 : 0;
-    wire op_system = (ex_i_opcode == `SYSTEM) ? 1 : 0;
-    wire op_fence = (ex_i_opcode == `FENCE) ? 1 : 0;
+    wire op_rtype = ex_i_opcode[`RTYPE];
+    wire op_itype = ex_i_opcode[`ITYPE];
+    wire op_load = ex_i_opcode[`LOAD_WORD];
+    wire op_store = ex_i_opcode[`STORE_WORD];
+    wire op_branch = ex_i_opcode[`BRANCH];
+    wire op_jal = ex_i_opcode[`JAL];
+    wire op_jalr = ex_i_opcode[`JALR];
+    wire op_lui = ex_i_opcode[`LUI];
+    wire op_auipc = ex_i_opcode[`AUIPC];
+    wire op_system = ex_i_opcode[`SYSTEM];
+    wire op_fence = ex_i_opcode[`FENCE];
 
     //Register rs1, rs2, rd
     input [AWIDTH - 1 : 0] ex_i_addr_rs1;

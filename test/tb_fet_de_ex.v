@@ -86,23 +86,25 @@ module tb;
         end
     endtask
 
-    task display (input integer counter);
-        begin
-            fe_i_ce = 1'b1;
-            for (i = 0; i < counter; i = i + 1) begin
-                @(posedge fe_clk);
-                #5;
-                $display($time, " fe_o_ce = %b, fe_stall_alu = %b, fe_o_ce_n = %b, fe_o_flush_n = %b, fe_o_stall_n = %b, fe_pc_n = %0d, fe_next_pc = %0d, fe_o_funct3 = %b,  fe_o_opcode = %b", 
-                fe_o_ce, fe_stall_alu, fe_o_ce_n, fe_o_flush_n, fe_o_stall_n, fe_pc_n, fe_next_pc, fe_o_funct3, fe_o_opcode);
-                $display($time, " fe_alu_value = %h, fe_o_imm = %h, fe_o_alu = %b", fe_alu_value, fe_o_imm,  fe_o_alu);
-                $display($time, " Instr = %h", fe.fe_i_instr_fetch);
-                $display($time, " fe_o_addr_rs1 = %d, fe_o_addr_rs2 = %d", fe_o_addr_rs1, fe_o_addr_rs2);
-                $display($time, " fe_o_data_rs1 = %0d, fe_o_data_rs2 = %0d", fe_o_data_rs1, fe_o_data_rs2);
-                $display($time, " Write_enable = %b", fe_we_reg);
-                $display($time, " fe_o_data_rd = %d, fe_o_addr_rd = %h, valid = %b\n", fe_o_data_rd, fe_o_addr_rd, fe_o_valid);
-            end
-        end
-    endtask
+    task display (input integer counter); 
+      begin 
+        fe_i_ce = 1'b1; 
+        for (i = 0; i < counter; i = i + 1) begin 
+          @(posedge fe_clk); 
+          $display($time, " fe_o_ce = %b, fe_stall_alu = %b, fe_o_ce_n = %b, fe_o_flush_n = %b, fe_o_stall_n = %b, fe_pc_n = %0d, fe_next_pc = %0d, fe_o_funct3 = %b, fe_o_opcode = %b", fe_o_ce, fe_stall_alu, fe_o_ce_n, fe_o_flush_n, fe_o_stall_n, fe_pc_n, fe_next_pc, fe_o_funct3, fe_o_opcode); 
+          $display($time, " fe_alu_value = %h, fe_o_imm = %h, fe_o_alu = %b", fe_alu_value, fe_o_imm, fe_o_alu); 
+          $display($time, " Instr = %h", fe.fe_i_instr_fetch); 
+          $display($time, " fe_o_addr_rs1 = %d, fe_o_addr_rs2 = %d", fe_o_addr_rs1, fe_o_addr_rs2); 
+          $display($time, " fe_o_data_rs1 = %0d, fe_o_data_rs2 = %0d", fe_o_data_rs1, fe_o_data_rs2); 
+          $display($time, " Write_enable = %b, valid = %b", fe_we_reg, fe_o_valid); 
+          $display($time, " fe_o_addr_rd = %d", fe_o_addr_rd); 
+          $display($time, " ", "fe_o_data_rd = %d\n", fe_o_data_rd); 
+          @(posedge fe_clk); 
+        end 
+        @(posedge fe_clk); 
+        fe_i_ce = 1'b0; 
+        end 
+      endtask
 
     initial begin
         reset(2);
