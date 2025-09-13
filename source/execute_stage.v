@@ -33,7 +33,7 @@ module execute #(
     wire alu_ge = ex_i_alu[`GE];
     wire alu_geu = ex_i_alu[`GEU];
 
-    // OPCODE control
+    // Opcode control
     input [`OPCODE_WIDTH - 1 : 0] ex_i_opcode;
     output reg [`OPCODE_WIDTH - 1 : 0] ex_o_opcode;
     wire op_rtype = ex_i_opcode[`RTYPE];
