@@ -73,6 +73,7 @@ module mem_stage #(
     );
 
     wire stall_bit = me_i_stall || me_o_stall || m_i_stall;
+    //Pending will cause when me_i_stall is 1 => Data is being retrieved
     reg pending_request;
     // pipeline/commit registers (unchanged semantics)
     reg rd_we_d;
