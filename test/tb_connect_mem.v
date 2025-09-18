@@ -20,6 +20,8 @@ module tb;
     wire [DWIDTH - 1 : 0] fm_o_rd_data; 
     wire fm_o_rd_we;
     wire [DWIDTH - 1 : 0] fm_o_load_data;
+    wire fm_change_pc;
+    wire [PC_WIDTH - 1 : 0] fm_pc_n;
     integer i;
 
     connect_mem #(
@@ -44,7 +46,9 @@ module tb;
         .fm_o_rd_addr(fm_o_rd_addr), 
         .fm_o_rd_data(fm_o_rd_data), 
         .fm_o_rd_we(fm_o_rd_we), 
-        .fm_o_load_data(fm_o_load_data)
+        .fm_o_load_data(fm_o_load_data),
+        .fm_pc_n(fm_pc_n),
+        .fm_change_pc(fm_change_pc)
     );
     
     initial begin
@@ -74,6 +78,8 @@ module tb;
                 @(posedge fm_clk);
                 $display($time, " ", "fm_o_flush_n = %b, fm_o_stall_n = %b, fm_o_ce_n = %b", fm_o_flush_n, fm_o_stall_n, fm_o_ce_n);
                 @(posedge fm_clk);
+                $display($time, " ", "fm_change_pc = %b", fm_change_pc);
+                $display($time, " ", "fm_pc_n = %d", fm_pc_n);
                 $display($time, " ", "fm_o_opcode_n = %b, fm_o_funct3 = %b", fm_o_opcode_n, fm_o_funct3_n);
                 $display($time, " ", "fm_o_load_data = %d", fm_o_load_data);
                 $display($time, " ", "fm_o_rd_we = %b, fm_o_rd_addr = %d, fm_o_rd_data = %d\n", fm_o_rd_we, fm_o_rd_addr, fm_o_rd_data);
