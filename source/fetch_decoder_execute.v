@@ -16,8 +16,8 @@ module fetch_execute #(
     fe_o_alu, fe_o_opcode, fe_o_addr_rd, fe_o_data_rd,
     fe_o_funct3, fe_o_imm, fe_next_pc, fe_pc_n, fe_alu_value,
     fe_o_stall_n, fe_o_flush_n, fe_o_ce_n, fe_stall_alu,
-    fe_o_ce, fe_o_data_rs1, fe_o_data_rs2, fe_o_addr_rs1, fe_o_addr_rs2,
-    fe_o_valid, fe_we_reg
+    fe_o_data_rs1, fe_o_data_rs2, fe_o_addr_rs1, fe_o_addr_rs2,
+    fe_o_valid, fe_we_reg, fe_we_reg_n
 );
     input  fe_clk, fe_rst;
     input  fe_i_ce;
@@ -40,30 +40,31 @@ module fetch_execute #(
 
     wire                      fe_o_stall;
     wire                      fe_o_flush;
-    output                    fe_o_ce;      // từ decoder_stage (enable xuống EX)
-    output                    fe_we_reg;    // tín hiệu ghi RF (từ EX)
+    wire                    fe_o_ce;      // từ decoder_stage (enable xuống EX)
+    input                    fe_we_reg;    // tín hiệu ghi RF (từ EX)
+    output                  fe_we_reg_n;
 
     // ---------- Outputs tổng hợp/hiển thị ----------
-    output [`ALU_WIDTH-1:0]   fe_o_alu;
-    output [`OPCODE_WIDTH-1:0]fe_o_opcode;
-    output [AWIDTH-1:0]       fe_o_addr_rd;
-    output [DWIDTH-1:0]       fe_o_data_rd;   // WB data ra ngoài (debug/quan sát)
-    output [FUNCT_WIDTH-1:0]  fe_o_funct3;
-    output [DWIDTH-1:0]       fe_o_imm;
-    output [PC_WIDTH-1:0]     fe_pc_n;        // PC copy ở EX (debug)
-    output [PC_WIDTH-1:0]     fe_next_pc;     // PC đích từ EX (redirect)
-    output [DWIDTH-1:0]       fe_alu_value;
+    output [`ALU_WIDTH - 1 : 0]   fe_o_alu;
+    output [`OPCODE_WIDTH - 1 : 0]fe_o_opcode;
+    output [AWIDTH - 1 : 0]       fe_o_addr_rd;
+    output [DWIDTH - 1 : 0]       fe_o_data_rd;   // WB data ra ngoài (debug/quan sát)
+    output [FUNCT_WIDTH - 1 : 0]  fe_o_funct3;
+    output [DWIDTH - 1 : 0]       fe_o_imm;
+    output [PC_WIDTH - 1 : 0]     fe_pc_n;        // PC copy ở EX (debug)
+    output [PC_WIDTH - 1 : 0]     fe_next_pc;     // PC đích từ EX (redirect)
+    output [DWIDTH - 1 : 0]       fe_alu_value;
     output                    fe_o_stall_n, fe_o_flush_n, fe_o_ce_n; // debug EX
     output                    fe_stall_alu;
 
-    output [DWIDTH-1:0]       fe_o_data_rs1;
-    output [DWIDTH-1:0]       fe_o_data_rs2;
-    output [AWIDTH-1:0]       fe_o_addr_rs1;
-    output [AWIDTH-1:0]       fe_o_addr_rs2;
+    output [DWIDTH - 1 : 0]       fe_o_data_rs1;
+    output [DWIDTH - 1 : 0]       fe_o_data_rs2;
+    output [AWIDTH - 1 : 0]       fe_o_addr_rs1;
+    output [AWIDTH - 1 : 0]       fe_o_addr_rs2;
     output                    fe_o_valid;
 
     // ---------- Wires trực tiếp từ EX ----------
-    wire [DWIDTH-1:0] ex_data_rd;       // ex_o_data_rd
+    wire [DWIDTH - 1 : 0] ex_data_rd;       // ex_o_data_rd
     wire              ex_change_pc;     // ex_o_change_pc
 
     // ===================== CONNECT (Fetch + Decoder + RF) =====================
@@ -144,7 +145,7 @@ module fetch_execute #(
         .ex_o_data_rs2 (fe_o_data_rs2),
 
         // dữ liệu ghi về RF
-        .ex_o_data_rd  (ex_data_rd),    // <-- WIRE trực tiếp
+        .ex_o_data_rd  (ex_data_rd),
         // (xuất ra top cho debug)
         // fe_o_data_rd: assign riêng phía dưới
 
@@ -169,7 +170,7 @@ module fetch_execute #(
         .ex_o_change_pc(ex_change_pc),
 
         // trạng thái ghi/valid
-        .ex_o_we_reg   (fe_we_reg),
+        .ex_o_we_reg   (fe_we_reg_n),
         .ex_o_valid    (fe_o_valid),
 
         // debug
