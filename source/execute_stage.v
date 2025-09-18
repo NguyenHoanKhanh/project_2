@@ -18,6 +18,7 @@ module execute #(
     // ALU control
     input [`ALU_WIDTH - 1 : 0] ex_i_alu;
     output reg [`ALU_WIDTH - 1 : 0] ex_o_alu;
+    // Control by one-hot 
     wire alu_add = ex_i_alu[`ADD];
     wire alu_sub = ex_i_alu[`SUB];
     wire alu_slt = ex_i_alu[`SLT];
@@ -36,6 +37,7 @@ module execute #(
     // Opcode control
     input [`OPCODE_WIDTH - 1 : 0] ex_i_opcode;
     output reg [`OPCODE_WIDTH - 1 : 0] ex_o_opcode;
+    // Control by one-hot 
     wire op_rtype = ex_i_opcode[`RTYPE];
     wire op_itype = ex_i_opcode[`ITYPE];
     wire op_load = ex_i_opcode[`LOAD_WORD];
