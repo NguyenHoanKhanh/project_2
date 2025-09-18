@@ -17,7 +17,7 @@ module fetch_execute #(
     fe_o_funct3, fe_o_imm, fe_next_pc, fe_pc_n, fe_alu_value,
     fe_o_stall_n, fe_o_flush_n, fe_o_ce_n, fe_stall_alu,
     fe_o_data_rs1, fe_o_data_rs2, fe_o_addr_rs1, fe_o_addr_rs2,
-    fe_o_valid, fe_we_reg, fe_we_reg_n
+    fe_o_valid, fe_we_reg, fe_we_reg_n, fe_change_pc
 );
     input  fe_clk, fe_rst;
     input  fe_i_ce;
@@ -65,7 +65,7 @@ module fetch_execute #(
 
     // ---------- Wires trực tiếp từ EX ----------
     wire [DWIDTH - 1 : 0] ex_data_rd;       // ex_o_data_rd
-    wire              ex_change_pc;     // ex_o_change_pc
+    output              fe_change_pc;     // ex_o_change_pc
 
     // ===================== CONNECT (Fetch + Decoder + RF) =====================
     connect #(
@@ -167,7 +167,7 @@ module fetch_execute #(
         .ex_i_pc       (fe_pc),
         .ex_o_pc       (fe_pc_n),
         .ex_next_pc    (fe_next_pc),
-        .ex_o_change_pc(ex_change_pc),
+        .ex_o_change_pc(fe_change_pc),
 
         // trạng thái ghi/valid
         .ex_o_we_reg   (fe_we_reg_n),

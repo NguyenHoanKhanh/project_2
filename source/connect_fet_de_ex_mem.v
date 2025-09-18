@@ -13,12 +13,24 @@ module connect_mem #(
 )(
     fm_clk, fm_rst, fm_i_ce, fm_i_stall, fm_i_flush, fm_o_flush_n, fm_o_opcode_n,
     fm_o_stall_n, fm_o_ce_n, fm_o_funct3_n, fm_o_rd_addr, fm_o_rd_data, 
-    fm_o_rd_we, fm_o_load_data
+    fm_o_rd_we, fm_o_load_data, fm_pc_n, fm_change_pc
 );
+    //Input control
     input fm_clk, fm_rst;
     input fm_i_ce;
     input fm_i_stall;
     input fm_i_flush;
+    //Output 
+    output [PC_WIDTH - 1 : 0] fm_pc_n;
+    output [`OPCODE_WIDTH - 1 : 0] fm_o_opcode_n;
+    output fm_o_ce_n, fm_o_stall_n, fm_o_flush_n;
+    output [FUNCT_WIDTH - 1 : 0] fm_o_funct3_n;
+    output [AWIDTH - 1 : 0] fm_o_rd_addr;
+    output [DWIDTH - 1 : 0] fm_o_rd_data;
+    output fm_o_rd_we;
+    output [DWIDTH - 1 : 0] fm_o_load_data;
+    output fm_change_pc;
+    //Transient
     wire [`ALU_WIDTH - 1 : 0] fm_o_alu;
     wire [`OPCODE_WIDTH - 1 : 0] fm_o_opcode;
     wire [AWIDTH - 1 : 0] fm_o_addr_rd;
@@ -26,7 +38,6 @@ module connect_mem #(
     wire [FUNCT_WIDTH - 1 : 0] fm_o_funct3;
     wire [DWIDTH - 1 : 0] fm_o_imm;
     wire [PC_WIDTH - 1 : 0] fm_next_pc;
-    wire [PC_WIDTH - 1 : 0] fm_pc_n;
     wire [DWIDTH - 1 : 0] fm_alu_value;
     wire fm_o_stall;
     wire fm_o_flush;
@@ -35,13 +46,6 @@ module connect_mem #(
     wire [DWIDTH - 1 : 0] fm_o_data_rs1, fm_o_data_rs2;
     wire [AWIDTH - 1 : 0] fm_o_addr_rs1, fm_o_addr_rs2;
     wire fm_o_valid, fm_we_reg;
-    output [`OPCODE_WIDTH - 1 : 0] fm_o_opcode_n;
-    output fm_o_ce_n, fm_o_stall_n, fm_o_flush_n;
-    output [FUNCT_WIDTH - 1 : 0] fm_o_funct3_n;
-    output [AWIDTH - 1 : 0] fm_o_rd_addr;
-    output [DWIDTH - 1 : 0] fm_o_rd_data;
-    output fm_o_rd_we;
-    output [DWIDTH - 1 : 0] fm_o_load_data;
     wire fm_o_rd_we_temp;
 
     fetch_execute #(
@@ -77,7 +81,8 @@ module connect_mem #(
         .fe_o_addr_rs2(fm_o_addr_rs2),
         .fe_o_valid(fm_o_valid), 
         .fe_we_reg(fm_o_rd_we_temp),
-        .fe_we_reg_n(fm_we_reg)
+        .fe_we_reg_n(fm_we_reg),
+        .fe_change_pc(fm_change_pc)
     );
 
     mem_stage #(
