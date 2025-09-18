@@ -13,9 +13,7 @@ module tb_writeback;
     reg [FUNCT_WIDTH-1:0]       wb_i_funct;
     reg [`OPCODE_WIDTH-1:0]     wb_i_opcode;
     reg [DWIDTH-1:0]            wb_i_data_load;
-    reg [DWIDTH-1:0]            wb_i_csr;
     reg                         wb_i_we_rd;
-    reg                         wb_i_we;
     reg [AWIDTH-1:0]            wb_i_rd_addr;
     reg [DWIDTH-1:0]            wb_i_rd_data;
     reg [PC_WIDTH-1:0]          wb_i_pc;
@@ -25,14 +23,16 @@ module tb_writeback;
 
     // Outputs from DUT
     wire                        wb_o_we_rd;
-    wire                        wb_o_we;
     wire [AWIDTH-1:0]           wb_o_rd_addr;
     wire [DWIDTH-1:0]           wb_o_rd_data;
     wire [PC_WIDTH-1:0]         wb_o_next_pc;
+    reg                         wb_i_change_pc;
     wire                        wb_o_change_pc;
     wire                        wb_o_ce;
     wire                        wb_o_stall;
     wire                        wb_o_flush;
+    wire [`OPCODE_WIDTH - 1 : 0] wb_o_opcode;
+    wire [FUNCT_WIDTH - 1 : 0] wb_o_funct;
 
     // Instantiate writeback module
     writeback #(
@@ -46,24 +46,24 @@ module tb_writeback;
         .wb_i_funct    (wb_i_funct),
         .wb_i_opcode   (wb_i_opcode),
         .wb_i_data_load(wb_i_data_load),
-        .wb_i_csr      (wb_i_csr),
         .wb_i_we_rd    (wb_i_we_rd),
         .wb_o_we_rd    (wb_o_we_rd),
-        .wb_i_we       (wb_i_we),
-        .wb_o_we       (wb_o_we),
         .wb_i_rd_addr  (wb_i_rd_addr),
         .wb_i_rd_data  (wb_i_rd_data),
         .wb_o_rd_addr  (wb_o_rd_addr),
         .wb_o_rd_data  (wb_o_rd_data),
         .wb_i_pc       (wb_i_pc),
         .wb_o_next_pc  (wb_o_next_pc),
+        .wb_i_change_pc(wb_i_change_pc),
         .wb_o_change_pc(wb_o_change_pc),
         .wb_i_ce       (wb_i_ce),
         .wb_o_ce       (wb_o_ce),
         .wb_i_stall    (wb_i_stall),
         .wb_o_stall    (wb_o_stall),
         .wb_i_flush    (wb_i_flush),
-        .wb_o_flush    (wb_o_flush)
+        .wb_o_flush    (wb_o_flush),
+        .wb_o_opcode   (wb_o_opcode),
+        .wb_o_funct    (wb_o_funct)
     );
 
     // Clock generation
@@ -86,20 +86,27 @@ module tb_writeback;
         end
     endtask
 
+    function [`OPCODE_WIDTH - 1 : 0] opc;
+        input integer idx;
+        begin
+            opc = {`OPCODE_WIDTH{1'b0}};
+            opc[idx] = 1'b1;
+        end
+    endfunction
+
     initial begin
         // Initialize inputs
         wb_i_funct    = 0;
         wb_i_opcode   = 0;
         wb_i_data_load= 0;
-        wb_i_csr      = 0;
         wb_i_we_rd    = 0;
-        wb_i_we       = 0;
         wb_i_rd_addr  = 0;
         wb_i_rd_data  = 0;
         wb_i_pc       = 0;
         wb_i_ce       = 0;
         wb_i_stall    = 0;
         wb_i_flush    = 0;
+        wb_i_change_pc = 0;
 
         // Apply reset
         reset(2);
@@ -107,9 +114,9 @@ module tb_writeback;
 
         // Scenario: load instruction
         wb_i_ce        = 1;
-        wb_i_we        = 1;
         wb_i_we_rd     = 1;
-        wb_i_opcode    = `LOAD_WORD;
+        wb_i_opcode    = opc(`LOAD_WORD);
+        wb_i_change_pc = 1;
         wb_i_funct     = 3'd0;
         wb_i_rd_addr   = 5'd10;
         @(posedge wb_clk);
@@ -118,8 +125,9 @@ module tb_writeback;
         @(posedge wb_clk);
 
         // check outputs
-        $display("%0t: we_rd=%b, we=%b, rd_addr=%d, rd_data=0x%h, next_pc=%d, change_pc=%b, stall=%b, flush=%b, ce=%b", 
-                 $time, wb_o_we_rd, wb_o_we, wb_o_rd_addr, wb_o_rd_data, wb_o_next_pc, wb_o_change_pc, wb_o_stall, wb_o_flush, wb_o_ce);
+        $display("%0t: we_rd=%b, rd_addr=%d, rd_data=0x%h, next_pc=%d, change_pc=%b, stall=%b, flush=%b, ce=%b", 
+                 $time, wb_o_we_rd, wb_o_rd_addr, wb_o_rd_data, wb_o_next_pc, wb_o_change_pc, wb_o_stall, wb_o_flush, wb_o_ce);
+        $display($time, " ", "wb_o_opcode = %b, wb_o_funct = %b", wb_o_opcode, wb_o_funct);
 
         // End CE
         wb_i_ce = 0;
