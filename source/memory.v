@@ -67,12 +67,12 @@ module memory #(
                 end
             end
 // After preparation, the values will be retrieved from memory based on the read request or write 
-// request signal
+// request signal, then pipeline will be delayed to done retrieval
             else begin
-                if (m_i_we) begin
-                        data[store_addr_reg] <= (data[store_addr_reg] & ~mask) | (data_reg & mask);
+                if (we_reg) begin
+                    data[store_addr_reg] <= (data[store_addr_reg] & ~mask_reg) | (data_reg & mask_reg);
                 end
-                if (m_i_rd) begin
+                if (rd_reg) begin
                     m_o_read_data <= data[load_addr_reg];
                 end
                 m_o_ack <= 1'b1;
