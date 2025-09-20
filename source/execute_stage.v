@@ -150,9 +150,9 @@ module execute #(
                     ex_o_data_rs1 <= ex_i_data_rs1;
                     ex_o_data_rs2 <= ex_i_data_rs2;
                     ex_o_imm <= ex_i_imm;
-                    ex_stall_from_alu <= (op_load || op_store) ? 1 : 0;
+                    ex_stall_from_alu <= (op_load || op_store);
                     ex_o_alu_value <= alu_value;
-                    ex_o_stall <= (op_load || op_store) ? 1 : 0;
+                    ex_o_stall <= (op_load || op_store);
                     ex_o_data_rd <= temp_data_rd;
                     
                     if (op_rtype || op_itype) begin
