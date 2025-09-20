@@ -390,9 +390,9 @@ module decoder #(
                 alu_xor_d = (funct3 == `FUNCT3_XOR);
                 alu_or_d = (funct3 == `FUNCT3_OR);
                 alu_and_d = (funct3 == `FUNCT3_AND);
-                alu_sll_d = (funct3 == `FUNCT3_SLL && d_i_instr[31 : 25] == `FUNCT7_SLL) ? 1 : 0;
-                alu_srl_d = (funct3 == `FUNCT3_SRA && d_i_instr[31 : 25] == `FUNCT7_SRL) ? 1 : 0;
-                alu_sra_d = (funct3 == `FUNCT3_SRA && d_i_instr[31 : 25] == `FUNCT7_SRA) ? 1 : 0;
+                alu_sll_d = (funct3 == `FUNCT3_SLL && d_i_instr[31 : 25] == `FUNCT7_SLL);
+                alu_srl_d = (funct3 == `FUNCT3_SRA && d_i_instr[31 : 25] == `FUNCT7_SRL);
+                alu_sra_d = (funct3 == `FUNCT3_SRA && d_i_instr[31 : 25] == `FUNCT7_SRA);
                 if (!(funct3 == `FUNCT3_ADD || funct3 == `FUNCT3_SLT || funct3 == `FUNCT3_SLTU || 
                     funct3 == `FUNCT3_XOR || funct3 == `FUNCT3_OR || funct3 == `FUNCT3_AND || 
                     funct3 == `FUNCT3_SLL || funct3 == `FUNCT3_SRA)) begin
