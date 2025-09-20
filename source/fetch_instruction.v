@@ -63,8 +63,8 @@
 //             f_o_syn_r <= 1'b0;
 //             f_o_syn <= 1'b0;
 //             init_done <= 1'b0;
-//             temp_ack <= 1'b0;
-//             temp_last <= 1'b0;
+//             // temp_ack <= 1'b0;
+//             // temp_last <= 1'b0;
 //             req <= 1'b0;
 //             issued_pc <= {PC_WIDTH{1'b0}};
 //         end
@@ -230,8 +230,8 @@ module instruction_fetch #(
             f_o_syn_r <= 1'b0;
             f_o_syn <= 1'b0;
             init_done <= 1'b0;
-            temp_ack <= 1'b0;
-            temp_last <= 1'b0;
+            // temp_ack <= 1'b0;
+            // temp_last <= 1'b0;
             req <= 1'b0;
             issued_pc <= {PC_WIDTH{1'b0}};
         end
