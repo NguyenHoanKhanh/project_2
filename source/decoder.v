@@ -384,12 +384,12 @@ module decoder #(
                 end
             end
             else begin
-                alu_add_d = funct3 == `FUNCT3_ADD ? 1 : 0;
-                alu_slt_d = funct3 == `FUNCT3_SLT ? 1 : 0;
-                alu_sltu_d = funct3 == `FUNCT3_SLTU ? 1 : 0;
-                alu_xor_d = funct3 == `FUNCT3_XOR ? 1 : 0;
-                alu_or_d = funct3 == `FUNCT3_OR ? 1 : 0;
-                alu_and_d = funct3 == `FUNCT3_AND ? 1 : 0;
+                alu_add_d = (funct3 == `FUNCT3_ADD);
+                alu_slt_d = (funct3 == `FUNCT3_SLT);
+                alu_sltu_d = (funct3 == `FUNCT3_SLTU);
+                alu_xor_d = (funct3 == `FUNCT3_XOR);
+                alu_or_d = (funct3 == `FUNCT3_OR);
+                alu_and_d = (funct3 == `FUNCT3_AND);
                 alu_sll_d = (funct3 == `FUNCT3_SLL && d_i_instr[31 : 25] == `FUNCT7_SLL) ? 1 : 0;
                 alu_srl_d = (funct3 == `FUNCT3_SRA && d_i_instr[31 : 25] == `FUNCT7_SRL) ? 1 : 0;
                 alu_sra_d = (funct3 == `FUNCT3_SRA && d_i_instr[31 : 25] == `FUNCT7_SRA) ? 1 : 0;
@@ -402,12 +402,12 @@ module decoder #(
             end
         end
         else if (opcode == `OPCODE_BRANCH) begin
-            alu_eq_d = funct3 == `FUNCT3_EQ ? 1 : 0;
-            alu_neq_d = funct3 == `FUNCT3_NEQ ? 1 : 0;
-            alu_lt_d = funct3 == `FUNCT3_LT ? 1 : 0;
-            alu_ge_d = funct3 == `FUNCT3_GE ? 1 : 0;
-            alu_ltu_d = funct3 == `FUNCT3_LTU ? 1 : 0;
-            alu_geu_d = funct3 == `FUNCT3_GEU ? 1 : 0;
+            alu_eq_d = (funct3 ==`FUNCT3_EQ);
+            alu_neq_d = (funct3 == `FUNCT3_NEQ);
+            alu_lt_d = (funct3 == `FUNCT3_LT);
+            alu_ltu_d = (funct3 == `FUNCT3_LTU);
+            alu_ge_d = (funct3 == `FUNCT3_GE);
+            alu_geu_d = (funct3 == `FUNCT3_GEU);
             if (!(funct3 == `FUNCT3_EQ  || funct3 == `FUNCT3_NEQ ||
                 funct3 == `FUNCT3_LT  || funct3 == `FUNCT3_GE  ||
                 funct3 == `FUNCT3_LTU || funct3 == `FUNCT3_GEU)) begin
