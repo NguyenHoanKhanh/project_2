@@ -72,7 +72,7 @@ module tb;
                 $display($time, " ", "d_o_stall_n = %b, d_o_flush_n = %b", d_o_stall_n, d_o_flush_n);
                 $display($time, " ", "d_o_addr_rd_n = %d, d_o_data_rd_n = %d", d_o_addr_rd_n, d_o_data_rd_n);
                 $display($time, " ", "d_o_change_pc_n = %b, d_o_pc_n = %d", d_o_change_pc_n, d_o_pc_n);
-                $display($time, " ", "d_o_funct3_n = %b, d_o_opcode_n = %b", d_o_funct3_n, d_o_opcode_n);
+                $display($time, " ", "d_o_funct3_n = %b, d_o_opcode_n = %b\n", d_o_funct3_n, d_o_opcode_n);
             end
             @(posedge d_clk);
             d_i_ce = 1'b0;

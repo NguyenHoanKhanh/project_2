@@ -1,0 +1,130 @@
+$date
+	Mon Sep 22 20:54:35 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module tb $end
+$var wire 32 ! h_data_out_rs2 [31:0] $end
+$var wire 32 " h_data_out_rs1 [31:0] $end
+$var wire 1 # h_alu_force_stall_out $end
+$var parameter 32 $ AWIDTH $end
+$var parameter 32 % DWIDTH $end
+$var reg 32 & h_data_reg_rs1 [31:0] $end
+$var reg 32 ' h_data_reg_rs2 [31:0] $end
+$var reg 5 ( h_decoder_addr_rs1 [4:0] $end
+$var reg 5 ) h_decoder_addr_rs2 [4:0] $end
+$var reg 5 * h_i_addr_rd_mem [4:0] $end
+$var reg 5 + h_i_alu_addr_rd [4:0] $end
+$var reg 32 , h_i_alu_data_rd [31:0] $end
+$var reg 32 - h_i_data_rd_wb [31:0] $end
+$var reg 1 . h_i_memoryaccess_ce $end
+$var reg 1 / h_i_valid_alu $end
+$var reg 1 0 h_i_wb_ce $end
+$var reg 1 1 h_i_we_reg_alu $end
+$var reg 1 2 h_i_we_reg_mem $end
+$scope module f $end
+$var wire 32 3 h_data_reg_rs1 [31:0] $end
+$var wire 32 4 h_data_reg_rs2 [31:0] $end
+$var wire 5 5 h_decoder_addr_rs1 [4:0] $end
+$var wire 5 6 h_decoder_addr_rs2 [4:0] $end
+$var wire 5 7 h_i_addr_rd_mem [4:0] $end
+$var wire 5 8 h_i_alu_addr_rd [4:0] $end
+$var wire 32 9 h_i_alu_data_rd [31:0] $end
+$var wire 32 : h_i_data_rd_wb [31:0] $end
+$var wire 1 . h_i_memoryaccess_ce $end
+$var wire 1 / h_i_valid_alu $end
+$var wire 1 0 h_i_wb_ce $end
+$var wire 1 1 h_i_we_reg_alu $end
+$var wire 1 2 h_i_we_reg_mem $end
+$var parameter 32 ; AWIDTH $end
+$var parameter 32 < DWIDTH $end
+$var reg 1 # h_alu_force_stall_out $end
+$var reg 32 = h_data_out_rs1 [31:0] $end
+$var reg 32 > h_data_out_rs2 [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100000 <
+b101 ;
+b100000 %
+b101 $
+$end
+#0
+$dumpvars
+b0 >
+b0 =
+b0 :
+b0 9
+b0 8
+b0 7
+b0 6
+b0 5
+b0 4
+b0 3
+02
+01
+00
+0/
+0.
+b0 -
+b0 ,
+b0 +
+b0 *
+b0 )
+b0 (
+b0 '
+b0 &
+0#
+b0 "
+b0 !
+$end
+#10
+1#
+1.
+11
+b1101101 ,
+b1101101 9
+#12
+0#
+b1011000 !
+b1011000 >
+b1100100 "
+b1100100 =
+b1011000 '
+b1011000 4
+b1100100 &
+b1100100 3
+b1100 )
+b1100 6
+b1010 (
+b1010 5
+#14
+1#
+b1010 +
+b1010 8
+#16
+b1101101 "
+b1101101 =
+0#
+1/
+#17
+1#
+b1100100 "
+b1100100 =
+0/
+b1101111 ,
+b1101111 9
+b1100 +
+b1100 8
+#19
+b1101111 !
+b1101111 >
+0#
+1/
+#20
