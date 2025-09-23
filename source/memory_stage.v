@@ -340,12 +340,13 @@ module mem_stage #(
     me_o_opcode, me_i_opcode, me_o_load_data,
     me_i_rs2_data, me_i_alu_value, me_o_flush, me_i_flush, me_o_stall, me_i_stall,
     me_o_ce, me_i_ce, me_rst, me_clk, me_i_rd_data, me_i_rd_addr, me_o_funct3,
-    me_o_rd_addr, me_o_rd_data, me_o_rd_we, me_i_funct3, me_we_reg_n
+    me_o_rd_addr, me_o_rd_data, me_o_rd_we, me_i_funct3, me_we_reg_n, me_stall_from_alu
 );
     input me_clk;
     input me_rst;
     input me_i_ce;
     output reg me_o_ce;
+    input me_stall_from_alu;
     input me_i_stall;
     output reg me_o_stall;
     input me_i_flush;
@@ -412,7 +413,7 @@ module mem_stage #(
     wire stall_bit = me_i_stall || me_o_stall || m_i_stall;
     //Pending will cause when me_i_stall is 1 => Data is being retrieved
     reg pending_request;
-	 reg temp_pending_request;
+	reg temp_pending_request;
     // pipeline/commit registers (unchanged semantics)
     reg rd_we_d;
     reg [DWIDTH - 1 : 0] rd_data_d;
@@ -423,11 +424,9 @@ module mem_stage #(
     reg [3 : 0] byte_enable_d;
     reg [DWIDTH - 1 : 0] store_data_aligned_d;
 
-   
-
     reg [FUNCT_WIDTH - 1 : 0] funct_q;
     reg [1 : 0] byte_off_q;
-	 wire [1 : 0] byte_offset_d = me_i_alu_value[1 : 0];
+	wire [1 : 0] byte_offset_d = me_i_alu_value[1 : 0];
     reg op_load_q;
     reg [`OPCODE_WIDTH - 1 : 0] opcode_q;
     reg [AWIDTH - 1 : 0] rd_addr_q;
@@ -446,7 +445,7 @@ module mem_stage #(
             me_o_funct3 <= {FUNCT_WIDTH{1'b0}};
 
             //Initial internal signal
-				temp_pending_request <= 1'b0;
+			temp_pending_request <= 1'b0;
             pending_request <= 1'b0;
             // funct_d <= {FUNCT_WIDTH{1'b0}};
             //Latch
@@ -457,8 +456,8 @@ module mem_stage #(
             opcode_q <= {`OPCODE_WIDTH{1'b0}};
         end
         else begin
-				temp_pending_request <= pending_request;
-            me_o_stall <= (pending_request && !me_i_ack);
+			temp_pending_request <= pending_request;
+            me_o_stall <= ((pending_request && !me_i_ack) || m_i_stall || me_i_stall || (me_stall_from_alu && me_i_ce)) && !me_i_flush;
             if (!pending_request && me_i_ce && !me_i_flush) begin
                 if (!(op_load || op_store)) begin
                     me_o_opcode <= me_i_opcode;
