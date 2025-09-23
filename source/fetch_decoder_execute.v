@@ -115,7 +115,7 @@ module fetch_execute #(
     );
 
     // ============================== EXECUTE ==================================
-    execute #(
+    execute_stage #(
         .AWIDTH(AWIDTH),
         .DWIDTH(DWIDTH),
         .FUNCT_WIDTH(FUNCT_WIDTH),

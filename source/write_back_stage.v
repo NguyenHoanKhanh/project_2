@@ -1,7 +1,7 @@
 `ifndef WRITE_BACK_STAGE_V
 `define WRITE_BACK_STAGE_V
 `include "./source/header.vh"
-module writeback #(
+module write_back_stage #(
     parameter DWIDTH = 32,
     parameter AWIDTH = 5,
     parameter PC_WIDTH = 32, 

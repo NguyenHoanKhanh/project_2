@@ -85,7 +85,7 @@ module connect_mem #(
         .fe_change_pc(fm_change_pc)
     );
 
-    mem_stage #(
+    memory_stage #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
         .FUNCT_WIDTH(FUNCT_WIDTH)

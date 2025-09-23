@@ -332,7 +332,7 @@
 `include "./source/header.vh"
 `include "./source/memory.v"
 
-module mem_stage #(
+module memory_stage #(
     parameter DWIDTH = 32,
     parameter AWIDTH = 5,
     parameter FUNCT_WIDTH = 3

@@ -1,7 +1,7 @@
 `ifndef EXECUTE_STAGE_V
 `define EXECUTE_STAGE_V
 `include "./source/header.vh"
-module execute #(
+module execute_stage #(
     parameter AWIDTH = 5,
     parameter DWIDTH = 32,
     parameter FUNCT_WIDTH = 3,

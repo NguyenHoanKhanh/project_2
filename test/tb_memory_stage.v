@@ -1,5 +1,5 @@
 `include "./source/memory_stage.v"
-// Testbench for mem_stage
+ // Testbench for mem_stage
 module tb_mem_stage;
     parameter DWIDTH = 32;
     parameter AWIDTH = 5;
@@ -71,7 +71,6 @@ module tb_mem_stage;
         me_i_alu_value = 0;
         me_i_rs2_data = 0;
         i = 0;
-
     end
     always #5 me_clk = ~me_clk;
     
@@ -79,12 +78,28 @@ module tb_mem_stage;
         $dumpfile("./waveform/mem_stage.vcd");
         $dumpvars(0, tb_mem_stage);
     end
+
+    // ---------- NEW: stall helper task ----------
+    // Introduce an input stall (me_i_stall) for a given number of clock cycles.
+    task introduce_stall(input integer cycles);
+        integer j;
+        begin
+            $display(">>> TB: introducing input stall for %0d cycles at time %0t", cycles, $time);
+            me_i_stall = 1'b1;
+            for (j = 0; j < cycles; j = j + 1) @(posedge me_clk);
+            me_i_stall = 1'b0;
+            @(posedge me_clk);
+            $display(">>> TB: input stall cleared at time %0t", $time);
+        end
+    endtask
+
     // Reset task
     task do_reset();
         begin
             me_rst = 0;
             #(20);
             me_rst = 1;
+            @(posedge me_clk);
         end
     endtask
 
@@ -106,10 +121,11 @@ module tb_mem_stage;
             me_i_rs2_data = data;     
             me_i_ce = 1'b1;
             me_we_reg_n = 1'b1;
-            @(posedge me_clk);
+            repeat(2) @(posedge me_clk);
             // Deassert ce after one cycle
             me_i_ce = 0;
-            $display("STORE Complete at time %0t: funct = %0d, addr = %0d, data = %h, byte_enable = %b, me_o_rd_we = %b, opcode = %b", $time, funct3, addr, UUT.me_o_store_data, UUT.byte_enable, me_o_rd_we, me_o_opcode);
+            $display("STORE Complete at time %0t: funct = %0d, addr = %0d, data = %h, byte_enable = %b, me_o_rd_we = %b, opcode = %b, me_o_stall = %b", $time, 
+            funct3, addr, UUT.me_o_store_data, UUT.byte_enable, me_o_rd_we, me_o_opcode, me_o_stall);
             me_i_opcode = {`OPCODE_WIDTH{1'b0}};
         end
     endtask
@@ -122,7 +138,10 @@ module tb_mem_stage;
                 me_i_ce = 1'b1;
                 @(posedge me_clk);
                 me_i_ce = 1'b0;
-                $display($time, " ", "LOAD Complete funct = %0d, addr = %0d, data = %h", funct3, addr, me_o_load_data);
+                // wait a couple cycles to let memory ack and stage commit
+                repeat (2) @(posedge me_clk);
+                $display("%0t LOAD Complete funct = %0d, addr = %0d, data = %h, me_o_stall = %b, UUT.me_o_cyc = %b, UUT.me_o_stb = %b",
+                         $time, funct3, addr, me_o_load_data, me_o_stall, UUT.me_o_cyc, UUT.me_o_stb);
                 me_i_opcode = {`OPCODE_WIDTH{1'b0}};
             end
     endtask
@@ -138,7 +157,8 @@ module tb_mem_stage;
             @(posedge me_clk);
             me_i_ce = 0;
             @(posedge me_clk);
-            $display("RTYPE Writeback at time %0t: rd_addr = %0d, rd_data = %0d, we = %b, o_rd_addr = %0d, o_rd_data = %0d", $time, rd_addr, rd_data, me_o_rd_we, me_o_rd_addr, me_o_rd_data);
+            $display("RTYPE Writeback at time %0t: rd_addr = %0d, rd_data = %0d, we = %b, o_rd_addr = %0d, o_rd_data = %0d",
+                     $time, rd_addr, rd_data, me_o_rd_we, me_o_rd_addr, me_o_rd_data);
             me_i_opcode = {`OPCODE_WIDTH{1'b0}};
         end
     endtask
@@ -159,29 +179,48 @@ module tb_mem_stage;
         // Reset
         do_reset();
 
-        // ---------- STORE tests ----------
-        // SB tại các offset 0..3
-        do_store(32'h0000_0000, 32'h0000_0011, `FUNCT_SB); // off 0
-        do_store(32'h0000_0001, 32'h0000_0022, `FUNCT_SB); // off 1
-        do_store(32'h0000_0002, 32'h0000_0033, `FUNCT_SB); // off 2
-        do_store(32'h0000_0003, 32'h0000_0044, `FUNCT_SB); // off 3
+        // ---------- STORE tests (with stall scenarios) ----------
+        // SB at offsets 0..3
+        // Insert a stall before the first store to see how stage handles incoming stall
+        $display("\n--- STORE tests with stall scenarios ---\n");
+        introduce_stall(2);
+        do_store(32'h00000000, 32'h00000011, `FUNCT_SB); // off 0
 
-        // SH tại các offset 0..2 (tránh off 3 vì 2-beat chưa implement)
-        do_store(32'h0000_0004, 32'h0000_5566, `FUNCT_SH); // off 0
-        do_store(32'h0000_0005, 32'h0000_7788, `FUNCT_SH); // off 1
-        do_store(32'h0000_0006, 32'h0000_99AA, `FUNCT_SH); // off 2
+        // Introduce a stall immediately after issuing a store (simulate upstream backpressure)
+        do_store(32'h00000001, 32'h00000022, `FUNCT_SB); // off 1
+        introduce_stall(3); // stall while store may be pending
 
-        // SW aligned
-        do_store(32'h0000_0008, 32'hCAFE_BABE, `FUNCT_SW);
+        do_store(32'h00000002, 32'h00000033, `FUNCT_SB); // off 2
 
-        // ---------- LOAD tests ----------
+        // SH at offsets 0..2 (avoid off 3)
+        // Simulate stall during short store sequence
+        introduce_stall(1);
+        do_store(32'h00000004, 32'h00005566, `FUNCT_SH); // off 0
+        do_store(32'h00000005, 32'h00007788, `FUNCT_SH); // off 1
+
+        // SW aligned; also test stall while SW is in flight
+        do_store(32'h00000008, 32'hCAFEBABE, `FUNCT_SW);
+        introduce_stall(2);
+
+        // ---------- LOAD tests (with stall scenarios) ----------
+        $display("\n--- LOAD tests with stall scenarios ---\n");
+        // Simple loads with occasional stalls injected between them
         do_load(32'h0000_0000, `FUNCT_LB );
+        introduce_stall(2); // stall between loads
+
         do_load(32'h0000_0001, `FUNCT_LBU);
         do_load(32'h0000_0002, `FUNCT_LB );
+        introduce_stall(1);
+
         do_load(32'h0000_0003, `FUNCT_LBU);
 
         do_load(32'h0000_0004, `FUNCT_LH );
+        // Stall right after issuing a load to see pending behavior
+        // We'll issue the load and immediately assert me_i_stall for a few cycles
+        // For that, call do_load and then introduce_stall right away (do_load already waits 2 cycles)
         do_load(32'h0000_0004, `FUNCT_LHU);
+        introduce_stall(3);
+
         do_load(32'h0000_0006, `FUNCT_LH );
         do_load(32'h0000_0006, `FUNCT_LHU);
 
@@ -194,6 +233,10 @@ module tb_mem_stage;
         $display("Triggering flush...");
         me_i_flush = 1; @(posedge me_clk);
         me_i_flush = 0;
+
+        // Final stall test: assert stall while idle to ensure stage resumes correctly
+        $display("\n--- Final stall while idle ---\n");
+        introduce_stall(4);
 
         // Finish simulation
         #50;

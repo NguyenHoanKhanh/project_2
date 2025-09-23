@@ -66,7 +66,7 @@ module datapath #(
         .fm_change_pc(d_o_change_pc)
     );
 
-    writeback #(
+    write_back_stage #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
         .PC_WIDTH(PC_WIDTH),
