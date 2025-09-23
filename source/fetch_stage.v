@@ -28,13 +28,8 @@ module fetch_i #(
     wire [IWIDTH - 1 : 0] fi_o_instr_mem;
 
     wire fi_i_syn;
-    reg fi_i_syn_r;
     wire fi_o_ack;
-    reg fi_o_ack_r;
     wire fi_o_last;
-    reg fi_o_last_r;
-    reg [IWIDTH - 1 : 0] fi_o_instr_mem_r;
-
 
     transmit #(
         .IWIDTH(IWIDTH),
@@ -55,7 +50,6 @@ module fetch_i #(
     ) f (
         .f_clk(fi_clk),
         .f_rst(fi_rst),
-        // .f_i_instr(fi_o_instr_mem_r),
         .f_i_instr(fi_o_instr_mem),
         .f_o_instr(fi_o_instr_fetch),
         .f_o_addr_instr(fi_o_addr_instr),
@@ -72,14 +66,5 @@ module fetch_i #(
         .f_o_flush(fi_o_flush),
         .f_i_last(fi_o_last)
     );
-
-    // always @(posedge fi_clk or negedge fi_rst) begin
-    //     if (!fi_rst) begin
-    //         fi_o_instr_mem_r <= {IWIDTH{1'b0}};
-    //     end
-    //     else begin
-    //         fi_o_instr_mem_r <= fi_o_instr_mem;
-    //     end
-    // end
 endmodule
 `endif
