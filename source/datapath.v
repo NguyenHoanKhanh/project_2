@@ -37,6 +37,7 @@ module datapath #(
     wire d_o_ce_n;
     wire d_o_rd_we;
     wire d_o_change_pc;
+    wire d_o_rd_we_n;
 
     connect_mem #(
         .DWIDTH(DWIDTH),
