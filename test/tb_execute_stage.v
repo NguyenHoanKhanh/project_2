@@ -28,6 +28,7 @@ module tb;
     wire [DWIDTH - 1 : 0] ex_o_imm;
     reg ex_i_ce;
     wire ex_o_ce;
+    reg ex_i_force_stall;
     reg ex_i_stall;
     wire ex_o_stall; 
     reg ex_i_flush;
@@ -40,7 +41,7 @@ module tb;
     wire ex_o_valid;
     wire ex_stall_from_alu;
 
-    execute #(
+    execute_stage #(
         .AWIDTH(AWIDTH),
         .DWIDTH(DWIDTH),
         .PC_WIDTH(PC_WIDTH),
@@ -80,7 +81,8 @@ module tb;
         .ex_o_valid(ex_o_valid), 
         .ex_stall_from_alu(ex_stall_from_alu),
         .ex_o_addr_rd(ex_o_addr_rd),
-        .ex_o_alu_value(ex_o_alu_value)
+        .ex_o_alu_value(ex_o_alu_value),
+        .ex_i_force_stall(ex_i_force_stall)
     );
 
     initial begin
@@ -139,6 +141,7 @@ module tb;
             ex_i_ce = 1;
             ex_i_flush = 0;  
             ex_i_stall = 0;
+            ex_i_force_stall = 0;
             ex_i_addr_rs1 = 5'd1;
             ex_i_addr_rs2 = 5'd2;
             ex_i_addr_rd  = 5'd3;

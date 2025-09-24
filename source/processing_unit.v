@@ -31,6 +31,7 @@ module processing #(
     output p_o_ws_stall, p_o_ws_flush;
 
     wire [DWIDTH - 1 : 0] p_o_fw_es_data_rs1, p_o_fw_es_data_rs2;
+    wire p_o_fw_es_force_stall_out;
     
     forwarding #(
         .DWIDTH(DWIDTH),
@@ -40,7 +41,7 @@ module processing #(
         .h_data_reg_rs2(p_o_ds_fw_data_rs2), 
         .h_decoder_addr_rs1(p_o_ds_fw_es_addr_rs1), 
         .h_decoder_addr_rs2(p_o_ds_fw_es_addr_rs2),
-        .h_alu_force_stall_out(), 
+        .h_alu_force_stall_out(p_o_fw_es_force_stall_out), 
         .h_data_out_rs1(p_o_fw_es_data_rs1), 
         .h_data_out_rs2(p_o_fw_es_data_rs2), 
         .h_i_valid_alu(p_o_es_fw_valid), 
@@ -156,11 +157,12 @@ module processing #(
         .ex_i_addr_rs1(p_o_ds_fw_es_addr_rs1), 
         .ex_i_addr_rs2(p_o_ds_fw_es_addr_rs2), 
         .ex_i_addr_rd(p_o_ds_es_addr_rd), 
-        .ex_i_data_rs1(), 
-        .ex_i_data_rs2(), 
+        .ex_i_data_rs1(p_o_fw_es_data_rs1), 
+        .ex_i_data_rs2(p_o_fw_es_data_rs2), 
         .ex_i_funct3(p_o_ds_es_funct3), 
         .ex_i_imm(p_o_ds_es_imm), 
         .ex_i_ce(p_o_ds_es_ce), 
+        .ex_i_force_stall(p_o_fw_es_force_stall_out),
         .ex_i_stall(p_o_ds_es_stall), 
         .ex_i_flush(p_o_ds_es_flush), 
         .ex_i_pc(p_o_ds_es_pc), 
