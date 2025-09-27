@@ -39,7 +39,13 @@ module write_back_stage #(
     output reg [FUNCT_WIDTH - 1 : 0] wb_o_funct;
 
     // wire wb_opcode_system = wb_i_opcope[`SYSTEM];
-    wire wb_opcode_load = wb_i_opcode[`LOAD_WORD];
+    wire op_load = wb_i_opcode[`LOAD_WORD];
+    wire op_rtype = wb_i_opcode[`RTYPE];
+    wire op_itype = wb_i_opcode[`ITYPE];
+    wire op_jal = wb_i_opcode[`JAL];
+    wire op_jalr = wb_i_opcode[`JALR];
+    wire op_lui = wb_i_opcode[`LUI];
+    wire op_auipc = wb_i_opcode[`AUIPC];
     wire stall_bit = wb_i_stall || wb_o_stall;
 
     always @(posedge wb_clk or negedge wb_rst) begin
@@ -79,13 +85,13 @@ module write_back_stage #(
                     wb_o_next_pc <= wb_i_pc + 32'd4;
                     wb_o_change_pc <= wb_i_change_pc;
                     
-                    if (wb_opcode_load) begin
+                    if (op_load) begin
                         wb_o_rd_data <= wb_i_data_load;
                     end
                     // else if (wb_opcode_system && wb_i_funct != 3'd0) begin
                     //     wb_o_rd_data <= wb_i_csr;
                     // end
-                    else if (wb_i_we_rd) begin
+                    else if (op_rtype || op_itype || op_jal || op_jalr || op_lui || op_auipc) begin
                         wb_o_rd_data <= wb_i_rd_data;
                     end
                     else begin
@@ -93,9 +99,6 @@ module write_back_stage #(
                     end
                 end
                 else begin
-                    wb_o_ce <= 1'b0;
-                    wb_o_we_rd <= 1'b0;
-                    wb_o_rd_addr <= {AWIDTH{1'b0}};
                     wb_o_rd_data <= {DWIDTH{1'b0}};
                 end
             end
