@@ -35,7 +35,7 @@ module tb_writeback;
     wire [FUNCT_WIDTH - 1 : 0] wb_o_funct;
 
     // Instantiate writeback module
-    writeback #(
+    write_back_stage #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
         .PC_WIDTH(PC_WIDTH),

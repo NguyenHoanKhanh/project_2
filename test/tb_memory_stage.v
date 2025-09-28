@@ -55,8 +55,7 @@ module tb_mem_stage;
         .me_o_rd_data(me_o_rd_data),
         .me_o_rd_we(me_o_rd_we),
         .me_o_funct3(me_o_funct3),
-        .me_i_funct3(me_i_funct3),
-        .me_we_reg_n(me_we_reg_n)
+        .me_i_funct3(me_i_funct3)
     );
 
     // Clock generation

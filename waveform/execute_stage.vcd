@@ -1,5 +1,5 @@
 $date
-	Thu Sep 18 14:47:40 2025
+	Sun Sep 28 15:54:31 2025
 $end
 $version
 	Icarus Verilog
@@ -41,112 +41,155 @@ $var reg 1 > ex_i_ce $end
 $var reg 32 ? ex_i_data_rs1 [31:0] $end
 $var reg 32 @ ex_i_data_rs2 [31:0] $end
 $var reg 1 A ex_i_flush $end
-$var reg 3 B ex_i_funct3 [2:0] $end
-$var reg 32 C ex_i_imm [31:0] $end
-$var reg 11 D ex_i_opcode [10:0] $end
-$var reg 32 E ex_i_pc [31:0] $end
-$var reg 1 F ex_i_stall $end
-$var reg 1 G ex_rst $end
+$var reg 1 B ex_i_force_stall $end
+$var reg 3 C ex_i_funct3 [2:0] $end
+$var reg 32 D ex_i_imm [31:0] $end
+$var reg 11 E ex_i_opcode [10:0] $end
+$var reg 32 F ex_i_pc [31:0] $end
+$var reg 1 G ex_i_stall $end
+$var reg 1 H ex_rst $end
 $scope function ALU1 $end
-$var integer 32 H idx [31:0] $end
+$var integer 32 I idx [31:0] $end
 $upscope $end
 $scope function OP1 $end
-$var integer 32 I idx [31:0] $end
+$var integer 32 J idx [31:0] $end
 $upscope $end
 $scope module e $end
 $var wire 1 9 ex_clk $end
-$var wire 5 J ex_i_addr_rd [4:0] $end
-$var wire 5 K ex_i_addr_rs1 [4:0] $end
-$var wire 5 L ex_i_addr_rs2 [4:0] $end
-$var wire 14 M ex_i_alu [13:0] $end
+$var wire 5 K ex_i_addr_rd [4:0] $end
+$var wire 5 L ex_i_addr_rs1 [4:0] $end
+$var wire 5 M ex_i_addr_rs2 [4:0] $end
+$var wire 14 N ex_i_alu [13:0] $end
 $var wire 1 > ex_i_ce $end
-$var wire 32 N ex_i_data_rs1 [31:0] $end
-$var wire 32 O ex_i_data_rs2 [31:0] $end
+$var wire 32 O ex_i_data_rs1 [31:0] $end
+$var wire 32 P ex_i_data_rs2 [31:0] $end
 $var wire 1 A ex_i_flush $end
-$var wire 3 P ex_i_funct3 [2:0] $end
-$var wire 32 Q ex_i_imm [31:0] $end
-$var wire 11 R ex_i_opcode [10:0] $end
-$var wire 32 S ex_i_pc [31:0] $end
-$var wire 1 F ex_i_stall $end
-$var wire 1 G ex_rst $end
-$var wire 1 T next_stall $end
-$var wire 1 U stall_bit $end
-$var wire 32 V temp_pc [31:0] $end
+$var wire 1 B ex_i_force_stall $end
+$var wire 3 Q ex_i_funct3 [2:0] $end
+$var wire 32 R ex_i_imm [31:0] $end
+$var wire 11 S ex_i_opcode [10:0] $end
+$var wire 32 T ex_i_pc [31:0] $end
+$var wire 1 G ex_i_stall $end
+$var wire 1 H ex_rst $end
+$var wire 1 U next_stall $end
+$var wire 1 V stall_bit $end
 $var wire 5 W shamt [4:0] $end
-$var wire 32 X rs2_value [31:0] $end
-$var wire 32 Y rs1_value [31:0] $end
-$var wire 1 Z op_system $end
-$var wire 1 [ op_store $end
-$var wire 1 \ op_rtype $end
-$var wire 1 ] op_lui $end
-$var wire 1 ^ op_load $end
-$var wire 1 _ op_jalr $end
-$var wire 1 ` op_jal $end
-$var wire 1 a op_itype $end
-$var wire 1 b op_fence $end
-$var wire 1 c op_branch $end
-$var wire 1 d op_auipc $end
-$var wire 1 e alu_xor $end
-$var wire 1 f alu_sub $end
-$var wire 1 g alu_srl $end
-$var wire 1 h alu_sra $end
-$var wire 1 i alu_sltu $end
-$var wire 1 j alu_slt $end
-$var wire 1 k alu_sll $end
-$var wire 1 l alu_or $end
-$var wire 1 m alu_neq $end
-$var wire 1 n alu_geu $end
-$var wire 1 o alu_ge $end
-$var wire 1 p alu_eq $end
-$var wire 1 q alu_and $end
-$var wire 1 r alu_add $end
-$var parameter 32 s AWIDTH $end
-$var parameter 32 t DWIDTH $end
-$var parameter 32 u FUNCT_WIDTH $end
-$var parameter 32 v PC_WIDTH $end
-$var reg 32 w a [31:0] $end
-$var reg 32 x alu_value [31:0] $end
-$var reg 32 y b [31:0] $end
-$var reg 32 z ex_next_pc [31:0] $end
-$var reg 5 { ex_o_addr_rd [4:0] $end
-$var reg 5 | ex_o_addr_rs1 [4:0] $end
-$var reg 5 } ex_o_addr_rs2 [4:0] $end
-$var reg 14 ~ ex_o_alu [13:0] $end
-$var reg 32 !" ex_o_alu_value [31:0] $end
+$var wire 1 X op_system $end
+$var wire 1 Y op_store $end
+$var wire 1 Z op_rtype $end
+$var wire 1 [ op_lui $end
+$var wire 1 \ op_load $end
+$var wire 1 ] op_jalr $end
+$var wire 1 ^ op_jal $end
+$var wire 1 _ op_itype $end
+$var wire 1 ` op_fence $end
+$var wire 1 a op_branch $end
+$var wire 1 b op_auipc $end
+$var wire 32 c alu_value [31:0] $end
+$var parameter 32 d AWIDTH $end
+$var parameter 32 e DWIDTH $end
+$var parameter 32 f FUNCT_WIDTH $end
+$var parameter 32 g PC_WIDTH $end
+$var reg 32 h b [31:0] $end
+$var reg 1 i change_pc_next $end
+$var reg 32 j ex_next_pc [31:0] $end
+$var reg 5 k ex_o_addr_rd [4:0] $end
+$var reg 5 l ex_o_addr_rs1 [4:0] $end
+$var reg 5 m ex_o_addr_rs2 [4:0] $end
+$var reg 14 n ex_o_alu [13:0] $end
+$var reg 32 o ex_o_alu_value [31:0] $end
 $var reg 1 . ex_o_ce $end
 $var reg 1 - ex_o_change_pc $end
-$var reg 32 "" ex_o_data_rd [31:0] $end
-$var reg 32 #" ex_o_data_rs1 [31:0] $end
-$var reg 32 $" ex_o_data_rs2 [31:0] $end
+$var reg 32 p ex_o_data_rd [31:0] $end
+$var reg 32 q ex_o_data_rs1 [31:0] $end
+$var reg 32 r ex_o_data_rs2 [31:0] $end
 $var reg 1 ) ex_o_flush $end
-$var reg 3 %" ex_o_funct3 [2:0] $end
-$var reg 32 &" ex_o_imm [31:0] $end
-$var reg 11 '" ex_o_opcode [10:0] $end
-$var reg 32 (" ex_o_pc [31:0] $end
+$var reg 3 s ex_o_funct3 [2:0] $end
+$var reg 32 t ex_o_imm [31:0] $end
+$var reg 11 u ex_o_opcode [10:0] $end
+$var reg 32 v ex_o_pc [31:0] $end
 $var reg 1 $ ex_o_stall $end
 $var reg 1 # ex_o_valid $end
 $var reg 1 " ex_o_we_reg $end
 $var reg 1 ! ex_stall_from_alu $end
-$var reg 32 )" temp_data_rd [31:0] $end
+$var reg 1 w flush_next $end
+$var reg 32 x next_pc [31:0] $end
+$var reg 32 y result_data_next [31:0] $end
+$var reg 1 z result_valid_next $end
+$var reg 1 { result_we_next $end
+$var reg 32 | temp_data_rd [31:0] $end
+$var reg 32 } temp_pc [31:0] $end
+$scope module ab $end
+$var wire 1 9 clk $end
+$var wire 5 ~ ex_i_addr_rd [4:0] $end
+$var wire 5 !" ex_i_addr_rs1 [4:0] $end
+$var wire 5 "" ex_i_addr_rs2 [4:0] $end
+$var wire 14 #" ex_i_alu [13:0] $end
+$var wire 32 $" ex_i_data_rs1 [31:0] $end
+$var wire 32 %" ex_i_data_rs2 [31:0] $end
+$var wire 32 &" ex_i_imm [31:0] $end
+$var wire 11 '" ex_i_opcode [10:0] $end
+$var wire 32 (" ex_i_pc [31:0] $end
+$var wire 1 " ex_o_we_reg $end
+$var wire 1 H rst_n $end
+$var wire 32 )" temp_data_rd [31:0] $end
+$var wire 5 *" shamt [4:0] $end
+$var wire 32 +" rs2_value [31:0] $end
+$var wire 32 ," rs1_value [31:0] $end
+$var wire 1 -" op_system $end
+$var wire 1 ." op_store $end
+$var wire 1 /" op_rtype $end
+$var wire 1 0" op_lui $end
+$var wire 1 1" op_load $end
+$var wire 1 2" op_jalr $end
+$var wire 1 3" op_jal $end
+$var wire 1 4" op_itype $end
+$var wire 1 5" op_fence $end
+$var wire 1 6" op_branch $end
+$var wire 1 7" op_auipc $end
+$var wire 32 8" b [31:0] $end
+$var wire 1 9" alu_xor $end
+$var wire 1 :" alu_sub $end
+$var wire 1 ;" alu_srl $end
+$var wire 1 <" alu_sra $end
+$var wire 1 =" alu_sltu $end
+$var wire 1 >" alu_slt $end
+$var wire 1 ?" alu_sll $end
+$var wire 1 @" alu_or $end
+$var wire 1 A" alu_neq $end
+$var wire 1 B" alu_geu $end
+$var wire 1 C" alu_ge $end
+$var wire 1 D" alu_eq $end
+$var wire 1 E" alu_and $end
+$var wire 1 F" alu_add $end
+$var wire 32 G" a [31:0] $end
+$var parameter 32 H" AWIDTH $end
+$var parameter 32 I" DWIDTH $end
+$var parameter 32 J" PC_WIDTH $end
+$var reg 32 K" alu_value [31:0] $end
+$upscope $end
 $upscope $end
 $scope task reset $end
 $upscope $end
 $scope task test_instruction $end
-$var reg 14 *" alu [13:0] $end
-$var reg 32 +" imm [31:0] $end
-$var reg 11 ," opcode [10:0] $end
-$var reg 32 -" pc [31:0] $end
-$var reg 32 ." rs1 [31:0] $end
-$var reg 32 /" rs2 [31:0] $end
+$var reg 14 L" alu [13:0] $end
+$var reg 32 M" imm [31:0] $end
+$var reg 11 N" opcode [10:0] $end
+$var reg 32 O" pc [31:0] $end
+$var reg 32 P" rs1 [31:0] $end
+$var reg 32 Q" rs2 [31:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b100000 v
-b11 u
-b100000 t
-b101 s
+b100000 J"
+b100000 I"
+b101 H"
+b100000 g
+b11 f
+b100000 e
+b101 d
 b100000 8
 b11 7
 b100000 6
@@ -154,45 +197,76 @@ b101 5
 $end
 #0
 $dumpvars
-bx /"
-bx ."
-bx -"
+bx Q"
+bx P"
+bx O"
+bx N"
+bx M"
+bx L"
+b0 K"
+bx G"
+xF"
+xE"
+xD"
+xC"
+xB"
+xA"
+x@"
+x?"
+x>"
+x="
+x<"
+x;"
+x:"
+x9"
+bx 8"
+x7"
+x6"
+x5"
+x4"
+x3"
+x2"
+x1"
+x0"
+x/"
+x."
+x-"
 bx ,"
 bx +"
 bx *"
 b0 )"
-b0 ("
-b0 '"
-b0 &"
-b0 %"
-b0 $"
-b0 #"
-b0 ""
+bx ("
+bx '"
+bx &"
+bx %"
+bx $"
+bx #"
+bx ""
 bx !"
-b0 ~
+bx ~
 b0 }
 b0 |
-b0 {
-b0 z
-bx y
-bx x
-bx w
-xr
-xq
-xp
-xo
-xn
-xm
-xl
-xk
-xj
-xi
-xh
-xg
-xf
-xe
-xd
-xc
+0{
+0z
+b0 y
+b100 x
+0w
+b0 v
+b0 u
+b0 t
+b0 s
+b0 r
+b0 q
+b0 p
+bx o
+b0 n
+b0 m
+b0 l
+b0 k
+b0 j
+0i
+bx h
+b0 c
 xb
 xa
 x`
@@ -202,12 +276,12 @@ x]
 x\
 x[
 xZ
-bx Y
-bx X
+xY
+xX
 bx W
-bx V
+0V
 0U
-0T
+bx T
 bx S
 bx R
 bx Q
@@ -219,13 +293,13 @@ bx L
 bx K
 bx J
 bx I
-bx H
+0H
 0G
-0F
+bx F
 bx E
 bx D
 bx C
-bx B
+xB
 0A
 bx @
 bx ?
@@ -260,491 +334,622 @@ $end
 19
 #10
 09
-1G
+1H
 #15
 0.
 bx 3
-bx {
-bx %
-bx ("
-bx 4
-bx z
+bx k
 19
 #20
+b1010 G"
+0V
+b10100 *"
 0U
-b10100 W
-0T
-b11110 x
-b10100 y
-b1010 w
-b10100 X
-b1010 Y
-1\
+b10100 8"
+b10100 +"
+b1010 ,"
+1{
+1z
+1Z
+0_
+0\
+0Y
 0a
 0^
-0[
-0c
-0`
-0_
 0]
-0d
-0Z
+0[
 0b
-1r
-0f
-0j
-0i
-0e
-0l
-0q
-0k
-0g
-0h
-0p
-0m
-0o
-0n
+0X
+0`
+1/"
+04"
+01"
+0."
+06"
+03"
+02"
+00"
+07"
+0-"
+05"
+1F"
+0:"
+0>"
+0="
+09"
+0@"
+0E"
+0?"
+0;"
+0<"
+0D"
+0A"
+0C"
+0B"
 09
 b11 :
-b11 J
+b11 K
+b11 ~
 b10 <
-b10 L
+b10 M
+b10 ""
 b1 ;
-b1 K
+b1 L
+b1 !"
+0B
 1>
-b1000000000000 V
-b1000000000000 E
-b1000000000000 S
-b0 C
-b0 Q
+b1000000000000 F
+b1000000000000 T
+b1000000000000 ("
+b0 D
+b0 R
+b0 &"
 b10100 @
-b10100 O
+b10100 P
+b10100 %"
 b1010 ?
-b1010 N
-b1 D
-b1 R
+b1010 O
+b1010 $"
+b1 E
+b1 S
+b1 '"
 b1 =
-b1 M
-b1000000000000 -"
-b0 +"
-b10100 /"
-b1010 ."
-b1 ,"
+b1 N
+b1 #"
+b1000000000000 O"
+b0 M"
+b10100 Q"
+b1010 P"
+b1 N"
+b0 J
+b1 L"
 b0 I
-b1 *"
-b0 H
 #25
+b11110 y
+b1000000000100 x
+1z
+1{
 1.
+b100 4
+b100 j
 1"
 1#
-b11110 )"
-b11110 /
-b11110 !"
+b0 /
+b0 o
 b10100 *
-b10100 $"
+b10100 r
 b1010 +
-b1010 #"
+b1010 q
 b10 1
-b10 }
+b10 m
 b1 2
-b1 |
+b1 l
 bx (
-bx %"
+bx s
 b1 &
-b1 '"
+b1 u
 b1 0
-b1 ~
+b1 n
+b1000000000000 }
 b11 3
-b11 {
-b1000000000000 %
-b1000000000000 ("
-b1000000000000 4
-b1000000000000 z
+b11 k
+b11110 c
+b11110 K"
 19
 #26
-b11110 W
-b10100 x
+b11110 *"
+b110010 G"
+b11110 8"
+b11110 +"
+b110010 ,"
+1z
+1{
 b11110 y
-b110010 w
-b11110 X
-b110010 Y
-0r
-1f
-b1000000000100 V
-b1000000000100 E
-b1000000000100 S
+0F"
+1:"
+b1000000000100 F
+b1000000000100 T
+b1000000000100 ("
 b11110 @
-b11110 O
+b11110 P
+b11110 %"
 b110010 ?
-b110010 N
+b110010 O
+b110010 $"
 b10 =
-b10 M
-b1000000000100 -"
-b11110 /"
-b110010 ."
-b10 *"
-b1 H
+b10 N
+b10 #"
+b1000000000100 O"
+b11110 Q"
+b110010 P"
+b10 L"
+b1 I
 #30
 09
 #35
+b1000000001000 x
+1z
+1{
+b10100 y
+b10100 c
+b10100 K"
+b11110 |
+b11110 )"
 b11110 ,
-b11110 ""
-b10100 /
-b10100 !"
+b11110 p
+b11110 /
+b11110 o
 b11110 *
-b11110 $"
+b11110 r
 b110010 +
-b110010 #"
-b10100 )"
+b110010 q
+b1000000000100 }
 bx (
-bx %"
+bx s
 b1 &
-b1 '"
+b1 u
 b10 0
-b10 ~
+b10 n
 1.
 1#
 1"
-b1000000000100 %
-b1000000000100 ("
+b1000000000000 %
+b1000000000000 v
 b1000000000100 4
-b1000000000100 z
+b1000000000100 j
 19
 #36
-b11 W
-b1000 x
-b11 y
-b1 w
-b11 X
-b1 Y
-0f
-1k
-b1000000001000 V
-b1000000001000 E
-b1000000001000 S
+b11 *"
+b1 G"
+b11 8"
+b11 +"
+b1 ,"
+1z
+1{
+b10100 y
+0:"
+1?"
+b1000000001000 F
+b1000000001000 T
+b1000000001000 ("
 b11 @
-b11 O
+b11 P
+b11 %"
 b1 ?
-b1 N
+b1 O
+b1 $"
 b10000000 =
-b10000000 M
-b1000000001000 -"
-b11 /"
-b1 ."
-b10000000 *"
-b111 H
+b10000000 N
+b10000000 #"
+b1000000001000 O"
+b11 Q"
+b1 P"
+b10000000 L"
+b111 I
 #40
 09
 #45
-b1000 /
-b1000 !"
+b1000000001100 x
+1z
+1{
+b1000 y
+b1000000001000 4
+b1000000001000 j
+b10100 /
+b10100 o
 b11 *
-b11 $"
+b11 r
 b1 +
-b1 #"
-b1000 )"
+b1 q
+b1000000001000 }
+b10100 |
+b10100 )"
 bx (
-bx %"
+bx s
 b1 &
-b1 '"
+b1 u
 b10000000 0
-b10000000 ~
+b10000000 n
 1.
 1#
 1"
 b10100 ,
-b10100 ""
-b1000000001000 %
-b1000000001000 ("
-b1000000001000 4
-b1000000001000 z
+b10100 p
+b1000000000100 %
+b1000000000100 v
+b1000 c
+b1000 K"
 19
 #46
-b10 W
-b11111111111111111111111111111100 x
-b10 y
-b11111111111111111111111111110000 w
-b10 X
-b11111111111111111111111111110000 Y
-0k
-1h
-b1000000001100 V
-b1000000001100 E
-b1000000001100 S
+b10 *"
+b11111111111111111111111111110000 G"
+b10 8"
+b10 +"
+b11111111111111111111111111110000 ,"
+1z
+1{
+b1000 y
+0?"
+1<"
+b1000000001100 F
+b1000000001100 T
+b1000000001100 ("
 b10 @
-b10 O
+b10 P
+b10 %"
 b11111111111111111111111111110000 ?
-b11111111111111111111111111110000 N
+b11111111111111111111111111110000 O
+b11111111111111111111111111110000 $"
 b1000000000 =
-b1000000000 M
-b1000000001100 -"
-b10 /"
-b11111111111111111111111111110000 ."
-b1000000000 *"
-b1001 H
+b1000000000 N
+b1000000000 #"
+b1000000001100 O"
+b10 Q"
+b11111111111111111111111111110000 P"
+b1000000000 L"
+b1001 I
 #50
 09
 #55
-b11111111111111111111111111111100 /
-b11111111111111111111111111111100 !"
+b1000000010000 x
+1z
+1{
+b11111111111111111111111111111100 y
+b11111111111111111111111111111100 c
+b11111111111111111111111111111100 K"
+b1000000001100 4
+b1000000001100 j
+b1000 /
+b1000 o
 b10 *
-b10 $"
+b10 r
 b11111111111111111111111111110000 +
-b11111111111111111111111111110000 #"
-b11111111111111111111111111111100 )"
+b11111111111111111111111111110000 q
+b1000000001100 }
+b1000 |
+b1000 )"
 bx (
-bx %"
+bx s
 b1 &
-b1 '"
+b1 u
 b1000000000 0
-b1000000000 ~
+b1000000000 n
 1.
 1#
 1"
 b1000 ,
-b1000 ""
-b1000000001100 %
-b1000000001100 ("
-b1000000001100 4
-b1000000001100 z
+b1000 p
+b1000000001000 %
+b1000000001000 v
 19
 #56
-b0 W
-b10101011110011010001000000000000 x
+b0 *"
+b0 G"
+b10101011110011010001000000000000 8"
+b0 +"
+b0 ,"
+1z
+1{
 b10101011110011010001000000000000 y
-b0 w
-b0 X
-b0 Y
-0\
-1]
-1r
-0h
-b1000000010000 V
-b1000000010000 E
-b1000000010000 S
-b10101011110011010001000000000000 C
-b10101011110011010001000000000000 Q
+0Z
+1[
+0/"
+10"
+1F"
+0<"
+b1000000010000 F
+b1000000010000 T
+b1000000010000 ("
+b10101011110011010001000000000000 D
+b10101011110011010001000000000000 R
+b10101011110011010001000000000000 &"
 b0 @
-b0 O
+b0 P
+b0 %"
 b0 ?
-b0 N
-b10000000 D
-b10000000 R
+b0 O
+b0 $"
+b10000000 E
+b10000000 S
+b10000000 '"
 b1 =
-b1 M
-b1000000010000 -"
-b10101011110011010001000000000000 +"
-b0 /"
-b0 ."
-b10000000 ,"
-b111 I
-b1 *"
-b0 H
+b1 N
+b1 #"
+b1000000010000 O"
+b10101011110011010001000000000000 M"
+b0 Q"
+b0 P"
+b10000000 N"
+b111 J
+b1 L"
+b0 I
 #60
 09
 #65
-b10101011110011010001000000000000 /
-b10101011110011010001000000000000 !"
+b1000000010100 x
+1z
+1{
+b10101011110011010001000000000000 y
+b1000000010000 4
+b1000000010000 j
+b11111111111111111111111111111100 /
+b11111111111111111111111111111100 o
 b10101011110011010001000000000000 '
-b10101011110011010001000000000000 &"
+b10101011110011010001000000000000 t
 b0 *
-b0 $"
+b0 r
 b0 +
-b0 #"
+b0 q
+b1000000010000 }
+b10101011110011010001000000000000 |
 b10101011110011010001000000000000 )"
 bx (
-bx %"
+bx s
 b10000000 &
-b10000000 '"
+b10000000 u
 b1 0
-b1 ~
-1.
-1#
-1"
-b11111111111111111111111111111100 ,
-b11111111111111111111111111111100 ""
-b1000000010000 %
-b1000000010000 ("
-b1000000010000 4
-b1000000010000 z
-19
-#66
-b10000100000000 x
-b100000000 y
-b10000000000000 w
-0]
-1d
-b10000000000000 V
-b10000000000000 E
-b10000000000000 S
-b100000000 C
-b100000000 Q
-b100000000 D
-b100000000 R
-b10000000000000 -"
-b100000000 +"
-b100000000 ,"
-b1000 I
-#70
-09
-#75
-b10000100000000 /
-b10000100000000 !"
-b100000000 '
-b100000000 &"
-b10000100000000 )"
-bx (
-bx %"
-b100000000 &
-b100000000 '"
-b1 0
-b1 ~
+b1 n
 1.
 1#
 1"
 b10101011110011010001000000000000 ,
-b10101011110011010001000000000000 ""
-b10000000000000 %
-b10000000000000 ("
-b10000000000000 4
-b10000000000000 z
+b10101011110011010001000000000000 p
+b1000000001100 %
+b1000000001100 v
+b10101011110011010001000000000000 c
+b10101011110011010001000000000000 K"
 19
-#76
-b10000 W
-b11000000010000 x
-b10000 y
-b11000000000000 w
-1`
-0d
-b11000000000000 V
-b11000000000000 E
-b11000000000000 S
-b10000 C
-b10000 Q
-b100000 D
-b100000 R
-b11000000000000 -"
-b10000 +"
-b100000 ,"
-b101 I
-#80
+#66
+b10000000000000 G"
+b100000000 8"
+1z
+1{
+b1000100010000 y
+0[
+1b
+00"
+17"
+b10000000000000 F
+b10000000000000 T
+b10000000000000 ("
+b100000000 D
+b100000000 R
+b100000000 &"
+b100000000 E
+b100000000 S
+b100000000 '"
+b10000000000000 O"
+b100000000 M"
+b100000000 N"
+b1000 J
+#70
 09
-#85
-1)
-1-
-b11000000010000 /
-b11000000010000 !"
-b10000 '
-b10000 &"
-b11000000000100 )"
+#75
+b10000000000100 x
+1z
+1{
+b10000100000000 y
+b10000100000000 c
+b10000100000000 K"
+b1000000010100 4
+b1000000010100 j
+b10101011110011010001000000000000 /
+b10101011110011010001000000000000 o
+b100000000 '
+b100000000 t
+b10000000000000 }
+b1000100010000 |
+b1000100010000 )"
 bx (
-bx %"
-b100000 &
-b100000 '"
+bx s
+b100000000 &
+b100000000 u
 b1 0
-b1 ~
+b1 n
 1.
 1#
 1"
-b10000100000000 ,
-b10000100000000 ""
-b11000000000000 %
-b11000000000000 ("
-b11000000010000 4
-b11000000010000 z
+b1000100010000 ,
+b1000100010000 p
+b1000000010000 %
+b1000000010000 v
 19
-#86
-b1010 W
-b1 x
-b1010 y
-b1010 w
-b1010 X
-b1010 Y
-1c
-0`
-0r
-1p
-b100000000000000 V
-b100000000000000 E
-b100000000000000 S
-b100 C
-b100 Q
-b1010 @
-b1010 O
-b1010 ?
-b1010 N
+#76
+b10000 *"
+b11000000000000 G"
+b10000 8"
+b10000000010000 x
+1w
+1i
+1z
+1{
+b10000000000100 y
+1^
+0b
+13"
+07"
+b11000000000000 F
+b11000000000000 T
+b11000000000000 ("
 b10000 D
 b10000 R
+b10000 &"
+b100000 E
+b100000 S
+b100000 '"
+b11000000000000 O"
+b10000 M"
+b100000 N"
+b101 J
+#80
+09
+#85
+b11000000010000 x
+1w
+1i
+1z
+1{
+b11000000000100 y
+1)
+1-
+b10000100000000 /
+b10000100000000 o
+b10000 '
+b10000 t
+b11000000000000 }
+b10000000000100 |
+b10000000000100 )"
+bx (
+bx s
+b100000 &
+b100000 u
+b1 0
+b1 n
+1.
+1#
+1"
+b10000000000100 ,
+b10000000000100 p
+b10000000000000 %
+b10000000000000 v
+b10000000010000 4
+b10000000010000 j
+b11000000010000 c
+b11000000010000 K"
+19
+#86
+b1010 *"
+b1010 G"
+b1010 8"
+b1010 +"
+b1010 ,"
+b11000000000100 x
+0w
+0i
+0z
+0{
+b0 y
+1a
+0^
+16"
+03"
+0F"
+1D"
+b100000000000000 F
+b100000000000000 T
+b100000000000000 ("
+b100 D
+b100 R
+b100 &"
+b1010 @
+b1010 P
+b1010 %"
+b1010 ?
+b1010 O
+b1010 $"
+b10000 E
+b10000 S
+b10000 '"
 b10000000000 =
-b10000000000 M
-b100000000000000 -"
-b100 +"
-b1010 /"
-b1010 ."
-b10000 ,"
-b100 I
-b10000000000 *"
-b1010 H
+b10000000000 N
+b10000000000 #"
+b100000000000000 O"
+b100 M"
+b1010 Q"
+b1010 P"
+b10000 N"
+b100 J
+b10000000000 L"
+b1010 I
 #90
 09
 #95
-b1 /
-b1 !"
+1w
+1i
+b100000000000100 x
+b1 c
+b1 K"
+b11000000010000 /
+b11000000010000 o
 b100 '
-b100 &"
+b100 t
 b1010 *
-b1010 $"
+b1010 r
 b1010 +
-b1010 #"
+b1010 q
+b100000000000000 }
+b0 |
 b0 )"
 bx (
-bx %"
+bx s
 b10000 &
-b10000 '"
+b10000 u
 b10000000000 0
-b10000000000 ~
+b10000000000 n
 1.
 0#
 0"
-1-
-1)
-b11000000000100 ,
-b11000000000100 ""
-b100000000000000 %
-b100000000000000 ("
-b100000000000100 4
-b100000000000100 z
+0-
+0)
+b0 ,
+b0 p
+b11000000000000 %
+b11000000000000 v
+b11000000000100 4
+b11000000000100 j
 19
 #100
 09
 #105
-bx (
-bx %"
-b10000 &
-b10000 '"
-b10000000000 0
-b10000000000 ~
-1.
-1-
 1)
-b0 ,
-b0 ""
+1-
+b1 /
+b1 o
+bx (
+bx s
+b10000 &
+b10000 u
+b10000000000 0
+b10000000000 n
+1.
+b100000000000000 %
+b100000000000000 v
 b100000000000100 4
-b100000000000100 z
+b100000000000100 j
 19
 #110
 09
 #115
 bx (
-bx %"
+bx s
 b10000 &
-b10000 '"
+b10000 u
 b10000000000 0
-b10000000000 ~
+b10000000000 n
 1.
 1-
 1)
 b100000000000100 4
-b100000000000100 z
+b100000000000100 j
 19
 #116

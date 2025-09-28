@@ -85,7 +85,7 @@ module connect_mem #(
         .fe_change_pc(fm_change_pc)
     );
 
-    memory_stage #(
+    mem_stage #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
         .FUNCT_WIDTH(FUNCT_WIDTH)
@@ -110,7 +110,6 @@ module connect_mem #(
         .me_o_rd_we(fm_o_rd_we), 
         .me_i_funct3(fm_o_funct3), 
         .me_o_load_data(fm_o_load_data),
-        .me_we_reg_n(fm_we_reg),
         .me_stall_from_alu(fm_stall_alu)
     );
 

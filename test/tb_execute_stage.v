@@ -149,6 +149,7 @@ module tb;
             #1;
             $display("Time = %0d", $time);
             $display("NextPC: ex_next_pc = 0x%h", ex_next_pc);
+            $display("PC : o_pc = %h", ex_o_pc);
             $display("rs1 = %d, rs2 = %d", ex_o_data_rs1, ex_o_data_rs2);
             $display("Alu value : ex_o_alu_value = 0x%h", ex_o_alu_value);
             $display("Result: ex_o_data_rd = 0x%h", ex_o_data_rd);

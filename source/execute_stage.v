@@ -1,6 +1,7 @@
 `ifndef EXECUTE_STAGE_V
 `define EXECUTE_STAGE_V
 `include "./source/header.vh"
+`include "./source/alu.v"
 module execute_stage #(
     parameter AWIDTH = 5,
     parameter DWIDTH = 32,
@@ -18,21 +19,6 @@ module execute_stage #(
     // ALU control
     input [`ALU_WIDTH - 1 : 0] ex_i_alu;
     output reg [`ALU_WIDTH - 1 : 0] ex_o_alu;
-    // Control by one-hot 
-    wire alu_add = ex_i_alu[`ADD];
-    wire alu_sub = ex_i_alu[`SUB];
-    wire alu_slt = ex_i_alu[`SLT];
-    wire alu_sltu = ex_i_alu[`SLTU];
-    wire alu_xor = ex_i_alu[`XOR];
-    wire alu_or = ex_i_alu[`OR];
-    wire alu_and = ex_i_alu[`AND];
-    wire alu_sll = ex_i_alu[`SLL];
-    wire alu_srl = ex_i_alu[`SRL];
-    wire alu_sra = ex_i_alu[`SRA];
-    wire alu_eq = ex_i_alu[`EQ];
-    wire alu_neq = ex_i_alu[`NEQ];
-    wire alu_ge = ex_i_alu[`GE];
-    wire alu_geu = ex_i_alu[`GEU];
 
     // Opcode control
     input [`OPCODE_WIDTH - 1 : 0] ex_i_opcode;
@@ -89,17 +75,20 @@ module execute_stage #(
     output reg ex_stall_from_alu;
 
     //Temporary variables
-    reg [DWIDTH - 1 : 0] alu_value;
-    wire [PC_WIDTH - 1 : 0] temp_pc;
-    assign temp_pc = ex_i_pc;
+    wire [DWIDTH - 1 : 0] alu_value;
+    reg [PC_WIDTH - 1 : 0] temp_pc;
     reg [DWIDTH - 1 : 0] a, b;
     wire [4 : 0] shamt = b[4 : 0];
     wire next_stall = (op_load || op_store) && ex_i_ce;
     wire stall_bit = ex_i_stall || next_stall;
     reg [DWIDTH - 1 : 0] temp_data_rd;
-    //Forwarding value avoids using old data when writeback occurs in the same cycle as decoder/execute read
-    wire [DWIDTH - 1 : 0] rs1_value = (ex_o_we_reg && (ex_i_addr_rd == ex_i_addr_rs1)) ? temp_data_rd : ex_i_data_rs1;
-    wire [DWIDTH - 1 : 0] rs2_value = (ex_o_we_reg && (ex_i_addr_rd == ex_i_addr_rs2)) ? temp_data_rd : ex_i_data_rs2;
+	 
+	reg [DWIDTH - 1 : 0] result_data_next;
+    reg result_valid_next;
+    reg result_we_next;
+    reg change_pc_next;
+    reg flush_next;
+    reg [PC_WIDTH - 1 : 0] next_pc;
 
     always @(posedge ex_clk, negedge ex_rst) begin
         if (!ex_rst) begin
@@ -122,6 +111,7 @@ module execute_stage #(
             ex_o_addr_rs1 <= {AWIDTH{1'b0}};
             ex_o_funct3 <= {FUNCT_WIDTH{1'b0}};
             ex_o_opcode <= {`OPCODE_WIDTH{1'b0}};
+            temp_pc <= {PC_WIDTH{1'b0}};
         end
         else begin
             ex_next_pc        <= temp_pc;
@@ -143,6 +133,8 @@ module execute_stage #(
 
             if (!ex_i_flush) begin
                 if (ex_i_ce && !stall_bit) begin
+                    // snapshot incoming PC for the accepted instruction
+                    temp_pc <= ex_i_pc;
                     ex_o_alu <= ex_i_alu;
                     ex_o_opcode <= ex_i_opcode;
                     ex_o_funct3 <= ex_i_funct3;
@@ -225,73 +217,25 @@ module execute_stage #(
         end
     end
 
-    always @(*) begin
-        a = (op_jal || op_auipc) ? ex_i_pc : op_lui ? {DWIDTH{1'b0}} : rs1_value;
-        b = (op_rtype || op_branch) ? rs2_value : ex_i_imm;
-        alu_value = {DWIDTH{1'b0}};
-
-        if (alu_add) begin
-            alu_value = a + b;
-        end
-        else if (alu_sub) begin
-            alu_value = a - b;
-        end
-        else if (alu_slt) begin
-            if ($signed (a) < $signed(b)) begin
-                alu_value = {31'b0, 1'b1};
-            end
-            else begin
-                alu_value = 32'b0;
-            end
-        end
-        else if (alu_sltu) begin
-            if ($unsigned (a) < $unsigned(b)) begin
-                alu_value = {31'b0, 1'b1};
-            end
-            else begin
-                alu_value = 32'b0;
-            end
-        end
-        else if (alu_xor) begin
-            alu_value = a ^ b;
-        end
-        else if (alu_or) begin
-            alu_value = a | b;
-        end
-        else if (alu_and) begin
-            alu_value = a & b;
-        end
-        else if (alu_sll) begin
-            alu_value = a << shamt;
-        end
-        else if (alu_srl) begin
-            alu_value = a >> shamt;
-        end
-        else if (alu_sra) begin
-            alu_value = $signed(a) >>> shamt;
-        end
-        else if (alu_eq) begin
-            alu_value = (a == b) ? 32'd1 : 32'd0;
-        end
-        else if (alu_neq) begin
-            alu_value = (a == b) ? 32'd0 : 32'd1;
-        end
-        else if (alu_ge) begin
-            if ($signed (a) >= $signed(b)) begin
-                alu_value = {31'b0, 1'b1};
-            end
-            else begin
-                alu_value = 32'b0;
-            end
-        end
-        else if (alu_geu) begin
-            if ($unsigned (a) >= $unsigned(b)) begin
-                alu_value = {31'b0, 1'b1};
-            end
-            else begin
-                alu_value = 32'b0;
-            end
-        end
-    end
+    alu #(
+        .AWIDTH(AWIDTH),
+        .DWIDTH(DWIDTH),
+        .PC_WIDTH(PC_WIDTH)
+    ) ab (
+        .clk(ex_clk),
+        .rst_n(ex_rst),
+        .ex_o_we_reg(ex_o_we_reg),
+        .ex_i_addr_rd(ex_i_addr_rd), 
+        .ex_i_addr_rs1(ex_i_addr_rs1), 
+        .ex_i_addr_rs2(ex_i_addr_rs2), 
+        .ex_i_data_rs1(ex_i_data_rs1), 
+        .ex_i_data_rs2(ex_i_data_rs2), 
+        .temp_data_rd(temp_data_rd),
+        .ex_i_opcode(ex_i_opcode), 
+        .ex_i_pc(ex_i_pc),
+        .ex_i_imm(ex_i_imm), 
+        .alu_value(alu_value), 
+        .ex_i_alu(ex_i_alu)
+    );
 endmodule
 `endif 

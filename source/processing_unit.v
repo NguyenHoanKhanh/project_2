@@ -37,6 +37,8 @@ module processing #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH)
     ) f (
+        .h_clk(p_clk),
+        .h_rst(p_rst),
         .h_data_reg_rs1(p_o_ds_fw_data_rs1), 
         .h_data_reg_rs2(p_o_ds_fw_data_rs2), 
         .h_decoder_addr_rs1(p_o_ds_fw_es_addr_rs1), 
@@ -197,7 +199,7 @@ module processing #(
     wire [DWIDTH - 1 : 0] p_o_ms_ws_data_rd;
     wire p_o_ms_fw_ws_we_reg;
 
-    memory_stage #(
+    mem_stage #(
         .DWIDTH(DWIDTH),
         .AWIDTH(AWIDTH),
         .FUNCT_WIDTH(FUNCT_WIDTH)
@@ -213,7 +215,6 @@ module processing #(
         .me_i_flush(p_o_es_ms_flush), 
         .me_i_stall(p_o_es_ms_stall),
         .me_i_funct3(p_o_es_ms_funct3), 
-        .me_we_reg_n(p_o_es_fw_ms_we_reg), 
         .me_stall_from_alu(p_o_es_ms_stall_from_alu),
         .me_o_ce(p_o_ms_fw_ws_ce), 
         .me_o_funct3(p_o_ms_ws_funct3),

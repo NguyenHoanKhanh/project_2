@@ -70,7 +70,7 @@ module tb;
                 $display($time, " ", "p_o_ws_flush = %b , p_o_ws_stall = %b", p_o_ws_flush, p_o_ws_stall);
                 $display($time, " ", "p_o_ws_opcode = %b, p_o_ws_funct3 = %b", p_o_ws_opcode, p_o_ws_funct3);
                 $display($time, " ", "p_o_ws_addr_rd = %d , p_o_ws_fw_ds_data_rd = %d", p_o_ws_addr_rd, p_o_ws_fw_ds_data_rd);
-                $display($time, " ", "p_o_ws_next_pc = %d", p_o_ws_next_pc);
+                $display($time, " ", "p_o_ws_next_pc = %d\n", p_o_ws_next_pc);
             end
         end
     endtask

@@ -1,5 +1,5 @@
 $date
-	Sun Sep 21 05:17:29 2025
+	Thu Sep 25 14:32:16 2025
 $end
 $version
 	Icarus Verilog
@@ -53,33 +53,39 @@ $var wire 32 C wb_i_rd_data [31:0] $end
 $var wire 1 9 wb_i_stall $end
 $var wire 1 : wb_i_we_rd $end
 $var wire 1 ; wb_rst $end
-$var wire 1 D wb_opcode_load $end
-$var parameter 32 E AWIDTH $end
-$var parameter 32 F DWIDTH $end
-$var parameter 32 G FUNCT_WIDTH $end
-$var parameter 32 H PC_WIDTH $end
+$var wire 1 D op_rtype $end
+$var wire 1 E op_lui $end
+$var wire 1 F op_load $end
+$var wire 1 G op_jalr $end
+$var wire 1 H op_jal $end
+$var wire 1 I op_itype $end
+$var wire 1 J op_auipc $end
+$var parameter 32 K AWIDTH $end
+$var parameter 32 L DWIDTH $end
+$var parameter 32 M FUNCT_WIDTH $end
+$var parameter 32 N PC_WIDTH $end
 $var reg 1 * wb_o_ce $end
 $var reg 1 ) wb_o_change_pc $end
 $var reg 1 ( wb_o_flush $end
-$var reg 3 I wb_o_funct [2:0] $end
-$var reg 32 J wb_o_next_pc [31:0] $end
-$var reg 11 K wb_o_opcode [10:0] $end
-$var reg 5 L wb_o_rd_addr [4:0] $end
-$var reg 32 M wb_o_rd_data [31:0] $end
+$var reg 3 O wb_o_funct [2:0] $end
+$var reg 32 P wb_o_next_pc [31:0] $end
+$var reg 11 Q wb_o_opcode [10:0] $end
+$var reg 5 R wb_o_rd_addr [4:0] $end
+$var reg 32 S wb_o_rd_data [31:0] $end
 $var reg 1 " wb_o_stall $end
 $var reg 1 ! wb_o_we_rd $end
 $upscope $end
 $scope task reset $end
-$var integer 32 N cycles [31:0] $end
+$var integer 32 T cycles [31:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b100000 H
-b11 G
-b100000 F
-b101 E
+b100000 N
+b11 M
+b100000 L
+b101 K
 b100000 .
 b11 -
 b100000 ,
@@ -87,12 +93,18 @@ b101 +
 $end
 #0
 $dumpvars
-b10 N
-b0 M
-b0 L
-b0 K
-b0 J
-b0 I
+b10 T
+b0 S
+b0 R
+b0 Q
+b0 P
+b0 O
+0J
+0I
+0H
+0G
+0F
+0E
 0D
 b0 C
 b0 B
@@ -138,14 +150,14 @@ $end
 #25000
 1)
 b100 &
-b100 J
+b100 P
 b1010 $
-b1010 L
+b1010 R
 b100 %
-b100 K
+b100 Q
 1!
 1*
-1D
+1F
 b1010 7
 b1010 B
 11
@@ -159,7 +171,7 @@ b10 <
 0/
 #35000
 b11011110101011011011111011101111 #
-b11011110101011011011111011101111 M
+b11011110101011011011111011101111 S
 b11011110101011011011111011101111 2
 b11011110101011011011111011101111 >
 1/
@@ -167,11 +179,7 @@ b11011110101011011011111011101111 >
 0/
 #45000
 b0 #
-b0 M
-b0 $
-b0 L
-0!
-0*
+b0 S
 00
 1/
 #50000
